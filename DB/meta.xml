@@ -1,0 +1,6 @@
+<meta>
+    <min_mta_version server="1.5.8-9.20837" client="1.5.8-9.20740"></min_mta_version>
+
+    <script src="DataBase.lua" type="server" />
+    <export function="MSC" type="server"/>
+</meta>

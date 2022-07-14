@@ -1,0 +1,102 @@
+<meta>
+    <min_mta_version client="1.5.8-9.20704" />
+    
+    <script src="Animations.lua" type="client" />
+    <script src="Interface.lua" type="client" />
+    <script src="Testrface.lua" type="client" />
+    <script src="drawsCore.lua" type="client" />
+    <script src="Standarts.lua" type="client" />
+    
+    
+    <file src="fx/blurSim.fx" type="client" />
+    <file src="fx/blurGaus.fx" type="client" />
+    
+    <file src="fx/TheresholdPattern.fx" type="client" />
+    <file src="fx/LayerMask.fx" type="client" />
+    
+    
+    
+    
+    <file src="win/winTest.png" type="client" />
+    <file src="Elements/Pattern/threeangle.png" type="client" />
+    <file src="Elements/Pattern/threeangle2.png" type="client" />
+    <file src="Elements/liner.png" type="client" />
+
+
+    <!-- Log Scene -->
+    <file src="Elements/log/logliner.png" type="client" />    
+    <file src="Elements/log/FogBack.png" type="client" />
+    <file src="Elements/log/logFog.png" type="client" />
+    <file src="Elements/log/logSvet.png" type="client" />
+    <file src="Elements/log/logC.png" type="client" />
+    <file src="Elements/log/logGlow.png" type="client" />
+    <file src="Elements/log/logDrevo.png" type="client" />
+    <file src="Elements/log/logDrevoGlow.png" type="client" />
+    <file src="Elements/log/logDrevoFruit.png" type="client" />
+
+    
+       
+    
+    
+    
+    <!-- Fonts -->
+    <file src="Fonts/Jost-ExtraLight.ttf" type="client" />
+    <file src="Fonts/Jost-Light.ttf" type="client" />
+    <file src="Fonts/Jost-Regular.ttf" type="client" />
+    <file src="Fonts/Jost-Medium.ttf" type="client" />
+    <file src="Fonts/Jost-SemiBold.ttf" type="client" />
+    
+    
+    
+    <!-- Elements -->
+    <file src="Elements/Blackout/Blackout.png" type="client" />
+    
+    <file src="Elements/Button1/Button1_down.png" type="client" />
+    <file src="Elements/Button1/Button1_hover.png" type="client" />
+    <file src="Elements/Button1/Button1_norm.png" type="client" />
+    
+    <file src="Elements/Close/Close_down.png" type="client" />
+    <file src="Elements/Close/Close_hover.png" type="client" />
+    <file src="Elements/Close/Close_norm.png" type="client" />
+    
+    <file src="Elements/SimpleClose/SimpleClose_down.png" type="client" />
+    <file src="Elements/SimpleClose/SimpleClose_hover.png" type="client" />
+    <file src="Elements/SimpleClose/SimpleClose_norm.png" type="client" />
+    
+    <file src="Elements/ListButton/ListButton_hover.png" type="client" />
+    <file src="Elements/ListButton/ListButton_norm.png" type="client" />
+    <file src="Elements/ListButton/ListButton_down.png" type="client" />
+    <file src="Elements/ListButton/ListButton_selected.png" type="client" />
+    
+    <file src="Elements/Pattern/Pattern.png" type="client" />
+    <file src="Elements/Pattern/patternEBDA.png" type="client" />
+    <file src="Elements/Pattern/patternEBDA2.png" type="client" />
+    
+    <file src="Elements/SeparatorHeader/SeparatorHeader.png" type="client" />
+    <file src="Elements/SeparatorInteractive/SeparatorInteractive.png" type="client" />
+    <file src="Elements/SeparatorVert/SeparatorVert.png" type="client" />
+    
+    <file src="Elements/Win/Win.png" type="client" />
+    <file src="Elements/MiniWin/MiniWin.png" type="client" />
+    <file src="Elements/MiniWin/MiniWin2.png" type="client" />
+    
+    <file src="Elements/Misc/Triangle.png" type="client" />
+    
+    <!-- BS -->
+    <file src="Elements/BS/MiniWin/MiniWin.png" type="client" />
+    <file src="Elements/BS/Panel/Panel.png" type="client" />
+    
+    <file src="Elements/BS/Button1/Button1_norm.png" type="client" />
+    <file src="Elements/BS/Button1/Button1_down.png" type="client" />
+    <file src="Elements/BS/Button1/Button1_hover.png" type="client" />
+    
+    <file src="Elements/BS/OperButs/AddBut_norm.png" type="client" />
+    <file src="Elements/BS/OperButs/SubBut_norm.png" type="client" />
+    <file src="Elements/BS/OperButs/AddBut_down.png" type="client" />
+    <file src="Elements/BS/OperButs/SubBut_down.png" type="client" />
+    
+    <file src="Elements/BS/WeaponIcons/AK-47.png" type="client" />
+    
+    
+    
+</meta>

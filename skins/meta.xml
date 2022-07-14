@@ -1,0 +1,5 @@
+<meta>
+     <script src="skiins.lua" type="server" />
+     <script src="skiins_c.lua" type="client" />
+     <script src="skiins_map.lua" type="client" />
+</meta>
