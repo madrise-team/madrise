@@ -1,5 +1,6 @@
 localPlayer = getLocalPlayer()
 setDevelopmentMode(true)
+setBlurLevel (0)
 
 speedRadar = {}
 -----------------------------------------------------------------------------------------
@@ -72,63 +73,71 @@ trafficRadar.LSLV = {common = createColCuboid (1772, 820, 9, 50, 48, 20), south_
 																			}
 -----------------------------------------------------------------------------------------
 
-function SNTLightCheker(element,_,v)
+function SNTLightCheker(element,trafficT)
 	if (element == localPlayer) then
 		outputChatBox("smotri")
 		if (getTrafficLightState() == 2) or (getTrafficLightState() == 3) or (getTrafficLightState() == 4) then
 			outputChatBox("suka ty pozornaya", 255,0,0)
-			removeEventHandler("onClientColShapeHit", v.south_north, SNTLightCheker)
-			removeEventHandler("onClientColShapeHit", v.north_south, SNTLightCheker)
-			removeEventHandler("onClientColShapeHit", v.east_west, EWTLightCheker)
-			removeEventHandler("onClientColShapeHit", v.west_east, EWTLightCheker)
+			removeEventHandler("onClientColShapeHit", trafficT.south_north, trafficT[tostring(trafficT.south_north)])
+			removeEventHandler("onClientColShapeHit", trafficT.north_south, trafficT[tostring(trafficT.north_south)])
+			removeEventHandler("onClientColShapeHit", trafficT.east_west, trafficT[tostring(trafficT.east_west)])
+			removeEventHandler("onClientColShapeHit", trafficT.west_east, trafficT[tostring(trafficT.west_east)])
 		else
 			outputChatBox("molodec", 0,255,0)
-			removeEventHandler("onClientColShapeHit", v.south_north, SNTLightCheker)
-			removeEventHandler("onClientColShapeHit", v.north_south, SNTLightCheker)
-			removeEventHandler("onClientColShapeHit", v.east_west, EWTLightCheker)
-			removeEventHandler("onClientColShapeHit", v.west_east, EWTLightCheker)
+			removeEventHandler("onClientColShapeHit", trafficT.south_north, trafficT[tostring(trafficT.south_north)])
+			removeEventHandler("onClientColShapeHit", trafficT.north_south, trafficT[tostring(trafficT.north_south)])
+			removeEventHandler("onClientColShapeHit", trafficT.east_west, trafficT[tostring(trafficT.east_west)])
+			removeEventHandler("onClientColShapeHit", trafficT.west_east, trafficT[tostring(trafficT.west_east)])
 		end 
 	end
 end
 
-function EWTLightCheker(element,_,v)
+function EWTLightCheker(element,trafficT)
 	if (element == localPlayer) then
 		outputChatBox("smotri")
 		if (getTrafficLightState() == 0) or (getTrafficLightState() == 1) or (getTrafficLightState() == 2) then
 			outputChatBox("suka ty pozornaya", 255,0,0)
-			removeEventHandler("onClientColShapeHit", v.south_north, SNTLightCheker)
-			removeEventHandler("onClientColShapeHit", v.north_south, SNTLightCheker)
-			removeEventHandler("onClientColShapeHit", v.east_west, EWTLightCheker)
-			removeEventHandler("onClientColShapeHit", v.west_east, EWTLightCheker)
+			removeEventHandler("onClientColShapeHit", trafficT.south_north, trafficT[tostring(trafficT.south_north)])
+			removeEventHandler("onClientColShapeHit", trafficT.north_south, trafficT[tostring(trafficT.north_south)])
+			removeEventHandler("onClientColShapeHit", trafficT.east_west, trafficT[tostring(trafficT.east_west)])
+			removeEventHandler("onClientColShapeHit", trafficT.west_east, trafficT[tostring(trafficT.west_east)])
 		else
 			outputChatBox("molodec", 0,255,0)
-			removeEventHandler("onClientColShapeHit", v.south_north, SNTLightCheker)
-			removeEventHandler("onClientColShapeHit", v.north_south, SNTLightCheker)
-			removeEventHandler("onClientColShapeHit", v.east_west, EWTLightCheker)
-			removeEventHandler("onClientColShapeHit", v.west_east, EWTLightCheker)
+			removeEventHandler("onClientColShapeHit", trafficT.south_north, trafficT[tostring(trafficT.south_north)])
+			removeEventHandler("onClientColShapeHit", trafficT.north_south, trafficT[tostring(trafficT.north_south)])
+			removeEventHandler("onClientColShapeHit", trafficT.east_west, trafficT[tostring(trafficT.east_west)])
+			removeEventHandler("onClientColShapeHit", trafficT.west_east, trafficT[tostring(trafficT.west_east)])
 		end 
 	end
 end
 
-function checkTrafficLight(element,_,v)
+function checkTrafficLight(element,_,trafficT)
+
+	local vehicle = getPedOccupiedVehicle(localPlayer)
+	if not vehicle or getVehicleOccupant(vehicle) ~= localPlayer then return end
+
 	if (element == localPlayer) then
 		outputChatBox("ne narushay")
-		addEventHandler("onClientColShapeHit", v.south_north, function(theElement, matchingDimension, v)
-			SNTLightCheker(theElement, matchingDimension, v)
-		end)
-		addEventHandler("onClientColShapeHit", v.north_south, function(theElement, matchingDimension, v)
-			SNTLightCheker(theElement, matchingDimension, v)
-		end)
-		addEventHandler("onClientColShapeHit", v.east_west, function(theElement, matchingDimension, v)
-			EWTLightCheker(theElement, matchingDimension, v)
-		end)
-		addEventHandler("onClientColShapeHit", v.west_east, function(theElement, matchingDimension, v)
-			EWTLightCheker(theElement, matchingDimension, v)
-		end)
+
+		function addTrafficColHandler(traficCol,needFuk)
+			local keyString = tostring(traficCol)
+			trafficT[keyString] = function(theElement)
+				needFuk(theElement, trafficT)
+			end
+			addEventHandler("onClientColShapeHit", traficCol, trafficT[keyString])
+		end
+		addTrafficColHandler(trafficT.south_north,	SNTLightCheker)
+		addTrafficColHandler(trafficT.north_south,	SNTLightCheker)
+		addTrafficColHandler(trafficT.east_west,	EWTLightCheker)
+		addTrafficColHandler(trafficT.west_east,	EWTLightCheker)
 	end
 end
 
 function stopTrafficLight(element,_,v)
+
+	local vehicle = getPedOccupiedVehicle(localPlayer)
+	if not vehicle or getVehicleOccupant(vehicle) ~= localPlayer then return end
+	
 	if (element == localPlayer) then
 		outputChatBox("ty ne narushil")
 		removeEventHandler("onClientColShapeLeave", trafficRadar.LSLV.common, checkTrafficLight)
@@ -138,10 +147,10 @@ end
 -----------------------------------------------------------------------------------------
 
 for k,v in pairs(trafficRadar) do
-	addEventHandler("onClientColShapeHit", v.common, function(theElement, matchingDimension, v)
+	addEventHandler("onClientColShapeHit", v.common, function(theElement, matchingDimension)
 		checkTrafficLight(theElement, matchingDimension, v)
 	end)
-	addEventHandler("onClientColShapeLeave", v.common, function(theElement, matchingDimension, v)
+	addEventHandler("onClientColShapeLeave", v.common, function(theElement, matchingDimension)
 		stopTrafficLight(theElement, matchingDimension, v)
 	end)
 end
