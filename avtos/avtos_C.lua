@@ -21,7 +21,6 @@ bindKey("q","down", function()
     setVehicleComponentVisible(veh, "ramkazad", visible)
 end)
 
-
 --[[
 
 bindKey("e","down", function()
