@@ -1,0 +1,5 @@
+<meta>
+   <script src="fit.lua" type="client"/>
+
+   <file src="ramka.dff"/>
+</meta>

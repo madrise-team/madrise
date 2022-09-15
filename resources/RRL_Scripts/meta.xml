@@ -1,0 +1,51 @@
+<meta>
+    <min_mta_version server="1.5.8-9.20837" client="1.5.8-9.20854"></min_mta_version>
+    
+    <script src="roots.lua" type="server" />
+    
+    <script src="usfulDB.lua" type="server" />
+    <script src="usfulRoots.lua" type="server" />
+    <export function="getOrgRootPackage" type="server" />
+    
+    
+    <script src="usfulS.lua" type="server" />
+    <script src="usfulC.lua" type="client" />
+    <script src="usfulSh.lua" type="shared" />
+    
+    
+    <script src="usfulS_local.lua" type="server" />
+    <script src="usfulC_local.lua" type="client" />
+    <script src="usfulSh_local.lua" type="shared" />
+    
+    <script src="draws_local.lua" type="client" />
+    <export function="getPatternsTex" type="client" />
+    <export function="getScreenRTs" type="client" />
+    <export function="getTxture" type="client" />
+    
+    <script src="Sound.lua" type="shared" />
+    
+    <script src="camera.lua" type="client" />
+    <script src="cursor.lua" type="client" />
+    
+    <export function="enterFreeTargetCameraMode" type="client" />
+    <export function="addFreeTargetCameraModeCollideSkipElement" type="client" />
+    <export function="addFreeTargetCameraModeCollideSkipElements" type="client" />
+    <export function="removeFreeTargetCameraModeCollideSkipElement" type="client" />
+    <export function="removeFreeTargetCameraModeCollideSkipElements" type="client" />
+    <export function="enterPlayerTargetCameraMode" type="client" />
+    
+    <export function="showCursorS" type="client" />
+    <export function="hideCursorS" type="client" />
+    <export function="showVspomogatCursorS" type="client" />
+    <export function="getVspomogatCursorSmes" type="client" />
+    <export function="hideVspomogatCursorS" type="client" />
+    
+    <export function="hideInterface" type="client" />
+    <export function="showInterface" type="client" />
+    
+    
+    
+    <export function="createSound" type="server" />
+    <export function="PlaySond3d" type="client" />
+    
+</meta>

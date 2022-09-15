@@ -1,0 +1,16 @@
+function createSeparator(x,y,w1,w2,parent)
+	local x  =  x or 0
+	local y  =  y or 0
+
+	local w1 =  w1 or 405*msW
+	local w2 =  w2 or 765*msW
+	
+	local h  =  128*msH
+
+	TIV:create({["x"] = x,["y"] = y,["w"] = 44*msW,["h"] = h},{["img"] = "Elements/Separator/Separator_start.png"},nil,nil,parent)
+	TIV:create({["x"] = x + 44*msW,["y"] = y,["w"] = w1,["h"] = h},{["img"] = "Elements/Separator/Separator_left.png"},nil,nil,parent)
+	TIV:create({["x"] = x + 44*msW + w1,["y"] = y,["w"] = 59*msW,["h"] = h},{["img"] = "Elements/Separator/Separator_centr.png"},nil,nil,parent)
+	TIV:create({["x"] = x + 44*msW + w1 + 59*msW,["y"] = y,["w"] = w2,["h"] = h},{["img"] = "Elements/Separator/Separator_right.png"},nil,nil,parent)
+	TIV:create({["x"] = x + 44*msW + w1 + 59*msW + w2,["y"] = y,["w"] = 14*msW,["h"] = h},{["img"] = "Elements/Separator/Separator_end.png"},nil,nil,parent)
+end
+

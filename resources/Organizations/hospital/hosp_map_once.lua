@@ -1,0 +1,71 @@
+function spawnHosps(dimension)
+	Hospitals1  = createObject(1796, 332.8876, 107.77531, 1013.8437, 0, 0, 90)      setElementInterior(Hospitals1, 3)      setElementDimension(Hospitals1, dimension)
+	Hospitals2  = createObject(1796, 332.8877, 112.28343, 1013.8437, 0, 0, 90)      setElementInterior(Hospitals2, 3)      setElementDimension(Hospitals2, dimension)
+	Hospitals3  = createObject(1796, 335.82352, 112.2832, 1013.8437, 0, 0, 90)      setElementInterior(Hospitals3, 3)      setElementDimension(Hospitals3, dimension)
+	Hospitals4  = createObject(1796, 338.73038, 112.2832, 1013.8437, 0, 0, 90)      setElementInterior(Hospitals4, 3)      setElementDimension(Hospitals4, dimension)
+	Hospitals5  = createObject(1796, 338.73047, 107.77235, 1013.8437, 0, 0, 90)     setElementInterior(Hospitals5, 3)      setElementDimension(Hospitals5, dimension)
+	Hospitals6  = createObject(1796, 335.78204, 107.77246, 1013.8437, 0, 0, 90)     setElementInterior(Hospitals6, 3)      setElementDimension(Hospitals6, dimension)
+	Hospitals7  = createObject(1796, 342.07529, 97.98929, 1013.8437, 0, 0, 90)      setElementInterior(Hospitals7, 3)      setElementDimension(Hospitals7, dimension)
+	Hospitals8  = createObject(1796, 342.0752, 100.46798, 1013.8437, 0, 0, 90)      setElementInterior(Hospitals8, 3)      setElementDimension(Hospitals8, dimension)
+	Hospitals9  = createObject(1796, 342.0752, 103.125, 1013.8437, 0, 0, 90)        setElementInterior(Hospitals9, 3)      setElementDimension(Hospitals9, dimension)
+	Hospitals10 = createObject(1796, 342.46021, 98.18666, 1013.8437, 0, 0, 270)     setElementInterior(Hospitals10, 3)     setElementDimension(Hospitals10, dimension)
+	Hospitals11 = createObject(1796, 342.45996, 100.65054, 1013.8437, 0, 0, 270)    setElementInterior(Hospitals11, 3)     setElementDimension(Hospitals11, dimension)
+	Hospitals12 = createObject(1796, 342.45996, 103.35942, 1013.8437, 0, 0, 270)    setElementInterior(Hospitals12, 3)     setElementDimension(Hospitals12, dimension)
+	Hospitals13 = createObject(1796, 342.0752, 105.59618, 1013.8437, 0, 0, 90)      setElementInterior(Hospitals13, 3)     setElementDimension(Hospitals13, dimension)
+	Hospitals14 = createObject(1796, 342.45996, 105.8857, 1013.8437, 0, 0, 270)     setElementInterior(Hospitals14, 3)     setElementDimension(Hospitals14, dimension)
+	Hospitals15 = createObject(1796, 350.27625, 98.18652, 1013.8437, 0, 0, 270)     setElementInterior(Hospitals15, 3)     setElementDimension(Hospitals15, dimension)
+	Hospitals16 = createObject(1796, 349.86768, 97.97665, 1013.8437, 0, 0, 90)      setElementInterior(Hospitals16, 3)     setElementDimension(Hospitals16, dimension)
+	Hospitals17 = createObject(1796, 349.86816, 100.40978, 1013.8437, 0, 0, 90)     setElementInterior(Hospitals17, 3)     setElementDimension(Hospitals17, dimension)
+	Hospitals18 = createObject(1796, 349.86816, 103.11848, 1013.8437, 0, 0, 90)     setElementInterior(Hospitals18, 3)     setElementDimension(Hospitals18, dimension)
+	Hospitals19 = createObject(1796, 349.86816, 105.66058, 1013.8437, 0, 0, 90)     setElementInterior(Hospitals19, 3)     setElementDimension(Hospitals19, dimension)
+	Hospitals20 = createObject(1796, 350.27637, 100.65265, 1013.8437, 0, 0, 270)    setElementInterior(Hospitals20, 3)     setElementDimension(Hospitals20, dimension)
+	Hospitals21 = createObject(1796, 350.27637, 103.38937, 1013.8437, 0, 0, 270)    setElementInterior(Hospitals21, 3)     setElementDimension(Hospitals21, dimension)
+	Hospitals22 = createObject(1796, 350.27637, 105.87257, 1013.8437, 0, 0, 270)    setElementInterior(Hospitals22, 3)     setElementDimension(Hospitals22, dimension)
+	Hospitals23 = createObject(1796, 342.0752, 121.91077, 1013.8437, 0, 0, 90)      setElementInterior(Hospitals23, 3)     setElementDimension(Hospitals23, dimension)
+	Hospitals24 = createObject(1796, 342.0752, 119.36591, 1013.8437, 0, 0, 90)      setElementInterior(Hospitals24, 3)     setElementDimension(Hospitals24, dimension)
+	Hospitals25 = createObject(1796, 342.0752, 116.75378, 1013.8437, 0, 0, 90)      setElementInterior(Hospitals25, 3)     setElementDimension(Hospitals25, dimension)
+	Hospitals26 = createObject(1796, 342.0752, 114.42009, 1013.8437, 0, 0, 90)      setElementInterior(Hospitals26, 3)     setElementDimension(Hospitals26, dimension)
+	Hospitals27 = createObject(1796, 342.45996, 122.1798, 1013.8437, 0, 0, 270)     setElementInterior(Hospitals27, 3)     setElementDimension(Hospitals27, dimension)
+	Hospitals28 = createObject(1796, 342.45996, 119.57636, 1013.8437, 0, 0, 270)    setElementInterior(Hospitals28, 3)     setElementDimension(Hospitals28, dimension)
+	Hospitals29 = createObject(1796, 342.45996, 116.92455, 1013.8437, 0, 0, 270)    setElementInterior(Hospitals29, 3)     setElementDimension(Hospitals29, dimension)
+	Hospitals30 = createObject(1796, 342.45996, 114.61898, 1013.8437, 0, 0, 270)    setElementInterior(Hospitals30, 3)     setElementDimension(Hospitals30, dimension)
+	Hospitals31 = createObject(1796, 350.27133, 122.17969, 1013.8437, 0, 0, 270)    setElementInterior(Hospitals31, 3)     setElementDimension(Hospitals31, dimension)
+	Hospitals32 = createObject(1796, 350.27148, 119.61346, 1013.8437, 0, 0, 270)    setElementInterior(Hospitals32, 3)     setElementDimension(Hospitals32, dimension)
+	Hospitals33 = createObject(1796, 350.27148, 116.89725, 1013.8437, 0, 0, 270)    setElementInterior(Hospitals33, 3)     setElementDimension(Hospitals33, dimension)
+	Hospitals34 = createObject(1796, 350.27148, 114.55664, 1013.8437, 0, 0, 270)    setElementInterior(Hospitals34, 3)     setElementDimension(Hospitals34, dimension)
+	Hospitals35 = createObject(1796, 349.88235, 114.41992, 1013.8437, 0, 0, 90)     setElementInterior(Hospitals35, 3)     setElementDimension(Hospitals35, dimension)
+	Hospitals36 = createObject(1796, 349.88281, 116.73415, 1013.8437, 0, 0, 90)     setElementInterior(Hospitals36, 3)     setElementDimension(Hospitals36, dimension)
+	Hospitals37 = createObject(1796, 349.88281, 119.4217, 1013.8437, 0, 0, 90)      setElementInterior(Hospitals37, 3)     setElementDimension(Hospitals37, dimension)
+	Hospitals38 = createObject(1796, 349.88281, 122.0553, 1013.8437, 0, 0, 90)      setElementInterior(Hospitals38, 3)     setElementDimension(Hospitals38, dimension)
+	Hospitals39 = createObject(1533, 360.66327, 107.27146, 1013.6733, 0, 0, 180)    setElementInterior(Hospitals39, 3)     setElementDimension(Hospitals39, dimension)
+	Hospitals40 = createObject(1723, 377.65829, 122.56484, 1013.8371, 0, 0, 0)      setElementInterior(Hospitals40, 3)     setElementDimension(Hospitals40, dimension)
+	Hospitals41 = createObject(1723, 374.70139, 122.56445, 1013.8371, 0, 0, 0)      setElementInterior(Hospitals41, 3)     setElementDimension(Hospitals41, dimension)
+	Hospitals42 = createObject(1723, 368.95554, 122.56445, 1013.8371, 0, 0, 0)      setElementInterior(Hospitals42, 3)     setElementDimension(Hospitals42, dimension)
+	Hospitals43 = createObject(1723, 365.99124, 122.56445, 1013.8371, 0, 0, 0)      setElementInterior(Hospitals43, 3)     setElementDimension(Hospitals43, dimension)
+	Hospitals44 = createObject(1723, 365.2793, 112.18895, 1013.8371, 0, 0, 90)      setElementInterior(Hospitals44, 3)     setElementDimension(Hospitals44, dimension)
+	Hospitals45 = createObject(1723, 365.2793, 115.15231, 1013.8371, 0, 0, 90)      setElementInterior(Hospitals45, 3)     setElementDimension(Hospitals45, dimension)
+	Hospitals46 = createObject(1723, 365.2793, 118.10148, 1013.8371, 0, 0, 90)      setElementInterior(Hospitals46, 3)     setElementDimension(Hospitals46, dimension)
+	Hospitals47 = createObject(1723, 376.70245, 112.2142, 1013.8371, 0, 0, 180)     setElementInterior(Hospitals47, 3)     setElementDimension(Hospitals47, dimension)
+	Hospitals48 = createObject(1723, 370.99796, 112.21415, 1013.8371, 0, 0, 180)    setElementInterior(Hospitals48, 3)     setElementDimension(Hospitals48, dimension)
+	Hospitals49 = createObject(3089, 383.41022, 126.04192, 1015.1661, 0, 0, 270)    setElementInterior(Hospitals49, 3)     setElementDimension(Hospitals49, dimension)
+	Hospitals50 = createObject(1649, 383.38831, 126.89484, 1014.6993, 0, 0, 270)    setElementInterior(Hospitals50, 3)     setElementDimension(Hospitals50, dimension)
+	Hospitals51 = createObject(1649, 383.38867, 126.89453, 1014.6993, 0, 0, 270)    setElementInterior(Hospitals51, 3)     setElementDimension(Hospitals51, dimension)
+	Hospitals52 = createObject(1649, 383.38867, 126.89453, 1014.6993, 0, 0, 270)    setElementInterior(Hospitals52, 3)     setElementDimension(Hospitals52, dimension)
+	Hospitals53 = createObject(1649, 383.38867, 126.89453, 1014.6993, 0, 0, 270)    setElementInterior(Hospitals53, 3)     setElementDimension(Hospitals53, dimension)
+	Hospitals54 = createObject(1649, 383.38028, 126.89453, 1014.6993, 0, 0, 270)    setElementInterior(Hospitals54, 3)     setElementDimension(Hospitals54, dimension)
+	Hospitals55 = createObject(14597, 342.52539, 110.13672, 1015.8359, 0, 0, 0)     setElementInterior(Hospitals55, 3)     setElementDimension(Hospitals55, dimension)
+	Hospitals56 = createObject(14593, 369.53223, 116.64063, 1016.1652, 0, 0, 270)   setElementInterior(Hospitals56, 3)     setElementDimension(Hospitals56, dimension)
+end
+
+
+for i=57,59 do
+	spawnHosps(i)
+end
+
+
+
+
+--<object id="object (paperchase07) (1)" breakable="true" interior="3" alpha="255" dimension="0" model="14597" scale="1" 
+--doublesided="false" collisions="true" frozen="false" posX="342.52539" posY="110.13672" posZ="1015.8359" rotX="0" rotY="0" rotZ="0"></object>
+--<object id="object (paperchase04) (1)" breakable="true" interior="3" alpha="255" dimension="0" model="14593" scale="1" 
+--doublesided="false" collisions="true" frozen="false" posX="369.53223" posY="116.64063" posZ="1016.1652" rotX="0" rotY="0" rotZ="270"></object>

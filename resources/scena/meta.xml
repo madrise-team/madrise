@@ -1,0 +1,9 @@
+<meta>
+    <!-- Configuration -->
+    <info author="FornetGear" name="CamHack" description="First ever CamHack in MTA" type="script" version="1.0" />
+    <min_mta_version client="1.5.8-9.20740"></min_mta_version>
+    
+    <!-- Main -->
+    <script src="sceneControl.lua" type="client" />
+    <script src="s_sceneControl.lua" type="server" />
+</meta>
