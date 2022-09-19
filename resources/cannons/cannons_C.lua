@@ -6,6 +6,11 @@ voidDff = engineLoadDFF("void.dff")			------------------
 engineReplaceModel(voidDff,347)				--- Замена Silnsed
 
 
+tazerDFF = engineLoadDFF("can/Police/tazer/tazer.dff")	------------------
+tazerTXD = engineLoadTXD("can/Police/tazer/tazer.txd")
+engineImportTXD(tazerTXD, 	1248)
+engineReplaceModel(tazerDFF, 1248)						--- Замена Tazer
+
 function getPedWeaponsSlots(ped)
 	local playerWeapons = {}
 	table.insert(playerWeapons,0)
@@ -41,11 +46,10 @@ addEventHandler("onClientKey",root,function(button,por)
 	if button == "e" and por then wepMover(-1) end
 
 	if button == "mouse1" and por then 
-		outputChatBox("pzjzjzj")
 		fireWeapon(custWep)
 	end
 	if button == "mouse1" and (not por) then 
-		outputChatBox("vse pjz")
+		
 	end
 end)
 
@@ -54,13 +58,39 @@ toggleControl("previous_weapon",false)
 toggleControl("fire",false)
 wepMover(1)
 
-custWep = createWeapon("ak-47",1415.4343261719, -1640.8404541016, 38.308795928955)
+custWep = createWeapon("ak-47",1415.4343261719, -1640.8404541016, 40.308795928955)
 --attachElementToBone(custWep, localPlayer, 25, 0, 0, 0, 0, 0, 0)
 
 
 
+function spasTazer()
+	local tazer = createObject(1248,1415.4343261719, -1640.8404541016, 38.308795928955)
+	attachElementToBone(tazer,localPlayer,25,0,0,0,0,0,0)
+end
+--spasTazer()
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----------------------------------------------------------------------------------------------------------------------------------------------
 posOffRand = 100
 rotOffRand = 3000
 posSinSmeser = 0.4
@@ -169,3 +199,5 @@ addEventHandler("onClientRender",root,function()
 		end
 	end
 end)
+
+

@@ -24,8 +24,8 @@ function addElementDimIntHandler(element)
 end
 function reomveElementDimIntHandler(element)
 	local handler = elmDimIntHandlers[tostring(element)]["handler"]
-	removeEventHanlder("onElementDimensionChange",element,handler)
- 	removeEventHanlder("onElementInteriorChange",element,handler)
+	removeEventHandler("onElementDimensionChange",element,handler)
+ 	removeEventHandler("onElementInteriorChange",element,handler)
  	handler = nil
  	elmDimIntHandlers[tostring(element)] = nil
 

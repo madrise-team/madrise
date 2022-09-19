@@ -4,6 +4,8 @@
     <script src="cannons_C.lua" type="client" />
     <script src="cannons_Attaching.lua" type="client" />
 
+    <file src="deb/Rotator.png" />
+
     <file src="void.dff" />
 
     <file src="can/Police/tazer/tazer.dff" />

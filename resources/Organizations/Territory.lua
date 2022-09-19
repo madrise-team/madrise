@@ -673,7 +673,7 @@ skinyBand = {
 	Groove = 107,
 	Aztec = 114
 }
-addCommandHandler("addPed",function(player,_,banda,count)
+addCommandHandler("addP",function(player,_,banda,count)
 	if banda == "A" then banda = "Aztec" end
 	if banda == "B" then banda = "Ballas" end
 	if banda == "G" then banda = "Groove" end
@@ -684,7 +684,6 @@ addCommandHandler("addPed",function(player,_,banda,count)
 		local rx,ry,rz = getElementRotation(player)
 
 		local mat = Matrix(x,y,z,rx,ry,rz)
-
 	
 		local count = count or 1
 
