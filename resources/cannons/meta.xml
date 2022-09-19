@@ -1,0 +1,12 @@
+<meta>
+    <min_mta_version client="1.5.8-9.20740"></min_mta_version>
+    
+    <script src="cannons_C.lua" type="client" />
+    <script src="cannons_Attaching.lua" type="client" />
+
+    <file src="void.dff" />
+
+    <file src="can/Police/tazer/tazer.dff" />
+    <file src="can/Police/tazer/tazer.txd" />
+
+</meta>
