@@ -306,7 +306,7 @@ addEventHandler("searchLightUpdate",root,function(key,helic,endPoint)
 	end
 end)
 
-addEventHandler("onClientRender",root,function()
+addEventHandler("onClientPedsProcessed",root,function()
 	for k,v in pairs(schLights) do
 		if v[2] then
 			local MatrixerVeh = Matrix(Vector3(getElementPosition(v[2])),Vector3(getElementRotation(v[2])))
@@ -315,6 +315,39 @@ addEventHandler("onClientRender",root,function()
 			setSearchLightStartPosition(v[1], startPos.x, startPos.y, startPos.z)	
 		end
 	end
+end)
+
+addCommandHandler("dmt",function()
+	function displayMyTask ()
+	    local x,y = 100,200
+	    dxDrawRectangle(x-5,y,500,400,tocolor(0,0,0,200))
+
+	    local state = getPedMoveState(localPlayer)
+	    dxDrawText(state,x,y+200)
+
+	    local animB,animA = getPedAnimation(localPlayer)
+		if animB then dxDrawText(animB,x,y+250) end
+		if animA then dxDrawText(animA,x + 50,y+250) end
+
+		local stask = getPedSimplestTask(localPlayer)
+		if stask then dxDrawText(stask,x,y+280) end
+
+
+
+
+	    for k=0,4 do
+	        local a,b,c,d = getPedTask ( getLocalPlayer(), "primary", k )
+	        dxDrawText ( "Primary task #"..k.." is "..tostring(a).." -> "..tostring(b).." -> "..tostring(c).." -> "..tostring(d).." -> ", x, y)
+	        y = y + 15
+	    end
+	    y = y + 15
+	    for k=0,5 do
+	        local a,b,c,d = getPedTask ( getLocalPlayer(), "secondary", k )
+	        dxDrawText ( "Secondary task #"..k.." is "..tostring(a).." -> "..tostring(b).." -> "..tostring(c).." -> "..tostring(d).." -> ", x, y )    
+	        y = y + 15
+	    end
+	end    
+	addEventHandler ( "onClientRender", root, displayMyTask )
 end)
 
 
