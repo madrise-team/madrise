@@ -138,6 +138,11 @@ function createRope(ropx,ropy,ropz,pontCap)
 				local colocolna = tocolor(10,20,40,255)
 				dxDrawLine3D(v.pos.x,v.pos.y,v.pos.z + 0.02,points[i+1].pos.x,points[i+1].pos.y,points[i+1].pos.z  + 0.02,colocolna,0.8)
 				--dxDrawMaterialLine3D(,false,wTex,)
+			else
+				local prev = Vector3(points[i-1].pos.x,points[i-1].pos.y,points[i-1].pos.z  + 0.02)
+				local now  = Vector3(v.pos.x,v.pos.y,v.pos.z + 0.02)
+				local xfer = now - (now - prev)/10
+				dxDrawLine3D(now.x,now.y,now.z,xfer.x,xfer.y,xfer.z,tocolor(225,120,180,50),0.8)
 			end
 		end
 	end)

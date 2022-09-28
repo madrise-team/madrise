@@ -42,10 +42,32 @@ function canonTables()
 			atG.eoFframeTotal = 0
 		end,
 		frame = function(atG)
+			if not atG.mode then
+				atG.textColor = tocolor(220,170,30,255)
+				atG.mode = "Save"
+			end
+
+			local textP = Vector3(getElementPosition(atG.gunObject))
+			local tx,ty = getScreenFromWorldPosition(textP.x,textP.y,textP.z,2)
+			
+			if tx then
+				tx = tx + 100
+				if ty > screenH - 35 then ty = screenH - 35 end
+				dxDrawText("CHARGE: "..atG.mode,tx,ty,400,400,atG.textColor,1,1,thin200Font)
+			end
+		end,
+		ppframe = function(atG)
+
+			local cam = getCamera()
+			local camX,camY,camZ = getElementPosition(cam)
+			local camrX,camrY,camrZ = getElementRotation(cam)
+			local camMat = Matrix(camX,camY,camZ,camrX,camrY,camrZ)
+
 			if atG.crossShowed then
+				atG.mode = "Ready"
 				atG.frame = atG.frame + 1
 				
-				local totalA = maxer(atG.frame/10,1)
+				local totalA = maxer(atG.frame/16,1)
 
 				local otn = atG.gunT.shootP
 				local sPos = getPositionFromElementOffset(atG.gunObject,otn.forward*2.5,otn.right,otn.up)
@@ -78,13 +100,6 @@ function canonTables()
 					end
 				end
 
-				local cam = getCamera()
-				local camX,camY,camZ = getElementPosition(cam)
-				local camrX,camrY,camrZ = getElementRotation(cam)
-				local camMat = Matrix(camX,camY,camZ,camrX,camrY,camrZ)
-
-
-
 				local smeser = 0.5 * totalA
 				local smeserUp = 0.1 * totalA
 				local coloc = tocolor(10,150,240,100*totalA)
@@ -93,7 +108,7 @@ function canonTables()
 					if atG.eoFframe < 15 then 
 						atG.eoFframe = atG.eoFframe + 1
 					end
-					coloc = tocolor(90,50,240,200*atG.eoFframeTotal)
+					coloc = tocolor(90,45,245,220*atG.eoFframeTotal)
 				else
 					if atG.eoFframe > 0 then 
 						atG.eoFframe = atG.eoFframe - 1
@@ -121,6 +136,15 @@ function canonTables()
 				dxDrawLine3D(p1.x,p1.y,p1.z, 	p2.x,p2.y,p2.z,	coloc,0.5)
 				dxDrawLine3D(p2.x,p2.y,p2.z, 	p3.x,p3.y,p3.z,	coloc,0.5)
 				dxDrawLine3D(p3.x,p3.y,p3.z, 	p4.x,p4.y,p4.z,	coloc,0.5)
+
+				atG.textColor = fromColor(coloc)
+				atG.textColor.r = atG.textColor.r*2; atG.textColor.g = atG.textColor.g*2; atG.textColor.b = atG.textColor.b*2; atG.textColor.a = 255
+				atG.textColor = tocolorT(atG.textColor)
+			else
+				if not atG.pulse then
+					atG.textColor = tocolor(220,170,30,255)
+					atG.mode = "Save"
+				end
 			end
 		end,
 
@@ -140,7 +164,12 @@ function canonTables()
 			 forward = 0.19, right = 0.004, up = 0.020 		-- matrix2
 		},
 
-		shoot_Init = triggerShootToS, 
+		shoot_Init = function(atG)
+			atG.pulse = true
+			atG.mode = 'Pulse'
+			atG.textColor = tocolor(225,40,50,255)
+			triggerShootToS(atG)
+		end, 
 		shoot = function(atG)
 			
 			local me = false
@@ -172,7 +201,6 @@ function canonTables()
 			ropePoints2[#ropePoints2-1].last = forw11 	- Vector3(0,smeser,0)
 			ropePoints2[#ropePoints2-2].last = forw111 	- Vector3(0,smeser,0)
 
-		
 			setEffectDensity(createEffect("gunsmoke",p1.x,p1.y,p1.z,-90,0,0),2)
 			setEffectDensity(createEffect("camflash",p1.x,p1.y,p1.z,-90,0,0),0.15)
 			--prt_sand

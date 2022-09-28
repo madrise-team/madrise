@@ -3,25 +3,32 @@ import('RRL_Scripts/usfulC.lua')()    -- Usful C
 import('RRL_Scripts/usfulSh.lua')()    -- Usful C
 import('cannons/cannons_Prefabs.lua')()    -- CannonsTables
 
-wTex = dxCreateTexture(":Draws/win/winTest.png")
-
-
-voidDff = engineLoadDFF("void.dff")			------------------
-engineReplaceModel(voidDff,347)				--- Замена Silnsed
-
-tazerDFF = engineLoadDFF("can/Police/tazer/tazer.dff")	------------------
-tazerTXD = engineLoadTXD("can/Police/tazer/tazer.txd")
-
-engineImportTXD(tazerTXD, 	1248)
-engineReplaceModel(tazerDFF, 1248)						--- Замена Tazer
-tazerTarger = dxCreateTexture("can/Police/tazer/targer.png")
-
 for i=1,230 do
 	setPedStat(localPlayer,i,1000)
 end
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+screenW, screenH = guiGetScreenSize()
+wTex = dxCreateTexture(":Draws/win/winTest.png")
+thin200Font = dxCreateFont(":Draws/Fonts/Jost-Regular.ttf",12,false,"antialiased")
 
 
---toggleControl("fire",true)
+voidDff = engineLoadDFF("void.dff")							------------------
+engineReplaceModel(voidDff,347)								--- Замена Silnsed
+															------------------
+
+
+
+tazerDFF = engineLoadDFF("can/Police/tazer/tazer.dff")				------------------
+tazerTXD = engineLoadTXD("can/Police/tazer/tazer.txd")
+engineImportTXD(tazerTXD, 	1248)
+engineReplaceModel(tazerDFF, 1248)									--- Замена Tazer
+tazerTarger = dxCreateTexture("can/Police/tazer/targer.png")		------------------
+
+
+
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 function addSh_block(blockTime)
 	if sh_block < blockTime then sh_block = blockTime end
@@ -144,6 +151,12 @@ end)
 sh_delay_tS = 0 							-- last shoot tick save for shoot delay
 
 lastTick = getTickCount()
+
+addEventHandler("onClientRender",root,function()
+	if my_atG_key then
+		if my_atG.gunT.frame then my_atG.gunT.frame(my_atG) end
+	end	
+end)
 addEventHandler("onClientPedsProcessed",root,function()
 	if getPedMoveState(localPlayer) == "crawl" or getPedControlState("crouch") then 
 		local orgran = 40
@@ -155,12 +168,8 @@ addEventHandler("onClientPedsProcessed",root,function()
 	tick = getTickCount()
 
 	------------------ localGunHandling ----------------------------------------------------------------------------------	
-	
-	
 
 	if my_atG_key then
-	
-		if my_atG.gunT.frame then my_atG.gunT.frame(my_atG) end
 
 		local cshosh = canShoosh()
 		if cshosh and getKeyState("mouse2") then
@@ -182,6 +191,7 @@ addEventHandler("onClientPedsProcessed",root,function()
 			end
 		end
 
+		if my_atG.gunT.ppframe then my_atG.gunT.ppframe(my_atG) end
 
 		toggleControl("fire",false)
 		---- shoot handling
@@ -232,7 +242,6 @@ addEventHandler("onClientPedsProcessed",root,function()
 	end
 	lastTick = tick
 end,true,"low-1")
-
 
 
 -- attachedGuns functional hanling
