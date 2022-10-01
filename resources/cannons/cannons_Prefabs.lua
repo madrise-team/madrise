@@ -1,7 +1,16 @@
 function canonTables()
 ------------------------------------------------------------------------------------------------------------------
-	triggerShootToS = function(atG)
-		triggerServerEvent("shootGun",root,atG.gunSerial)
+	triggerShootToS = function(atG,args)
+		triggerServerEvent("shootGun",root,atG.gunSerial,args)
+	end
+	triggerShootEndToS = function(atG,args)
+		triggerServerEvent("endshootGun",root,atG.gunSerial,args)
+	end
+
+	longShooting = function(atG,args)
+		if atG.longShoot then return end
+		atG.longShoot = true
+		triggerServerEvent("shootGun",root,atG.gunSerial,args)
 	end
 
 
@@ -27,7 +36,11 @@ function canonTables()
 ------------------------------------------------------------------------------------------------------------------
 
 
+	--- shoot_Init 		- initer client Fuc when do shoot
+	--- shoot_End		- initer client Fuc when shoot ends (not shoot delay)
 
+	--- shoot      		- all clients at the request of the server when initer starts shoot (redirect to all from initer (initer include))
+	--- shootEnding     - all clients at the request of the server when initer stop shooting (redirect to all from initer (initer include))
 
 	cannonsT = {}
 
@@ -36,6 +49,11 @@ function canonTables()
 		saweaponId = 23,
 		modelId = 1248,
 		canShoot = false,
+
+		sh_delay = 2500,
+
+
+
 		crossShow = function(atG)
 			atG.eoFframe = 0
 			atG.frame = 0
@@ -44,7 +62,7 @@ function canonTables()
 		frame = function(atG)
 			if not atG.mode then
 				atG.textColor = tocolor(220,170,30,255)
-				atG.mode = "Save"
+				atG.mode = "SAVE"
 			end
 
 			local textP = Vector3(getElementPosition(atG.gunObject))
@@ -53,10 +71,12 @@ function canonTables()
 			if tx then
 				tx = tx + 100
 				if ty > screenH - 35 then ty = screenH - 35 end
-				dxDrawText("CHARGE: "..atG.mode,tx,ty,400,400,atG.textColor,1,1,thin200Font)
+				dxDrawText("charge: "..atG.mode,tx,ty,400,400,atG.textColor,1,1,thin200Font)
 			end
 		end,
 		ppframe = function(atG)
+
+			if atG.pulse then return end
 
 			local cam = getCamera()
 			local camX,camY,camZ = getElementPosition(cam)
@@ -64,7 +84,7 @@ function canonTables()
 			local camMat = Matrix(camX,camY,camZ,camrX,camrY,camrZ)
 
 			if atG.crossShowed then
-				atG.mode = "Ready"
+				atG.mode = "READY"
 				atG.frame = atG.frame + 1
 				
 				local totalA = maxer(atG.frame/16,1)
@@ -143,12 +163,10 @@ function canonTables()
 			else
 				if not atG.pulse then
 					atG.textColor = tocolor(220,170,30,255)
-					atG.mode = "Save"
+					atG.mode = "SAVE"
 				end
 			end
 		end,
-
-		sh_delay = 15000,
 
 		offsets = {
 			idle = {
@@ -165,13 +183,36 @@ function canonTables()
 		},
 
 		shoot_Init = function(atG)
-			atG.pulse = true
-			atG.mode = 'Pulse'
-			atG.textColor = tocolor(225,40,50,255)
-			triggerShootToS(atG)
+			if not atG.pulse then
+				setFr_block(1500)
+			end
+			triggerShootToS(atG,{pulse = atG.pulse})
 		end, 
-		shoot = function(atG)
+		shoot_End = triggerShootEndToS,
+
+		shoot = function(atG,args)
+			if atG.pulse then
+				cannonsT.tazer.shoot_voltageRope(atG)
+			else
+				cannonsT.tazer.shootRope(atG)
+			end
+		end,
+		shootEnding = function()
+			voltageRope(atG.ropes[1],false)
+			voltageRope(atG.ropes[2],false)
+		end,
+		
+		shoot_voltageRope = function(atG,args)
+			voltageRope(atG.ropes[1],true)
+			voltageRope(atG.ropes[2],true)
+		end,			
+		
+		shootRope = function(atG)
 			
+			atG.pulse = true
+			atG.mode = 'PULSE'
+			atG.textColor = tocolor(225,40,50,255)
+
 			local me = false
 			local myRope = false
 			if atG.player == localPlayer then
@@ -190,8 +231,14 @@ function canonTables()
 			local forw11 = getPositionFromElementOffset(atG.gunObject,otn.forward - 2,otn.right,otn.up)
 			local forw111 = getPositionFromElementOffset(atG.gunObject,otn.forward - 1,otn.right,otn.up)
 
-			local ropePoints1 = createRope(p1.x,p1.y,p1.z,{obj = atG.gunObject,forward = otn.forward,right = otn.right - smeser,up = otn.up,myRope = me})
-			local ropePoints2 = createRope(p2.x,p2.y,p2.z,{obj = atG.gunObject,forward = otn.forward,right = otn.right + smeser,up = otn.up,myRope = me})
+			local rope1 = createRope(p1.x,p1.y,p1.z,{obj = atG.gunObject,forward = otn.forward,right = otn.right - smeser,up = otn.up,myRope = me})
+			local rope2 = createRope(p2.x,p2.y,p2.z,{obj = atG.gunObject,forward = otn.forward,right = otn.right + smeser,up = otn.up,myRope = me})
+
+			atG.ropes = {rope1.serial,rope2.serial}
+			outputChatBox(tostring(atG.ropes))
+
+			ropePoints1 = rope1.points
+			ropePoints2 = rope2.points
 
 			ropePoints1[#ropePoints1].last = forw1 		+ Vector3(0,smeser,0)
 			ropePoints1[#ropePoints1-1].last = forw11 	+ Vector3(0,smeser,0)

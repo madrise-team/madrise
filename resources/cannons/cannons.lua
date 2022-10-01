@@ -27,7 +27,10 @@ addCommandHandler("gg",function(player,_)
 end)
 
 addEvent("shootGun",true)
-addEventHandler("shootGun",root,function(gunSerial)		-- shooter = source
-	
+addEventHandler("shootGun",root,function(gunSerial,argData)		-- shooter = source
 	triggerClientEvent("shootGun",root,gunSerial,argData)
+end)
+addEvent("endshootGun",true)
+addEventHandler("endshootGun",root,function(gunSerial,argData)		-- shooter = source
+	triggerClientEvent("endshootGun",root,gunSerial,argData)
 end)

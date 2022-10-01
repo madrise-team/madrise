@@ -33,6 +33,10 @@ tazerTarger = dxCreateTexture("can/Police/tazer/targer.png")		------------------
 function addSh_block(blockTime)
 	if sh_block < blockTime then sh_block = blockTime end
 end
+function setFr_block(blockTime)
+	if fr_block < blockTime then fr_block = blockTime end
+	fr_block_tS = tick
+end
 
 function getPedWeaponsSlots(ped)
 	local playerWeapons = {}
@@ -51,13 +55,15 @@ function getPedWeaponsSlots(ped)
 end
 --moveControlTable = {"stand", "crouch", "walk"}
 sh_block = 0
+fr_block = 0
+fr_block_tS = 0
 function canShoosh()
 	if sh_block > 0 then return false end
 
 	local st0 = getPedTask(localPlayer, "secondary", 0)
 	if st0 == "TASK_SIMPLE_USE_GUN" then
 		local state = getPedMoveState(localPlayer)
-		if tick - sh_delay_tS > my_atG.gunT.sh_delay then
+		if tick - fr_block_tS > fr_block then
 		---------------------------------------------------
 		local x,y,z = getElementPosition(localPlayer)
 		local rx,ry,rz = getElementRotation(localPlayer)
@@ -148,10 +154,8 @@ addEventHandler("canonSpas",root,function(player,gunProps)
 end)
 
 -------------------------------------------------------------------------------------------------------------------------
-sh_delay_tS = 0 							-- last shoot tick save for shoot delay
-
-lastTick = getTickCount()
-
+mouse1Fire  = false
+-------------------------------------------------------------------------------------------------------------------------
 addEventHandler("onClientRender",root,function()
 	if my_atG_key then
 		if my_atG.gunT.frame then my_atG.gunT.frame(my_atG) end
@@ -179,12 +183,10 @@ addEventHandler("onClientPedsProcessed",root,function()
 			end
 
 			if my_atG.gunT.crossFuc == true then
-				showPlayerHudComponent ("crosshair",my_atG.gunT.crossFuc)
+				setPlayerHudComponentVisible ("crosshair",my_atG.gunT.crossFuc)
 			end
-
-
 		else
-			showPlayerHudComponent ("crosshair",false)
+			setPlayerHudComponentVisible ("crosshair",false)
 			if my_atG.crossShowed then
 				my_atG.crossShowed = false
 				if my_atG.gunT.crossHide then my_atG.gunT.crossHide(my_atG) end
@@ -196,11 +198,16 @@ addEventHandler("onClientPedsProcessed",root,function()
 		toggleControl("fire",false)
 		---- shoot handling
 		if getKeyState("mouse1") and cshosh then
+			mouse1Fire = true
 			if my_atG.gunT.canShoot then
 				toggleControl("fire",true)
 			else
 				my_atG.gunT.shoot_Init(my_atG)
-				sh_delay_tS = tick
+			end
+		else
+			if mouse1Fire then 
+				mouse1Fire = false
+				my_atG.gunT.shoot_End(my_atG)
 			end
 		end
 	end
@@ -240,16 +247,23 @@ addEventHandler("onClientPedsProcessed",root,function()
 			end
 		end
 	end
-	lastTick = tick
 end,true,"low-1")
 
 
 -- attachedGuns functional hanling
 ------------------------------------------------------------------------------------------------------------------------
 addEvent("shootGun",true)								--- Это происходит уже у всех игроков, 
-addEventHandler("shootGun",root,function(gunSerial)		--- 	ориентировчка с сервера
+addEventHandler("shootGun",root,function(gunSerial,args)		--- 	ориентировчка с сервера
 	local atG = attachedGuns[gunSerial]
 	if not atG then return end
 
-	atG.gunT.shoot(atG)
+	atG.gunT.shoot(atG,args)
+end)
+
+addEvent("endshootGun",true)
+addEventHandler("endshootGun",root,function(gunSerial,args)
+	local atG = attachedGuns[gunSerial]
+	if not atG then return end
+
+	atG.gunT.shoot(atG,args)
 end)

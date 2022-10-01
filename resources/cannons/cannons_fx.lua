@@ -4,6 +4,11 @@
 
 
 ------------------------------------------------------------------------------------ ROPE -----------------------
+local ropeSerial = 0
+ropes = {}
+
+
+
 local wTex = dxCreateTexture(":Draws/win/winTest.png")
 
 local pointsCount = 6
@@ -11,11 +16,13 @@ local restingDistance = 0.5
 local grav = 0.005
 local constraintSolve = 3
 local tension = 0.1
-local envFrictionKef = 1.2
+local envFrictionKef = 1.15
 
 
 
 function createRope(ropx,ropy,ropz,pontCap)
+	ropeSerial = ropeSerial + 1
+
 	local mat = Matrix(ropx,ropy,ropz,0,0,0)
 	local sfPos = mat.position + mat.up*10
 
@@ -35,13 +42,13 @@ function createRope(ropx,ropy,ropz,pontCap)
 	local function intertia(pont,checker)
 		local vel = pont.pos - pont.last 
 		
-		local spX = pont.last.x - vel.x*0.1
-		local spY = pont.last.y - vel.y*0.1
-		local spZ = pont.last.z - vel.z*0.1
+		local spX = pont.last.x - vel.x/3
+		local spY = pont.last.y - vel.y/3
+		local spZ = pont.last.z - vel.z/3
 
-		local epX = pont.last.x + vel.x/2
-		local epY = pont.last.y + vel.y/2
-		local epZ = pont.last.z + vel.z/2
+		local epX = pont.last.x + vel.x*1.1
+		local epY = pont.last.y + vel.y*1.1
+		local epZ = pont.last.z + vel.z*1.1
 
 
 		
@@ -67,6 +74,7 @@ function createRope(ropx,ropy,ropz,pontCap)
 					totalCheker = false
 				end
 			end
+			--pont.pos = Vector3(hitX,hitY,hitZ)
 			pont.last = Vector3(hitX,hitY,hitZ)
 		else
 			local nextX = pont.pos.x + vel.x/envFrictionKef
@@ -102,7 +110,7 @@ function createRope(ropx,ropy,ropz,pontCap)
 
 
 	local framerSkipper = 0
-	addEventHandler("onClientPedsProcessed",root,function()
+	local ocPp_fuc = function()
 		framerSkipper = framerSkipper + 1
 		--if framerSkipper % 25 ~= 0 then return end
 
@@ -128,10 +136,9 @@ function createRope(ropx,ropy,ropz,pontCap)
 				points[#points].pos  = Vector3(getElementPosition(targetElm)) + Vector3(0,0,0.35)
 			end
 		end
-	end)
 
 
-	addEventHandler("onClientPedsProcessed",root,function()
+		--------------------------------------------
 		for i,v in ipairs(points) do
 			if i ~= #points then
 				--local colocolna = tocolor(0,40,75,255)
@@ -141,13 +148,20 @@ function createRope(ropx,ropy,ropz,pontCap)
 			else
 				local prev = Vector3(points[i-1].pos.x,points[i-1].pos.y,points[i-1].pos.z  + 0.02)
 				local now  = Vector3(v.pos.x,v.pos.y,v.pos.z + 0.02)
-				local xfer = now - (now - prev)/10
-				dxDrawLine3D(now.x,now.y,now.z,xfer.x,xfer.y,xfer.z,tocolor(225,120,180,50),0.8)
+				local xfer = now - (now - prev)/30
+				dxDrawLine3D(now.x,now.y,now.z,xfer.x,xfer.y,xfer.z,tocolor(255,200,220,50),0.8)
 			end
 		end
-	end)
+	end
+	addEventHandler("onClientPedsProcessed",root,ocPp_fuc)
 
-	return points
+ 	ropes[ropeSerial] = {points = points,ocPp_fuc = ocPp_fuc,serial = ropeSerial}
+
+	return ropes[ropeSerial]
+end
+
+function voltageRope(ropeSerial,bool)
+	ropes[ropeSerial].voltage = bool
 end
 
 -----------------------------------------------------------------------------------------------
