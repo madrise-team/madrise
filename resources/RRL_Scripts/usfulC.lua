@@ -82,7 +82,6 @@ end
 
 attBoneElms = {}
 function attachedElementToBoneProcessing(element, ped, bone, offX, offY, offZ, offrX, offrY, offrZ)
-    if isElementOnScreen(ped) then
         local boneMat = getElementBoneMatrix(ped, bone)
         local sroll, croll, spitch, cpitch, syaw, cyaw = math.sin(offrZ), math.cos(offrZ), math.sin(offrY), math.cos(offrY), math.sin(offrX), math.cos(offrX)
         local rotMat = {
@@ -117,10 +116,6 @@ function attachedElementToBoneProcessing(element, ped, bone, offX, offY, offZ, o
         setElementMatrix(element, finalMatrix)
 
         return true
-    else
-        setElementPosition(element, 0, 0, -1000)
-        return false
-    end
 end
 
 function attachElementToBone(element, ped, bone, offX, offY, offZ, offrX, offrY, offrZ)

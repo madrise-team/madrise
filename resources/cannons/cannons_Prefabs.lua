@@ -3,14 +3,18 @@ function canonTables()
 	triggerShootToS = function(atG,args)
 		triggerServerEvent("shootGun",root,atG.gunSerial,args)
 	end
-	triggerShootEndToS = function(atG,args)
-		triggerServerEvent("endshootGun",root,atG.gunSerial,args)
-	end
-
 	longShooting = function(atG,args)
 		if atG.longShoot then return end
 		atG.longShoot = true
-		triggerServerEvent("shootGun",root,atG.gunSerial,args)
+		triggerShootToS(atG,args)
+	end
+	longShootingEnd = function(atG,args) 
+		args = args or {}
+		args.endShootTrigger = true
+
+		triggerShootToS(atG,args)
+
+		atG.longShoot = false
 	end
 
 
@@ -50,7 +54,7 @@ function canonTables()
 		modelId = 1248,
 		canShoot = false,
 
-		sh_delay = 2500,
+		sh_delay = 600,
 
 
 
@@ -72,6 +76,9 @@ function canonTables()
 				tx = tx + 100
 				if ty > screenH - 35 then ty = screenH - 35 end
 				dxDrawText("charge: "..atG.mode,tx,ty,400,400,atG.textColor,1,1,thin200Font)
+				if atG.shock then
+					dxDrawImage(tx+92,ty,16,19,tazerVoltIco,0,0,0,atG.textColor)
+				end
 			end
 		end,
 		ppframe = function(atG)
@@ -93,11 +100,6 @@ function canonTables()
 				local sPos = getPositionFromElementOffset(atG.gunObject,otn.forward*2.5,otn.right,otn.up)
 				local ePos = getPositionFromElementOffset(atG.gunObject,otn.forward*8,otn.right,otn.up)
 
-				dxDrawLine3D(sPos.x,sPos.y,sPos.z+0.01, 
-							ePos.x,ePos.y,ePos.z +0.01,
-				tocolor(10,150,255,100*totalA),1)
-
-
 				local ePlPos = getPositionFromElementOffset(atG.gunObject,otn.forward*42,otn.right,otn.up)
 				local hasHit, hitX, hitY, hitZ, element = processLineOfSight(
 						sPos.x,sPos.y,sPos.z,--s
@@ -118,7 +120,7 @@ function canonTables()
 					if getElementType(element) == "player" or getElementType(element) == "ped" then
 						elementOnFire = true
 					end
-				end
+				end				
 
 				local smeser = 0.5 * totalA
 				local smeserUp = 0.1 * totalA
@@ -135,9 +137,22 @@ function canonTables()
 					end
 				end
 				atG.eoFframeTotal = atG.eoFframe/15
-
 				smeser = smeser - (smeser - 0.2)*atG.eoFframeTotal
 				smeserUp = smeserUp - (smeserUp - 0.15)*atG.eoFframeTotal
+
+
+				--[[
+
+				dxDrawLine3D(sPos.x,sPos.y,sPos.z+0.01, 
+							ePos.x,ePos.y,ePos.z +0.01,
+				tocolor(10,150,255,100*totalA),1)
+
+				]]
+				dxDrawMaterialLine3D(sPos.x,sPos.y,sPos.z+0.01, 
+							ePos.x,ePos.y,ePos.z +0.01,
+							true, tazerTarger, 0.02,
+				tocolor(80,200,255,255*totalA))
+
 
 				local p1 = sPos + camMat.right*smeser + camMat.up*smeserUp
 				local p2 = p1 + camMat.right*0.07 - camMat.up*0.05
@@ -184,11 +199,13 @@ function canonTables()
 
 		shoot_Init = function(atG)
 			if not atG.pulse then
-				setFr_block(1500)
+				setFr_block(cannonsT.tazer.sh_delay)
+				triggerShootToS(atG)
+			else
+				longShooting(atG)
 			end
-			triggerShootToS(atG,{pulse = atG.pulse})
 		end, 
-		shoot_End = triggerShootEndToS,
+		shoot_End = longShootingEnd,
 
 		shoot = function(atG,args)
 			if atG.pulse then
@@ -197,14 +214,16 @@ function canonTables()
 				cannonsT.tazer.shootRope(atG)
 			end
 		end,
-		shootEnding = function()
+		shootEnding = function(atG)
 			voltageRope(atG.ropes[1],false)
 			voltageRope(atG.ropes[2],false)
+			atG.shock = false
 		end,
 		
 		shoot_voltageRope = function(atG,args)
 			voltageRope(atG.ropes[1],true)
 			voltageRope(atG.ropes[2],true)
+			atG.shock = true
 		end,			
 		
 		shootRope = function(atG)
@@ -231,11 +250,10 @@ function canonTables()
 			local forw11 = getPositionFromElementOffset(atG.gunObject,otn.forward - 2,otn.right,otn.up)
 			local forw111 = getPositionFromElementOffset(atG.gunObject,otn.forward - 1,otn.right,otn.up)
 
-			local rope1 = createRope(p1.x,p1.y,p1.z,{obj = atG.gunObject,forward = otn.forward,right = otn.right - smeser,up = otn.up,myRope = me})
-			local rope2 = createRope(p2.x,p2.y,p2.z,{obj = atG.gunObject,forward = otn.forward,right = otn.right + smeser,up = otn.up,myRope = me})
+			local rope1 = createRope(p1.x,p1.y,p1.z,{obj = atG.gunObject,forward = otn.forward,right = otn.right - smeser,up = otn.up,myRope = me},atG.player)
+			local rope2 = createRope(p2.x,p2.y,p2.z,{obj = atG.gunObject,forward = otn.forward,right = otn.right + smeser,up = otn.up,myRope = me},atG.player)
 
 			atG.ropes = {rope1.serial,rope2.serial}
-			outputChatBox(tostring(atG.ropes))
 
 			ropePoints1 = rope1.points
 			ropePoints2 = rope2.points

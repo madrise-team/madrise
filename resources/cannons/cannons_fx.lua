@@ -4,24 +4,26 @@
 
 
 ------------------------------------------------------------------------------------ ROPE -----------------------
-local ropeSerial = 0
+local ropeSerials = 0
 ropes = {}
 
 
 
 local wTex = dxCreateTexture(":Draws/win/winTest.png")
 
-local pointsCount = 6
+local pointsCount = 10
 local restingDistance = 0.5
 local grav = 0.005
 local constraintSolve = 3
-local tension = 0.1
+local tension = 0.36
 local envFrictionKef = 1.15
 
 
 
-function createRope(ropx,ropy,ropz,pontCap)
-	ropeSerial = ropeSerial + 1
+function createRope(ropx,ropy,ropz,pontCap,initer)
+	ropeSerials = ropeSerials + 1
+
+	local ropeSerial  = ropeSerials
 
 	local mat = Matrix(ropx,ropy,ropz,0,0,0)
 	local sfPos = mat.position + mat.up*10
@@ -37,18 +39,16 @@ function createRope(ropx,ropy,ropz,pontCap)
 
 	local totalCheker = true
 
-	local targetElm
-
 	local function intertia(pont,checker)
 		local vel = pont.pos - pont.last 
 		
-		local spX = pont.last.x - vel.x/3
-		local spY = pont.last.y - vel.y/3
-		local spZ = pont.last.z - vel.z/3
+		local spX = pont.last.x
+		local spY = pont.last.y
+		local spZ = pont.last.z
 
-		local epX = pont.last.x + vel.x*1.1
-		local epY = pont.last.y + vel.y*1.1
-		local epZ = pont.last.z + vel.z*1.1
+		local epX = pont.last.x + vel.x
+		local epY = pont.last.y + vel.y
+		local epZ = pont.last.z + vel.z
 
 
 		
@@ -64,17 +64,18 @@ function createRope(ropx,ropy,ropz,pontCap)
 				false,
 				false,
 				true,
-				localPlayer
+				ropes[ropeSerial].initer
 		)
-
 		if hasHit then
 			if checker and element and totalCheker then
 				if getElementType(element) == "player" or getElementType(element) == "ped" then
-					targetElm = element
+					ropes[ropeSerial].targetElm = element
 					totalCheker = false
+					if ropes[ropeSerial].initer == localPlayer then
+						triggerServerEvent("tazerRopeElement",root,ropeSerial,element)
+					end
 				end
 			end
-			--pont.pos = Vector3(hitX,hitY,hitZ)
 			pont.last = Vector3(hitX,hitY,hitZ)
 		else
 			local nextX = pont.pos.x + vel.x/envFrictionKef
@@ -132,8 +133,9 @@ function createRope(ropx,ropy,ropz,pontCap)
 			local pont = getPositionFromElementOffset(pontCap.obj,pontCap.forward,pontCap.right,pontCap.up)	
 
 			points[1].pos = pont
-			if targetElm then
-				points[#points].pos  = Vector3(getElementPosition(targetElm)) + Vector3(0,0,0.35)
+			if ropes[ropeSerial].targetElm then
+				points[#points].pos  = Vector3(getElementPosition(ropes[ropeSerial].targetElm)) + Vector3(0,0,0.35)
+				points[#points].last = Vector3(points[#points].pos.x,points[#points].pos.y,points[#points].pos.z)
 			end
 		end
 
@@ -141,10 +143,17 @@ function createRope(ropx,ropy,ropz,pontCap)
 		--------------------------------------------
 		for i,v in ipairs(points) do
 			if i ~= #points then
-				--local colocolna = tocolor(0,40,75,255)
-				local colocolna = tocolor(10,20,40,255)
+				local colocolna = tocolor(5,10,20,255)
+				
 				dxDrawLine3D(v.pos.x,v.pos.y,v.pos.z + 0.02,points[i+1].pos.x,points[i+1].pos.y,points[i+1].pos.z  + 0.02,colocolna,0.8)
-				--dxDrawMaterialLine3D(,false,wTex,)
+				if ropes[ropeSerial].voltage then 
+					local rander = math.random(0,100)/100
+					colocolna = tocolor(255,140,2,40*rander)
+					dxDrawLine3D(v.pos.x,v.pos.y,v.pos.z + 0.02,points[i+1].pos.x,points[i+1].pos.y,points[i+1].pos.z  + 0.02,colocolna,0.6)
+
+					colocolna = tocolor(255,255,255,100*rander)
+					dxDrawLine3D(v.pos.x,v.pos.y,v.pos.z + 0.02,points[i+1].pos.x,points[i+1].pos.y,points[i+1].pos.z  + 0.02,colocolna,0.03)
+				end
 			else
 				local prev = Vector3(points[i-1].pos.x,points[i-1].pos.y,points[i-1].pos.z  + 0.02)
 				local now  = Vector3(v.pos.x,v.pos.y,v.pos.z + 0.02)
@@ -156,6 +165,7 @@ function createRope(ropx,ropy,ropz,pontCap)
 	addEventHandler("onClientPedsProcessed",root,ocPp_fuc)
 
  	ropes[ropeSerial] = {points = points,ocPp_fuc = ocPp_fuc,serial = ropeSerial}
+ 	ropes[ropeSerial].initer = initer
 
 	return ropes[ropeSerial]
 end
@@ -163,5 +173,12 @@ end
 function voltageRope(ropeSerial,bool)
 	ropes[ropeSerial].voltage = bool
 end
+
+
+addEvent("tazerRopeElement",true)
+addEventHandler("tazerRopeElement",root,function(ropeSerial,element)		-- shooter = source
+	ropes[ropeSerial].targetElm = element
+end)
+
 
 -----------------------------------------------------------------------------------------------

@@ -24,6 +24,7 @@ tazerTXD = engineLoadTXD("can/Police/tazer/tazer.txd")
 engineImportTXD(tazerTXD, 	1248)
 engineReplaceModel(tazerDFF, 1248)									--- Замена Tazer
 tazerTarger = dxCreateTexture("can/Police/tazer/targer.png")		------------------
+tazerVoltIco = "can/Police/tazer/icovolt.png"							------------------
 
 
 
@@ -207,7 +208,7 @@ addEventHandler("onClientPedsProcessed",root,function()
 		else
 			if mouse1Fire then 
 				mouse1Fire = false
-				my_atG.gunT.shoot_End(my_atG)
+				if my_atG.gunT.shoot_End then my_atG.gunT.shoot_End(my_atG) end
 			end
 		end
 	end
@@ -257,13 +258,11 @@ addEventHandler("shootGun",root,function(gunSerial,args)		--- 	ориентир�
 	local atG = attachedGuns[gunSerial]
 	if not atG then return end
 
-	atG.gunT.shoot(atG,args)
-end)
-
-addEvent("endshootGun",true)
-addEventHandler("endshootGun",root,function(gunSerial,args)
-	local atG = attachedGuns[gunSerial]
-	if not atG then return end
+	args = args or {}
+	if args.endShootTrigger then 
+		if atG.gunT.shootEnding then atG.gunT.shootEnding(atG,args) end
+		return
+	end
 
 	atG.gunT.shoot(atG,args)
 end)

@@ -30,7 +30,9 @@ addEvent("shootGun",true)
 addEventHandler("shootGun",root,function(gunSerial,argData)		-- shooter = source
 	triggerClientEvent("shootGun",root,gunSerial,argData)
 end)
-addEvent("endshootGun",true)
-addEventHandler("endshootGun",root,function(gunSerial,argData)		-- shooter = source
-	triggerClientEvent("endshootGun",root,gunSerial,argData)
+
+addEvent("tazerRopeElement",true)
+addEventHandler("tazerRopeElement",root,function(ropeSerial,element)		-- shooter = source
+	triggerClientEvent("tazerRopeElement",root,ropeSerial,element)
 end)
+
