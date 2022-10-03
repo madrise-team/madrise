@@ -171,7 +171,9 @@ function createRope(ropx,ropy,ropz,pontCap,initer)
 end
 
 function voltageRope(ropeSerial,bool)
-	ropes[ropeSerial].voltage = bool
+	if ropes[ropeSerial].targetElm then
+		ropes[ropeSerial].voltage = bool
+	end
 end
 
 
