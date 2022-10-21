@@ -395,6 +395,7 @@ function createListButton(tab,x,y,w,h,textP,name,parent,functsc,ListArray)
 	return lBut
 end
 function createButton(tab,x,y,w,h,textP,name,parent,functsci)
+	tab = tab or {}
 	w = w or tab.w
 	h = h or tab.h
 	local buttnlocSize = {x = x,y = y,w = w,h = h}

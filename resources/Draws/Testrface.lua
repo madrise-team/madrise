@@ -4,6 +4,7 @@ import('Draws/drawsCore.lua')()
 ------------------------------------------------------------------------
 outputDebugString("-*-------- TesterFace --------*-")
 ------------------------------------------------------------------------
+--_DoWinDubugDraw() f g c num_x
 ----- FPS ---------------------------------------------------------
 fps = 0
 nextTick = 0
@@ -168,20 +169,27 @@ credet = false
 	end)
 
 end)]]
---[[bindKey("u","up",function()
-	if credet then
-		searchByName(GElements,"glav"):Destroy()
-		credet = false
-		return
-	end
-	credet = true
 
-	local etoDrugoe = TIV:create({x = 220,y = 100,y2 = 4,w = 1000,h = 400,anchor = {alignX = 1,alignY = 0.5}},{img = "win/winTest.png",originalSize = {w = 200,h = 100},color = {r = 180,g=150,b=60,a = 120}},nil,"glav")
+
+
+
+
+
+bindKey(".","up",function()
 	
-	createButton(SButton.button1small,40,0,SButton.button1small.w,SButton.button1small.h,{text = "bidl"},"knopka","glav",function()
-		outputChatBox("clicking")
+	
+	
+
+
+	local butT =  {
+		imgN = "Elements/BS/Button1/Button1_norm.png",
+    	imgD = "Elements/BS/Button1/Button1_down.png",
+    	imgH = "Elements/BS/Button1/Button1_hover.png"}
+
+	createButton(butT,400,500,200,100,{text = "knopka"},nil,nil,function()
+		outputChatBox("cliker")
 	end)
-end)]]
+end)
 
 
 
@@ -1054,3 +1062,7 @@ addEventHandler("onClientRender",root,function()
 	--dxDrawLine3D(x1,y1,z1, x2,y2,z2, tocolor(255,255,255,255),1,true)
 	--dxDrawMaterialLine3D(x1,y1,z1, x2,y2,z2,false,":Draws/win/winTest.png", 1, tocolor(255,255,255,255),true)
 end)
+
+
+outputDebugString("sobaka+")
+_DoWinDubugDraw()

@@ -451,7 +451,7 @@ function TIV:Draw(drawing,childsDraw,selfDraw)
                         		self.imgP.rotation or 0, self.imgP.rotationCenterOffsetX or 0, self.imgP.rotationCenterOffsetY or 0,
                           		theColor )
 		end
-		if self.textP.text then											-- text drawq
+		if self.textP.text then											-- text draw
 			local left = self.locSize.left
 			local top = self.locSize.top
 			
@@ -708,7 +708,7 @@ end
 skip = false
 function DrawElements()
 	for i,GElm in ipairs(GElements.elements) do
-		local GElmTexture = GElm:Draw()
+		GElm:Draw()
 	end
 end
 addEventHandler("onClientRender",root,DrawElements)
@@ -744,20 +744,16 @@ addEventHandler("onClientRestore",root,handleRestore)
 
 
 ------------Win debugs -------------------------------------------------------------------------------------------------------
--- f - fullscrren (win mode)
--- g - endble/disable mode
--- v - win pos
----- nums - control keys
-
-
 
 _winDebugDraw = false
 _winDebugDrawGraf = false
 _winDebugDrawMemr = false
 _winDebugDrawFullScreen = false
-_wDDT_w = 2.5
-_wDDT_h = 1
+								_wDDT_w = 3     -- RT`size (from wh of screen)
+								_wDDT_h = 3
 _wDDT_z = _wDDT_h
+
+
 if _wDDT_w < _wDDT_h then _wDDT_z = _wDDT_w end
 
 _wDDT_poses = {{screenW/2,screenH/2,screenW/2,screenH/2},
@@ -785,26 +781,37 @@ function _winDubugDrawModeSet()
 end
 setTimer(function() _winDubugDrawModeSet() end,50,1)
 function _DoWinDubugDraw()
+	outputDebugString("-----------------------------")
+	outputDebugString("WinDebug Enabled:")
+	outputDebugString("   nums [4-8]  - move")
+	outputDebugString("   num_3 - reset pos")
+	outputDebugString("    lalt+8  - debug info mode")
+	outputDebugString("    lalt+9  - fullscreen mode")
+	outputDebugString("    lalt+0  - windowPosition")
+	outputDebugString("----------------------------->>")
+
+
+
 	_winDebugDrawRT = dxCreateRenderTarget(screenW*_wDDT_w,screenH*_wDDT_h)
 	_winDebugMemoryRT = dxCreateRenderTarget(300,101,false)
 	_winDebugDraw = true
 
-	bindKey("f","down",function()
+	bindKey("9","down",function()
 		if getKeyState("lalt") then
 			_winDebugDrawFullScreen = not _winDebugDrawFullScreen
 		end
 	end)
-	bindKey("g","down",function()
+	bindKey("8","down",function()
 		if getKeyState("lalt") then	
 			_winDebugDrawMode = _winDebugDrawMode + 1
 			if _winDebugDrawMode > 4 then _winDebugDrawMode = 1 end
 			_winDubugDrawModeSet() 
 		end
 	end)
-	bindKey("v","down",function()
+	bindKey("0","down",function()
 		if getKeyState("lalt") then	
 			_wDDT_poseN = _wDDT_poseN + 1
-			if _wDDT_poseN > _wDDT_poses then _wDDT_poseN = 1 end
+			if _wDDT_poseN > #_wDDT_poses then _wDDT_poseN = 1 end
 		end
 	end)
 
@@ -817,11 +824,11 @@ function _WinDebElm(Elm,level,lenghter)
 
 	local elmw = 150
 	local elmh = 40
-	local elmx = 100 + 170*lenghter
-	local elmy = 200 + 70*level
+	local elmx = 100 + 170*lenghter - _winDebugDrawX
+	local elmy = 200 + 70*level - _winDebugDrawY
 
 	if Elm.type == "cTIV" then
-		dxDrawRectangle(elmx+5,elmy+5,elmw-10,elmh-10,tocolor(55,115,155,255))
+		dxDrawRectangle(elmx+5,elmy+5,elmw-10,elmh-10,tocolor(35,105,155,255))
 		dxDrawLine(elmx,elmy,elmx + elmw,elmy,tocolor(100,100,100,255),1.2)
 		dxDrawLine(elmx+ elmw,elmy,elmx + elmw,elmy + elmh,tocolor(100,100,100,255),1.2)
 		dxDrawLine(elmx + elmw,elmy + elmh,elmx,elmy + elmh,tocolor(100,100,100,255),1.2)
@@ -882,8 +889,6 @@ addEventHandler("onClientRender",root,function()
 		_winDebugDrawMoveKey = true
 	end
 
-	if _winDebugDrawX > screenW*_wDDT_w - screenW*_winDebugDrawZoom then _winDebugDrawX = screenW*_wDDT_w - screenW*_winDebugDrawZoom end
-	if _winDebugDrawY > screenH*_wDDT_h - screenH*_winDebugDrawZoom then _winDebugDrawY = screenH*_wDDT_h - screenH*_winDebugDrawZoom end
 	local a = false
 	local b = false
 	if _winDebugDrawX < 0 then _winDebugDrawX = 0 ; a = true end
@@ -943,12 +948,12 @@ addEventHandler("onClientRender",root,function()
 	setRenderTarget()
 
 	if _winDebugDrawFullScreen then
-		if _winDebugDrawGraf then dxDrawImageSection(1,1,screenW-2,screenH-2,_winDebugDrawX,_winDebugDrawY,screenW*_winDebugDrawZoom,screenH*_winDebugDrawZoom,_winDebugDrawRT,0,0,0,tocolor(255,255,255,200),true) end
+		if _winDebugDrawGraf then dxDrawImageSection(1,1,screenW-2,screenH-2,0,0,screenW*_winDebugDrawZoom,screenH*_winDebugDrawZoom,_winDebugDrawRT,0,0,0,tocolor(255,255,255,200),true) end
 		
 		if not _winDebugDrawMemr then return end
 		dxDrawImage(screenW-214,0,300,100,_winDebugMemoryRT,0,0,0,tocolor(255,255,255,200),true)
 	else
-		if _winDebugDrawGraf then dxDrawImageSection(_wDDT_poses[_wDDT_poseN][1],_wDDT_poses[_wDDT_poseN][2],_wDDT_poses[_wDDT_poseN][3],_wDDT_poses[_wDDT_poseN][4],_winDebugDrawX,_winDebugDrawY,screenW*_winDebugDrawZoom,screenH*_winDebugDrawZoom,_winDebugDrawRT,0,0,0,tocolor(255,255,255,225),true) end
+		if _winDebugDrawGraf then dxDrawImageSection(_wDDT_poses[_wDDT_poseN][1],_wDDT_poses[_wDDT_poseN][2],_wDDT_poses[_wDDT_poseN][3],_wDDT_poses[_wDDT_poseN][4],0,0,screenW*_winDebugDrawZoom,screenH*_winDebugDrawZoom,_winDebugDrawRT,0,0,0,tocolor(255,255,255,225),true) end
 		
 		if not _winDebugDrawMemr then return end
 		dxDrawImage(screenW-106,screenH/2,300/2,100/2,_winDebugMemoryRT,0,0,0,tocolor(255,255,255,200),true)
