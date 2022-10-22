@@ -24,8 +24,8 @@ function addElementDimIntHandler(element)
 end
 function reomveElementDimIntHandler(element)
 	local handler = elmDimIntHandlers[tostring(element)]["handler"]
-	removeEventHanlder("onElementDimensionChange",element,handler)
- 	removeEventHanlder("onElementInteriorChange",element,handler)
+	removeEventHandler("onElementDimensionChange",element,handler)
+ 	removeEventHandler("onElementInteriorChange",element,handler)
  	handler = nil
  	elmDimIntHandlers[tostring(element)] = nil
 
@@ -135,4 +135,13 @@ addCommandHandler("velomaker",function(player)
 			tim = nil
 		end,100,1)
 	end)
+end)
+
+addCommandHandler("veh",function(ps,_,model,n1,n2)
+	local x,y,z = getElementPosition(ps)
+	for i=1,n1 do
+		for j=1,n2 do
+			createVehicle(model,x+5+5*i,y+5+10*j,z+2)
+		end
+	end
 end)

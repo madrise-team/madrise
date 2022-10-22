@@ -98,6 +98,7 @@
     
     <file src="Elements/BS/WeaponIcons/AK-47.png" type="client" />
     
-    
+
+    <export function="getScreenRTs" type="client" />    
     
 </meta>

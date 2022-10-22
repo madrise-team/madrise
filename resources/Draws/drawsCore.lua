@@ -13,7 +13,7 @@ GElements.locSize = {cutX=0,cutY=0,cutW=screenW,cutH=screenH,cpx = 0,cpy = 0,x =
 GElements.imgP = {color = {childA = 255}}
 GElements.elements = {}
 
-updated = false
+updated = false -- if true then RT`s was cleared
 
 
 --- Утилиты ---------------------------------------------------------------------------------------------------------------------------
