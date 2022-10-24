@@ -1,0 +1,13 @@
+<meta>
+	<min_mta_version client="1.5.9-9.20704"/>
+
+	<!--client-->
+	<script src="zad_mastera_C.lua" type="client"/>
+
+	<!--server-->
+	<script src="zad_mastera_S.lua" type="server"/>
+
+	<!--picture-->
+	<file src="Picture_mastera/Plase/Rectangle_230.png" />
+	
+</meta>

@@ -1,0 +1,17 @@
+<meta>
+	<min_mta_version client="1.5.9-9.20704"/>
+
+	<!--client-->
+	<script src="Lesson.lua" type="client"/>
+
+	<!--server-->
+	<script src="Lesson_S.lua" type="server"/>
+
+	<!--picture-->
+	<file src="Picture/deth/wall.png" />
+	<file src="Picture/Car_position/Car_position_driver.png" />
+	<file src="Picture/Car_position/Car_position_ps1.png" />
+	<file src="Picture/Car_position/Car_position_ps2.png" />
+	<file src="Picture/Car_position/Car_position_ps3.png" />
+	
+</meta>
