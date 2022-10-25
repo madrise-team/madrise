@@ -1064,5 +1064,5 @@ addEventHandler("onClientRender",root,function()
 end)
 
 
-outputDebugString("sobaka+")
-_DoWinDubugDraw()
+--[[outputDebugString("sobaka+")--]]
+--[[_DoWinDubugDraw()--]]
