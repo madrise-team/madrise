@@ -99,45 +99,40 @@ end)]]
 	end
 end)]]
 
-framer = 0
-created = false
-bindKey("u","up",function()
-  if true then return end
+framt = 0
+local randColRecter = function(_,obj)
+	framt = framt+1
 
-  if created then
-	local glaver = searchByName(GElements,"glav")
-	if glaver then glaver:Destroy() end 
-	created = false
-	destroyElement(rectr)
-  else
-  	rectr = createTexFucFromDraws(25,25,function()
-		dxDrawRectangle(0,10,25,5,tocolor(16,220,169,255))
-	end)()
+	local colR = 	((math.sin(framt/100) + 1)/2)*255
+	local colG = 	((math.cos(framt/50) + 1)/2)*255
+	local colB = 	((math.sin(framt/28) + 1)/2)*255
 
-  	created = true
-	local etoDrugoe = TIV:create({x = 1010 + SButton.button1small.w,y = 800,y2 = 4,w = SButton.button1small.w*2,h = SButton.button1small.h*2},{img = "win/winTest.png",color = {r = 180,g=150,b=60,a = 220}},{w = 120,h = 1000},"glav")
+	local lS = obj.locSize
+	dxDrawRectangle(lS.cutX,lS.cutY,lS.cutW,lS.cutH,tocolor(colR,colG,colB,obj.imgP.color.a))
+end
+
+bindKey("6","up",function()	
+	local scrollAreaName = "scrollыч"
 
 
-	createBlurer(700,800,200,120,parent)
-
-
-	local etoDrugoe3Crototen = TIV:create({x = 100,y = 40,w = 50,h = 50},{img = createTexFucFromDraws(50,50,function()	
-		framer = framer + 1
-		dxDrawImage (0, 0, 50,50,rectr,math.floor(framer*300.12341342513),0,0)
-		--dxDrawImage (0,0, 25,25,rectr)
-	end),frame = true},nil,"podglav","glav")
-
-	--[[local etoDrugoe2 = TIV:create({x = -160,y = -60,w = SButton.button1small.w,h = SButton.button1small.h},{img = SButton.button1small.imgN},{text = "blDoL",alignX = "center",scaleXY = 2,alignY = "center"},"podglav","glav")
-	local sus = 0
-	addEventHandler("onClientRender",root,function()
-		sus = sus + 1
-
-		etoDrugoe2.locSize.y1 = etoDrugoe2.locSize.y1 + math.sin(sus/15)*6
-		etoDrugoe2.locSize.x1 = etoDrugoe2.locSize.x1 + math.sin(sus/60)*5
-
-	end)]]
-  end
+	local slidersTable =  {}
+	local scrollZone = scrollTIV:create({x = 500,y = 400,w = 300,h = 350},scrollAreaName,nil)
+	scrollZone.slidersT[2] = {x = scrollZone.locSize.w/2 - 30, 	w = 40, h  = 10, img = randColRecter,frame = true}
+	scrollZone.slidersT[3] = {x = scrollZone.locSize.w - 4, 	w = 4, h  = 8,  img = createTexFucFromDraws(6,8,function()
+		outputChatBox("kok")
+		dxDrawLine(0,0,3,0)
+		dxDrawLine(3,0,3,7)
+		dxDrawLine(3,7,0,7)
+		dxDrawLine(0,7,0,0)
+	end)}
+	scrollZone:createSliders()
+	
+	for i=0,9 do
+		local liker = TIV:create({x = 20,y = 10 + SButton.button1small.h*i,w = SButton.button1small.w,h = SButton.button1small.h},
+			{img = SButton.button1small.imgN},nil,"clickTiv"..i,scrollAreaName)
+	end		
 end)
+
 credet = false
 --[[bindKey("u","up",function()
 	if credet then
@@ -511,9 +506,9 @@ function BS()
 
 	end)
 end
-bindKey("y","down",function()
-	BS()	
-end)
+--bindKey("7","down",function()
+--	BS()	
+--end)
 
 
 
@@ -1063,6 +1058,4 @@ addEventHandler("onClientRender",root,function()
 	--dxDrawMaterialLine3D(x1,y1,z1, x2,y2,z2,false,":Draws/win/winTest.png", 1, tocolor(255,255,255,255),true)
 end)
 
-
-outputDebugString("sobaka+")
 _DoWinDubugDraw()

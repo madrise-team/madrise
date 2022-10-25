@@ -37,6 +37,13 @@ function escapeRT()
 	_RTsLevels[#_RTsLevels] = nil
 	setRenderTarget()
 end
+function drawBorder(x,y,w,h,color,lineW)
+	dxDrawLine (x,y,x+w,y, 		color, lineW, true)
+	dxDrawLine (x+w,y,x+w,y+h, 	color, lineW, true)
+	dxDrawLine (x+w,y+h,x,y+h, 	color, lineW, true)
+	dxDrawLine (x,y+h,x,y, 		color, lineW, true)
+	
+end
 
 --- Полезные функции работы с элементами ----------------------------------------------------------------------------------------------
 function formattColor(color)
@@ -237,15 +244,6 @@ function TIV:create(LocSize,Img,Text,Name,Parent)
 	this.imgP = copyTable(Img)
 	this.imgP.color = formattColor(this.imgP.color)
 	this.imgP.color.childA = 255
-	if this.imgP.img then
-		if type(this.imgP.img) == "table" then --- save imageFuc and draw it
-			this.imgP.slice9RT = dxCreateRenderTarget (2, 2, true)
-		end
-		if type(this.imgP.img) == "function" then --- save imageFuc and draw it
-			this.textureFuc = this.imgP.img
-			this.imgP.img = nil
-		end 
-	end
 	if this.imgP.originalSize then
 		this.imgP.maxS = {
 			maxW = createMaxerFuc(this.imgP.originalSize.w),
@@ -272,8 +270,18 @@ function TIV:create(LocSize,Img,Text,Name,Parent)
 	setmetatable(this, self)
 	self.__index = self
 
-	if this.parent.Draw then this.parent:Draw(false) end
+	if this.parent.Draw then this.parent:Draw(false) end     -- костылик, фиксит для некторых случаеа положение элементов на 1м кадре после создания, отрисовка без отрисовки.
 	this:Draw(false)
+
+	if this.imgP.img then
+		if type(this.imgP.img) == "table" then --- RT for nslice
+			this.imgP.slice9RT = dxCreateRenderTarget (2, 2, true)
+		end
+		if type(this.imgP.img) == "function" then --- save imageFuc to draw it
+			this.textureFuc = this.imgP.img
+			this.imgP.img = this.textureFuc(nil,this)
+		end 
+	end
 	
 	this.hierarchyDraw = true
 
@@ -378,10 +386,11 @@ function TIV:Draw(drawing,childsDraw,selfDraw)
 
 	local doDraw = true
 	if drawing == false then doDraw = false end
-	local doSelfDraw = true
-	if selfDraw == false then doSelfDraw = false end
 	local doChildsDraw = true
 	if childsDraw == false then doChildsDraw = false end
+	local doSelfDraw = true
+	if selfDraw == false then doSelfDraw = false end
+	
 
 
 
@@ -476,15 +485,12 @@ function TIV:Draw(drawing,childsDraw,selfDraw)
 			dxSetBlendMode(savedBM)
 			setRenderTarget()
 			dxDrawImage(self.locSize.cutX, self.locSize.cutY, self.locSize.cutW, self.locSize.cutH, self.textP.textRT, 0,0,0 ,theColor)
-			
-			--dxDrawText(self.locSize.cpx,1200,900)
-			--dxDrawText(left,1200,910)
 		end
 	 end
 	end
 
 	if doChildsDraw then -------------------------------child Draw -{
-		local dynamic,_,xk,yk = self:getDirections()
+		local dynamic,_,xk,yk = self:getDirections() 
 
 		local lstCord = 0
 		for i,chElm in ipairs(self.elements) do
@@ -508,8 +514,9 @@ function TIV:Draw(drawing,childsDraw,selfDraw)
 	end 					-------------------------------------------------_}
 
    --  .  - - debDraw
-	--dxDrawRectangle(self.locSize.cpx,self.locSize.cpy,self.locSize.w,self.locSize.h,tocolor(200,200,200,30))
-	--dxDrawText(self.name,self.locSize.cpx + self.locSize.w,self.locSize.cpy + self.locSize.h)
+   	--drawBorder(self.locSize.cpx,self.locSize.cpy,self.locSize.w,self.locSize.h,tocolor(255,100,100,255),3)
+	--dxDrawRectangle(self.locSize.cpx,self.locSize.cpy,self.locSize.w,self.locSize.h,tocolor(0,0,0,60))
+	--dxDrawText(self.name,self.locSize.cpx,self.locSize.cpy)
    --  .  - - debDraw
 
 	return self.texture
@@ -604,46 +611,58 @@ function scrollTIV:create(LocSize,Name,Parent)
 	this.contentToHkoef = 1
 
 	this.slidersT = {
-		{x = 0, 				w = 8, h = 16, color = tocolor(140,140,140,200)},
-		{x = this.locSize.w - 8,w = 8, h = 16, color = tocolor(140,140,140,200)}
+		{x = 0, 				 w = 8, h = 16, color = tocolor(140,140,140,200),frame = false, dontFadeSlider = false},
+		{x = this.locSize.w - 8, w = 8, h = 16, color = tocolor(140,140,140,200),frame = false, dontFadeSlider = false}
 	}
 	
 	if LocSize.slidersT then
 		this.slidersT = LocSize.slidersT
 	end
-
-	this.slidersCount = #this.slidersT
 	this.sliderShowed = false
 
 	setmetatable(this, self)
 	self.__index = self
 
-	this:createSilers()
+	this:createSliders()
 
 	return this
 end
-function scrollTIV:createSilers()
+function scrollTIV:createSliders()
+	if self.sliders then
+		for k,v in pairs(self.sliders) do
+			v:Destroy()
+		end
+	end
+	self.slidersCount = #self.slidersT
+
 	self.sliders = {}
 	for i=1,self.slidersCount do
 		local slTab = self.slidersT[i]
-		local sliderTex = createTexFucFromDraws(slTab.w,slTab.h,function()
+		local sliderTex = slTab.img or createTexFucFromDraws(slTab.w,slTab.h,function()
 			dxDrawRectangle(0,0,slTab.w,slTab.h,slTab.color)
 		end)
-		self.sliders[i] = TIV:create({x=slTab.x,y=0,w=slTab.w,h=slTab.h},{img = sliderTex},nil,self.name.."slider"..i,self.name)
-	end	
+		self.sliders[i] = TIV:create({x=slTab.x,y=0,w=slTab.w,h=slTab.h},{adapt = slTab.adapt, frame = slTab.frame,img = sliderTex},nil,self.name.."slider"..i,self.name)
+		
+		if slTab.dontFadeSlider then 	self.sliders[i].dontFadeSlider = slTab.dontFadeSlider
+		else 							self.sliders[i].imgP.color.a = 0 				end
+	end
 end
 function scrollTIV:processSliders()
 	if self.scrollVelocity ~= 0 then
 		if not self.sliderShowed then
 			for k,v in pairs(self.sliders) do
-				animate(v,Animations.simpleFade,{frameCount = 5})
+				if not v.dontFadeSlider then
+					animate(v,Animations.simpleFade,{frameCount = 8,startA = 0,endA = 255})
+				end
 			end
 			self.sliderShowed = true
 		end
 	else
 		if self.sliderShowed and (not self.mPressed) then
 			for i,v in rpairs(self.sliders) do
-				animate(v,Animations.simpleFade,{frameCount = 5})
+				if not v.dontFadeSlider then
+					animate(v,Animations.simpleFade,{frameCount = 8,startA = v.imgP.color.a,endA = 0})
+				end
 			end
 			self.sliderShowed = false
 		end

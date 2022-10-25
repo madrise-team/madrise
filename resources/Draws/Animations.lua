@@ -1,7 +1,7 @@
 function Animations()
 ----------------------------------------------------------------------------------------
 
-pendingAnimations = {}  -- Эти блоки будут добавлены после прогона всех анимаций в кадре (шоб не ломать форыча)
+pendingAnimations = {}  -- Эти блоки будут добавлены после прогона всех анимаций в кадре (шоб не ломать форыча внезапными вставками)
 activeAnimations = {}
 addEventHandler("onClientRender",root,function()
 	for elmName,animBlock in pairs(activeAnimations) do
@@ -422,7 +422,7 @@ Animations = {}
 	frame = function(ab)
 	end 
 }
-	-------------------------------- buildupStack //\\0
+	-------------------------------- buildupStack //\\
 
 	--------------------------------------------------------------------------------------------------------------------------------
 	Animations.maskedLayerDraw = {

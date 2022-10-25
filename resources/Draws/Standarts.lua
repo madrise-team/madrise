@@ -46,61 +46,61 @@ SFonts = {}
 ----- Elements
 
 SWins = {}
-SWins["big1"] = {["x"] = 148,["y"] = 0,["w"] = 1402,["h"] = 792,
-			tl = {["w"] = 22,["h"] = 22},
-			tr = {["w"] = 22,["h"] = 22},
-			bl = {["w"] = 22,["h"] = 22},
-			br = {["w"] = 22,["h"] = 22},
-			t = {["space"] = 22},
-			l = {["space"] = 22},
-			r = {["space"] = 22},
-			b = {["space"] = 22},
-			size = {["w"] = 1402,["h"] = 792},
+SWins["big1"] = {x = 148,y = 0,w = 1402,h = 792,
+			tl = {w = 22,h = 22},
+			tr = {w = 22,h = 22},
+			bl = {w = 22,h = 22},
+			br = {w = 22,h = 22},
+			t = {space = 22},
+			l = {space = 22},
+			r = {space = 22},
+			b = {space = 22},
+			size = {w = 1402,h = 792},
 			img = ":Draws/Elements/Win/Win.png"}
-SWins["big1"].noShadow = {["w"] = 1394,["h"] = 784}
+SWins["big1"].noShadow = {w = 1394,h = 784}
 
 
-SWins["miniwin"] = { ["w"] = 508,["h"] = 257,
-			tl = {["w"] = 120,["h"] = 85},
-			tr = {["w"] = 120,["h"] = 85},
-			bl = {["w"] = 120,["h"] = 45},
-			br = {["w"] = 120,["h"] = 45},
-			t = {["space"] = 85},
-			l = {["space"] = 120},
-			r = {["space"] = 120},
-			b = {["space"] = 45},
-			size = {["w"] = 508,["h"] = 257},
+SWins["miniwin"] = { w = 508,h = 257,
+			tl = {w = 120,h = 85},
+			tr = {w = 120,h = 85},
+			bl = {w = 120,h = 45},
+			br = {w = 120,h = 45},
+			t = {space = 85},
+			l = {space = 120},
+			r = {space = 120},
+			b = {space = 45},
+			size = {w = 508,h = 257},
 			img = ":Draws/Elements/MiniWin/MiniWin.png"}
 SWins["miniwin"].ineterOffset = {x = 33/msw,y = -75/msw,wd = -43}
 
-SWins["miniwin2"] = { ["w"] = 405,["h"] = 679,
-			tl = {["w"] = 130,["h"] = 130},
-			tr = {["w"] = 130,["h"] = 130},
-			bl = {["w"] = 130,["h"] = 130},
-			br = {["w"] = 130,["h"] = 130},
-			t = {["space"] = 130},
-			l = {["space"] = 130},
-			r = {["space"] = 130},
-			b = {["space"] = 130},
-			size = {["w"] = 405,["h"] = 679},
+SWins["miniwin2"] = { w = 405,h = 679,
+			tl = {w = 130,h = 130},
+			tr = {w = 130,h = 130},
+			bl = {w = 130,h = 130},
+			br = {w = 130,h = 130},
+			t = {space = 130},
+			l = {space = 130},
+			r = {space = 130},
+			b = {space = 130},
+			size = {w = 405,h = 679},
 			img = ":Draws/Elements/MiniWin/MiniWin2.png"}
 SWins["miniwin2"].offset = {x=9}
 
 SWins.BS = {}
-	SWins.BS.miniwin = { ["w"] = 366,["h"] = 636,
-			tl = {["w"] = 40,["h"] = 40},
-			tr = {["w"] = 120,["h"] = 40},
-			bl = {["w"] = 40,["h"] = 40},
-			br = {["w"] = 120,["h"] = 45},
-			t = {["space"] = 40},
-			l = {["space"] = 40},
-			r = {["space"] = 120},
-			b = {["space"] = 45},
-			size = {["w"] = 366,["h"] = 636},
+	SWins.BS.miniwin = { w = 366,h = 636,
+			tl = {w = 40,h = 40},
+			tr = {w = 120,h = 40},
+			bl = {w = 40,h = 40},
+			br = {w = 120,h = 45},
+			t = {space = 40},
+			l = {space = 40},
+			r = {space = 120},
+			b = {space = 45},
+			size = {w = 366,h = 636},
 			img = ":Draws/Elements/BS/MiniWin/MiniWin.png"}
 
 SPattern = {}
-SPattern["EDBA"] = {["x"] = 375,["y"] = 353,["w"] = 1028,["h"] = 440,["img"] = ":Draws/Elements/Pattern/Pattern.png",["color"] = tocolor(255,255,255,160)}
+SPattern["EDBA"] = {x = 375,y = 353,w = 1028,h = 440,["img"] = ":Draws/Elements/Pattern/Pattern.png",["color"] = tocolor(255,255,255,160)}
 
 
 
@@ -149,14 +149,14 @@ S_BS.gray1 = tocolor(179,179,179,255)
 S_BS.gray2 = tocolor(220,220,220,255)
 S_BS.panel = {w = 273, h = 125, th = 113, tw = 264,
 	img = ":Draws/Elements/BS/Panel/Panel.png",
-	tl = {["w"] = 40,["h"] = 40},
-	tr = {["w"] = 40,["h"] = 40},
-	bl = {["w"] = 40,["h"] = 40},
-	br = {["w"] = 40,["h"] = 40},
-	t = {["space"] = 40},
-	l = {["space"] = 40},
-	r = {["space"] = 40},
-	b = {["space"] = 45},
+	tl = {w = 40,h = 40},
+	tr = {w = 40,h = 40},
+	bl = {w = 40,h = 40},
+	br = {w = 40,h = 40},
+	t = {space = 40},
+	l = {space = 40},
+	r = {space = 40},
+	b = {space = 45},
 	size = {w = 273,h = 125},
 }
 
