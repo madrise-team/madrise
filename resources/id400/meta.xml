@@ -1,0 +1,8 @@
+<meta>
+<info author="www.mta-resource" description="MTA Resource Repalce Master PRO" version="1.3" type="script" />
+<script src="client.lua" type="client"/>
+
+<file src="id400.txd" type="client"/>
+<file src="id400.dff" type="client"/>
+
+</meta>
