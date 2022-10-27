@@ -59,14 +59,12 @@ local blue = 0.94
 
 local per = - math.pi / 2
 
-setTimer(function()
-
-    
+addEventHandler("onClientRender",root,function()    
     if per >= 3 * math.pi / 2 then per = - math.pi / 2 end
-    per = per + 0.02
+    per = per + 0.008
 
 -- (sin x + 1.1) * 0.45
-
+    
     red = (math.sin(per) + 1.1) * 0.45
     green = (math.sin(per * 3) + 1.1) * 0.45
     blue = (math.sin(per * 7) + 1.1) * 0.45
@@ -84,8 +82,7 @@ setTimer(function()
     --]]
 
     dxSetShaderValue (dxShaderRightLeft, "lightColor",     red, green, blue,       1.0)   --поворотники
-end
-, 50, 0)
+end)
 --[[
 setTimer(function()
     if green >= 0.1 and green <= 0.95 then green = green - math.random(1,10)/100 end
