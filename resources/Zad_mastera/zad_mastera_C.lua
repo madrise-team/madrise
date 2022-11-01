@@ -2,71 +2,63 @@ loadstring(exports.importer:load())()
 import('Draws/drawsCore.lua')()
 local screenWidth,screenHeight = guiGetScreenSize()
 
+local Text = {			---Index
+	"Ebuchie Chest",	--1
+	"Tablica Eblica",   --2
+	"My Name",          --3
+	"Mta Menu",         --4
+}
+
 local notCreated = true
+local a = true
 local B1 = {}
 bindKey("0","down",function ()
 	notCreated = not notCreated
-	if not notCreated then B1 = Buttonizer(screenWidth/2 - 650,350) end
+	if not notCreated then B1 = Buttonizer(screenWidth/2 - 650,350) end	
 end)
 
-local Text = {			---Index
-	"Zadanie Mastera",  --1
-	"Ebuchie Chest",	--2
-}
-function Draw(T)
-	dxDrawRectangle(screenWidth/2 - 650, 200, 240, 300, tocolor(0,0,0,100), false , false)
+function Draw_Name(T)
 	dxDrawText(T, screenWidth/2 - 650, 25, screenWidth/2 - 410, 440, tocolor(255,255,255,255), 2, "arial","center",	"center", false, true, false, false, false)	
---[[затрах следующий нужно что нибудь придумать с дравнером так чтобы он был отдельной функцией
-для того чтобы вызывалась стартовая панель с заданиями нажал на задание и появилось название и описание задания 
-описание заданий отдельно в каждом блоке заданий так же надо что то придумать с одинаковыми полями в блоках заданий
---]]
-	end
-
+end
+function Remove()
+	for _, val in pairs(B1) do val:Destroy() end
+	B1 = {}	
+end
 function Ebuchie_Chest()
-	removeEventHandler("onClientRender", root, Render_Zad)
-	for _, val in pairs(B1) do val:Destroy() end
-	B1 = {}		
-	Draw(Text[2])
+	Remove()	
+	Draw_Name(Text[1])	
 end
+
 function Rekursive_Table()
-	removeEventHandler("onClientRender", root, Render_Zad)
-	for _, val in pairs(B1) do val:Destroy() end
-	B1 = {}		
-	Draw()
+	Remove()
+	Draw_Name(Text[2])
 end
+
 function My_Name()
-	removeEventHandler("onClientRender", root, Render_Zad)
-	for _, val in pairs(B1) do val:Destroy() end
-	B1 = {}		
-	Draw()
+	Remove()			
+	Draw_Name(Text[3])
 end
+
 function Mta_Menu()
-	removeEventHandler("onClientRender", root, Render_Zad)
-	for _, val in pairs(B1) do val:Destroy() end
-	B1 = {}		
-	Draw()
+	Remove()		
+	Draw_Name(Text[4])
 end
 
 function Distributor (iterator) 
-	if iterator == 1 then return Ebuchie_Chest() end	
-	if iterator == 2 then return Rekursive_Table() end	
-	if iterator == 3 then return My_Name() end	
-	if iterator == 4 then return Mta_Menu() end		
+	if iterator == 1 then a = not a return addEventHandler("onClientRender", root, Ebuchie_Chest) end	
+	if iterator == 2 then a = not a return addEventHandler("onClientRender", root, Rekursive_Table) end	
+	if iterator == 3 then a = not a return addEventHandler("onClientRender", root, My_Name) end	
+	if iterator == 4 then a = not a return addEventHandler("onClientRender", root, Mta_Menu) end		
 end	
 
-local Name = {
-	"Ebuchie_Chest",
-	"Rekursive_Table",
-	"My_Name",
-	"Mta_Menu",
-}
+
 local Button_list = {}
 local i = 1
 function Buttonizer(xb,yb)
 	i = 1
 	while i < 5 do 
 		local iterator = i
-		Button_list[i] = createButton(nil,xb,yb,200,90,{text = Name[i]},nil,nil,function()
+		Button_list[i] = createButton(nil,xb,yb,200,90,{text = Text[i]},nil,nil,function()
 			Distributor(iterator)
 		end)
 		yb = yb + 80
@@ -78,22 +70,15 @@ end
 function Render_Zad()
 	if not notCreated then 
 		dxDrawRectangle(screenWidth/2 - 650, 200, 240, 300, tocolor(0,0,0,100), false , false)
-		dxDrawText(Text[1], screenWidth/2 - 650, 25, screenWidth/2 - 410, 440, tocolor(255,255,255,255), 2, "arial","center",	"center", false, true, false, false, false)	
+		if a then Draw_Name("Zadanie Mastera") end
 	else
-		for _, val in pairs(B1) do val:Destroy() end
-		B1 = {}		
+		removeEventHandler("onClientRender", root, Ebuchie_Chest)
+		removeEventHandler("onClientRender", root, Rekursive_Table)
+		removeEventHandler("onClientRender", root, My_Name)
+		removeEventHandler("onClientRender", root, Mta_Menu)
+		Remove()	
+		a = true	
 	end						
 end
 addEventHandler("onClientRender", root, Render_Zad)
-
-
-		--[[можно сделать в таблице текст на тексте ползунок который меняет положение по 
-		зафиксированным кордам если кнопка вверх то ползунок удаляется из нынешней строчки и появляется в верхней строчке аналогично для кнопки
-		вниз забиндить ентер который будет сопоставлять нынешние корды ползунка с уже выставленными и если 
-		есть совпадение начинается ивент так же есть текстовый пункт "больше заданий" который выводит на экран большую таблицу 
-		с заданиями и кнопка которая закрывает таблицу
-
-		можно сделать кнопки которые сопоставляются и тригерят ивент так же кнопка больше заданий--]]
-
-			
 --- Gor loh
