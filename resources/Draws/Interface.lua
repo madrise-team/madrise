@@ -338,6 +338,61 @@ function createLabel(tabWithFont,x,y,w,h,textP,name,parent,argi)
 	return TIV:create({["x"] = x,["y"] = y,["w"] = w,["h"] = h,["sizeType"] = args.sizeType,["adapt"] = args.adapt,["adapt"] = args.adaptPos},nil,textP,name,parent)
 end
 
+function createButton(tab,x,y,w,h,textP,name,parent,functsci)
+	tab = tab or {}
+	w = w or tab.w
+	h = h or tab.h
+	local buttnlocSize = {x = x,y = y,w = w,h = h}
+		
+	if textP then
+		textP.x = textP.x or tab.tx or 0
+		textP.y = textP.y or tab.ty or 0
+		textP.w = textP.w or tab.tw or w
+		textP.h = textP.h or tab.th or h
+
+		textP.alignX = textP.alignX or tab.textAlignX or "center"
+		textP.alignY = textP.alignY or tab.textAlignY or "center"
+
+		textP = bakeFont(textP,tab.font)
+	end
+
+	local functsc = functsci or {}
+	if type(functsc) == 'function' then functsc = {cursorClick = functsc} end
+	local functsPlus = {}
+
+	local Btn
+	local normTextP
+
+	local retext = function(textTaber)
+		local textTab = textTaber or normTextP
+		Btn.textP.color = textTab.color
+	end
+	
+	functsPlus.cursorEnter = function()
+		Btn.imgP.img = tab.imgH
+		retext(tab.textPHover)
+
+		if functsc.cursorEnter then functsc.cursorEnter() end
+	end
+	functsPlus.cursorExit = function()
+		Btn.imgP.img = tab.imgN
+		retext()
+
+		if functsc.cursorExit then functsc.cursorExit() end
+	end
+	functsPlus.cursorDown = function()
+		Btn.imgP.img = tab.imgD
+		retext(tab.textPDown)
+
+		Btn.selected = true
+		if functsc.cursorDown then functsc.cursorDown() end
+	end
+	functsPlus.cursorClick = functsc.cursorClick
+
+	Btn = cTIV:create(buttnlocSize,{img = tab.imgN,originalSize=tab.originalSize},textP,name,parent,functsPlus)
+	normTextP = copyTable(Btn.textP)
+	return Btn
+end
 function createListButton(tab,x,y,w,h,textP,name,parent,functsc,ListArray)
 	w = w or tab.w
 	h = h or tab.h
@@ -393,61 +448,6 @@ function createListButton(tab,x,y,w,h,textP,name,parent,functsc,ListArray)
 
 	lBut = cTIV:create(buttnlocSize,{["img"] = tab.imgN,originalSize=tab.originalSize},textP,name,parent,functsPlus)
 	return lBut
-end
-function createButton(tab,x,y,w,h,textP,name,parent,functsci)
-	tab = tab or {}
-	w = w or tab.w
-	h = h or tab.h
-	local buttnlocSize = {x = x,y = y,w = w,h = h}
-		
-	if textP then
-		textP.x = textP.x or tab.tx or 0
-		textP.y = textP.y or tab.ty or 0
-		textP.w = textP.w or tab.tw or w
-		textP.h = textP.h or tab.th or h
-
-		textP.alignX = textP.alignX or tab.textAlignX or "center"
-		textP.alignY = textP.alignY or tab.textAlignY or "center"
-
-		textP = bakeFont(textP,tab.font)
-	end
-
-	local functsc = functsci or {}
-	if type(functsc) == 'function' then functsc = {cursorClick = functsc} end
-	local functsPlus = {}
-
-	local Btn
-	local normTextP
-
-	local retext = function(textTaber)
-		local textTab = textTaber or normTextP
-		Btn.textP.color = textTab.color
-	end
-	
-	functsPlus.cursorEnter = function()
-		Btn.imgP.img = tab.imgH
-		retext(tab.textPHover)
-
-		if functsc.cursorEnter then functsc.cursorEnter() end
-	end
-	functsPlus.cursorExit = function()
-		Btn.imgP.img = tab.imgN
-		retext()
-
-		if functsc.cursorExit then functsc.cursorExit() end
-	end
-	functsPlus.cursorDown = function()
-		Btn.imgP.img = tab.imgD
-		retext(tab.textPDown)
-
-		Btn.selected = true
-		if functsc.cursorDown then functsc.cursorDown() end
-	end
-	functsPlus.cursorClick = functsc.cursorClick
-
-	Btn = cTIV:create(buttnlocSize,{img = tab.imgN,originalSize=tab.originalSize},textP,name,parent,functsPlus)
-	normTextP = copyTable(Btn.textP)
-	return Btn
 end
 
 function createSeparatorVert(x,y,h,parent)
