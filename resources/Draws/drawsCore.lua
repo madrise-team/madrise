@@ -552,11 +552,12 @@ function TIV:Destroy()
 		end
 	end
 
+	self.parent.elements[self.index] = nil
+
 	if self.destruction then
 		self.destruction(self)
 	end
 
-	self.parent.elements[self.index] = nil
 	self = nil	
 end
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -598,9 +599,8 @@ extended (scrollTIV, TIV)
 function scrollTIV:create(LocSize,Name,Parent)
 	local scrlP_name = Name.."_scroll"
 	local this = TIV:create(LocSize,nil,nil,scrlP_name,Parent)
-	--local this = TIV:create(LocSize,{img = ":Draws/win/winTest.png",color = tocolor(120,109,220,160),originalSize = {w= 2,h = 1}},nil,scrlP_name,Parent)
-	--this.area = TIV:create({x=0,y=0,w=this.locSize.w,h=this.locSize.h,sizeType = "dynamic"},{img = "win/winTest.png",color = tocolor(220,229,20,160)},nil,Name,scrlP_name)
 	this.area = TIV:create({x=0,y=0,w=this.locSize.w,h=this.locSize.h,adapt = false},nil,nil,Name,this.name)
+	this.area.destruction = function() 	this:Destroy()	end
 
 	this.type = "scrollTIV"
 
@@ -643,6 +643,9 @@ function scrollTIV:createSliders()
 		end)
 		self.sliders[i] = TIV:create({x=slTab.x,y=0,w=slTab.w,h=slTab.h},{adapt = slTab.adapt, frame = slTab.frame,img = sliderTex},nil,self.name.."slider"..i,self.name)
 		
+		self.sliders[i].sliderShowFrames = slTab.showFrames or 8
+		self.sliders[i].sliderHideFrames = slTab.hideFrames or self.sliders[i].sliderShowFrames
+
 		if slTab.dontFadeSlider then 	self.sliders[i].dontFadeSlider = slTab.dontFadeSlider
 		else 							self.sliders[i].imgP.color.a = 0 				end
 	end
@@ -652,7 +655,8 @@ function scrollTIV:processSliders()
 		if not self.sliderShowed then
 			for k,v in pairs(self.sliders) do
 				if not v.dontFadeSlider then
-					animate(v,Animations.simpleFade,{frameCount = 8,startA = 0,endA = 255})
+					local showFrames = v.sliderShowFrames
+					animate(v,Animations.simpleFade,{frameCount = showFrames,startA = 0,endA = 255})
 				end
 			end
 			self.sliderShowed = true
@@ -661,7 +665,8 @@ function scrollTIV:processSliders()
 		if self.sliderShowed and (not self.mPressed) then
 			for i,v in rpairs(self.sliders) do
 				if not v.dontFadeSlider then
-					animate(v,Animations.simpleFade,{frameCount = 8,startA = v.imgP.color.a,endA = 0})
+					local hideFrames = v.sliderHideFrames
+					animate(v,Animations.simpleFade,{frameCount = hideFrames,startA = v.imgP.color.a,endA = 0})
 				end
 			end
 			self.sliderShowed = false
