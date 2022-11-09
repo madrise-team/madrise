@@ -588,17 +588,20 @@ end
 
 
 function calcLinerArrayLenght(lines)
+	local MaxLen = 0
 	local len = 0
 	for i,elm in ipairs(lines) do
 		if elm.lineArray then
-			len = len + calcLinerArrayLenght(elm)
+			inLen = calcLinerArrayLenght(elm)
+			if (inLen + len) > MaxLen then MaxLen = inLen + len end
 		else
 			if lines[i].nextPoint then
 				len = len + getDistanceBetweenPoints2D(lines[i].x,lines[i].y,lines[i].nextPoint.x,lines[i].nextPoint.y)
+				if len > MaxLen then MaxLen = len end
 			end
 		end
 	end
-	return len
+	return MaxLen
 end
 function findLastLinePoint(array)
 	local lastPoint
@@ -650,7 +653,6 @@ function createLinesArray(w,r,g,b,a)
 	lines.adapt = true
 
 	lines.progress = 0
-	lines.goToProgress = 0
 
 	return lines
 end
@@ -694,14 +696,6 @@ function drawArray(parent,lines,ProcessedLen)
 					end
 
 					dxDrawLine(sx,sy,ex,ey,tocolor(lines.color.r,lines.color.g,lines.color.b,lines.color.a),lines.w)
-
-					
-
-					--[[
-					dxDrawRectangle(sx,sy+10,40,20,tocolor(0,0,0,255))
-					dxDrawText(lines[i].x,sx,sy+10)
-					dxDrawRectangle(sx,sy+26,40,20,tocolor(0,0,0,255))
-					dxDrawText(lines[i].y,sx,sy+26)]]
 
 					progressLen = progressLen - dist
 				end

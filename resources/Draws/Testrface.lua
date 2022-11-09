@@ -395,11 +395,11 @@ function BS()
 		return xa,ya,ea,ya2
 	end
 
-	animate(wiwer2,Animations.buildupStack,_,function()
-		local lines = {}
-		animate(wiwer2,Animations.maskedLayerDraw,{frame = function()
-			BSLinesHandler(lines,50,wiwer2.locSize.cpx,wiwer2.locSize.cpy,wiwer2.locSize.cutW,wiwer2.locSize.cutH)
-		end})
+	--animate(wiwer2,Animations.buildupStack,_,function()
+		--wiwer2.BSlines = {}
+		--animate(wiwer2,Animations.maskedLayerDraw,{frame = function()
+		--	BSLinesHandler(wiwer2.BSlines,50,wiwer2.locSize.cpx,wiwer2.locSize.cpy,wiwer2.locSize.cutW,wiwer2.locSize.cutH)
+		--end})
 
 		local colorer = fromColor(S_BS.darkGray1)
 		local BSLines = createLinesArray(3,colorer.r,colorer.g,colorer.b)
@@ -416,14 +416,14 @@ function BS()
 			return parametr
 		end
 		local params = {}
-			params[1] = shitPost(213,"ПОВРЕЖДЕНИЯ",600)
-			params[2] = shitPost(251,"ТОЧНОСТЬ",400)
-			params[3] = shitPost(286,"ТЕМП СТРЕЛЬБЫ",400)
-			params[4] = shitPost(321,"ЕМК. МАГАЗИНА",300)
-		addLinePoint(BSLines,21.5, 358		,8, 179)
+		--	params[1] = shitPost(213,"ПОВРЕЖДЕНИЯ",600)
+		--	params[2] = shitPost(251,"ТОЧНОСТЬ",400)
+		--	params[3] = shitPost(286,"ТЕМП СТРЕЛЬБЫ",400)
+		--	params[4] = shitPost(321,"ЕМК. МАГАЗИНА",300)
+		--addLinePoint(BSLines,21.5, 358		,8, 179)
 
-		addLinePoint(BSLines,21.5, 608		,8, 302)
-		addLinePoint(BSLines,218.5, 608		,65, 302)
+		--addLinePoint(BSLines,21.5, 608		,8, 302)
+		--addLinePoint(BSLines,218.5, 608		,65, 302)
 
 		linerer = createArea(0,0,SWins.BS.miniwin.w,SWins.BS.miniwin.h,"linesArea",wiwer2.name,"liner",{frameCount = 100,lines = BSLines}).show()
 
@@ -461,17 +461,17 @@ function BS()
 		end)
 
 		------------- fade anim ------------------------------------------------------
-		local orderedFadeAnimElements = {IcoPan,WeaponIco, WepName,
+		--[[local orderedFadeAnimElements = {IcoPan,WeaponIco, WepName,
 								params[1][1],params[1][2],{params[1][3],function() params[1][3].start() end},
 								params[2][1],params[2][2],{params[2][3],function() params[2][3].start() end},
 								params[3][1],params[3][2],{params[3][3],function() params[3][3].start() end},
 								params[4][1],params[4][2],{params[4][3],function() params[4][3].start() end},
 								descrLabel,buyBut,costLabel,addbut,subBut
 							}
-		animateOrderedElements(orderedFadeAnimElements,Animations.simpleFade,{frameCount = 8})
+		animateOrderedElements(orderedFadeAnimElements,Animations.simpleFade,{frameCount = 8})]]--
 		------------- /fade anim ------------------------------------------------------
 
-	end)
+	--end)
 end
 bindKey("7","down",function()
 	BS()	
