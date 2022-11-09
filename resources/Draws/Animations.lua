@@ -33,7 +33,7 @@ function animate(elm,animationT,args,endCall,AutoStart)
 	animBlock.elm = elm
 	animBlock.frame = animationT.frame
 	animBlock.destroyer = animationT.destroyer
-	animBlock.args = args; if type(args) ~= 'table' then animBlock.args = {} end
+	animBlock.args = copyTable(args); if type(args) ~= 'table' then animBlock.args = {} end
 	animBlock.endCall = endCall
 
 	animBlock.destroy = function()

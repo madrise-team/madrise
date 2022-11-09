@@ -366,33 +366,31 @@ bindKey("u","down",adderPatterner)
 function BS()
 	if topAlign then topAlign:Destroy() end
 
-	topAlign = createAligner(1,0.5,"aligner")
+	topAlign = createAligner(1,0.5,"alignerBS")
 	local wiwer = createWindow(SWins.miniwin2,"theWin",topAlign.name,SWins.miniwin2.offset.x,0,SWins.miniwin2.w,SWins.miniwin2.h)
 	local wiwer2 = createWindow(SWins.BS.miniwin,"theWin2",wiwer.name,20,19,SWins.BS.miniwin.w,SWins.BS.miniwin.h)
 
 	function vetkiAdd(array,y)
 		addLinePoint(array, 21.5, y, 	8, y/2)
 
-		local BSvetki = createLinesArray(5)
-				local _,ya2 = addLinePoint(	BSvetki,46,		y	)
-				local xa,ya = addLinePoint(	BSvetki,46,		y -8)
-				local ea = addLinePoint(	BSvetki,46 + 16,y -8)
-				addLinePoint(				BSvetki,46 + 16,y +8)
-				addLinePoint(				BSvetki,46,		y +8)
-				addLinePoint(				BSvetki,46,		y 	)
-			addLineArray(array,BSvetki)
+		local paramWhiteWetki = createLinesArray(5)
+				addLinePoint(	paramWhiteWetki,46,		y	)
+				addLinePoint(	paramWhiteWetki,46,		y -8)
+				addLinePoint(	paramWhiteWetki,46 + 16,y -8)
+				addLinePoint(	paramWhiteWetki,46 + 16,y +8)
+				addLinePoint(	paramWhiteWetki,46,		y +8)
+				addLinePoint(	paramWhiteWetki,46,		y 	)
+			addLineArray(array,paramWhiteWetki)
 
-
-		local BSvetki = createLinesInheritedArray(array)
-				addLinePoint(				BSvetki,21.5,	y		,8, 		y/2)
-				local _,ya2 = addLinePoint(	BSvetki,46,		y	)
-				local xa,ya = addLinePoint(	BSvetki,46,		y -8)
-				local ea = addLinePoint(	BSvetki,46 + 16,y -8)
-				addLinePoint(				BSvetki,46 + 16,y +8)
-				addLinePoint(				BSvetki,46,		y +8)
-				addLinePoint(				BSvetki,46,		y 	)
-			addLineArray(array,BSvetki)
-
+		local paramVetki = createLinesInheritedArray(array)
+				addLinePoint(				paramVetki,21.5,	y		,8, y/2)
+				local _,ya2 = addLinePoint(	paramVetki,46,		y	)
+				local xa,ya = addLinePoint(	paramVetki,46,		y -8)
+				local ea = addLinePoint(	paramVetki,46 + 16, y -8)
+				addLinePoint(				paramVetki,46 + 16, y +8)
+				addLinePoint(				paramVetki,46,		y +8)
+				addLinePoint(				paramVetki,46,		y 	)
+			addLineArray(array,paramVetki)
 
 		return xa,ya,ea,ya2
 	end
@@ -405,41 +403,33 @@ function BS()
 
 		local colorer = fromColor(S_BS.darkGray1)
 		local BSLines = createLinesArray(3,colorer.r,colorer.g,colorer.b)
-			addLinePoint(BSLines,334, 20.5		,160, 8)
-			addLinePoint(BSLines,48, 20.5		,37, 8)
-			addLinePoint(BSLines,21.5, 47		,8, 37)
+		addLinePoint(BSLines,334, 20.5		,160, 8)
+		addLinePoint(BSLines,48, 20.5		,37, 8)
+		addLinePoint(BSLines,21.5, 47		,8, 37)
 
-			function shitPost(y,text,fillWer)
-				local xa,ya,ea,ya2 = vetkiAdd(BSLines,y)
-					local parametr = {createRectangle(xa + 3,ya + 3,ea - xa - 3,(ya2 - ya)*2-3,S_BS.darkGray1,'paramRect_'..text,wiwer2.name,{adapt = false}),
-									 createLabel(SFonts.medium10,ea + 6,ya2 - 7,100,13,{text = text,color = tocolor(0,0,0,255),alignY = "center"},"label_"..text,wiwer2.name,{adaptPos = false}),
-									 createRectFiller(ea+110*msw,ya2-4,142*msw,8,"fillREcter"..text,wiwer2.name,{fillW = fillWer,maxW = 1000,adaptPos = false,colFill = S_BS.darkGray1,colIn = S_BS.gray2}),
-									}
-				return parametr
-			end
+		function shitPost(y,text,filledW)
+			local xa,ya,ea,ya2 = vetkiAdd(BSLines,y)
+			local parametr = {createRectangle(xa + 3,ya + 3,ea - xa - 3,(ya2 - ya)*2-3,S_BS.darkGray1,'paramRect_'..text,wiwer2.name,{adapt = false}),
+							  createLabel(SFonts.medium10,ea + 6,ya2 - 7,100,13,{text = text,color = tocolor(0,0,0,255),alignY = "center"},"label_"..text,wiwer2.name,{adaptPos = false}),
+							  createRectFiller(ea+110*msw,ya2-4,142*msw,8,"fillREcter"..text,wiwer2.name,{fillW = filledW,maxW = 1000,adaptPos = false,colFill = S_BS.darkGray1,colIn = S_BS.gray2}),
+							}
+			return parametr
+		end
+		local params = {}
+			params[1] = shitPost(213,"ПОВРЕЖДЕНИЯ",600)
+			params[2] = shitPost(251,"ТОЧНОСТЬ",400)
+			params[3] = shitPost(286,"ТЕМП СТРЕЛЬБЫ",400)
+			params[4] = shitPost(321,"ЕМК. МАГАЗИНА",300)
+		addLinePoint(BSLines,21.5, 358		,8, 179)
 
-			local params = {}
-				params[1] = shitPost(213,"ПОВРЕЖДЕНИЯ",600)
-				params[2] = shitPost(251,"ТОЧНОСТЬ",400)
-				params[3] = shitPost(286,"ТЕМП СТРЕЛЬБЫ",400)
-				params[4] = shitPost(321,"ЕМК. МАГАЗИНА",300)
-			addLinePoint(BSLines,21.5, 358		,8, 179)
-
-			addLinePoint(BSLines,21.5, 608		,8, 302)
-			addLinePoint(BSLines,218.5, 608		,65, 302)
-
-		
-		local BSUgolok = createLinesInheritedArray(BSLines)
-			addLinePoint(BSUgolok,358 - 23 - 1 - 25,636 - 17 - 8 - 3 - 15 - 25 + 25)
-			addLinePoint(BSUgolok,358 - 23 - 1,636 - 17 - 8 - 3 - 15 - 25)
-			addLinePoint(BSUgolok,358 - 23 - 1,636 - 17 - 8 - 3 - 15 - 60)
-		--addLineArray(BSLines,BSUgolok)
+		addLinePoint(BSLines,21.5, 608		,8, 302)
+		addLinePoint(BSLines,218.5, 608		,65, 302)
 
 		linerer = createArea(0,0,SWins.BS.miniwin.w,SWins.BS.miniwin.h,"linesArea",wiwer2.name,"liner",{frameCount = 100,lines = BSLines}).show()
 
 		local IcoPan = createPanel(S_BS.panel,46,42,S_BS.panel.w,S_BS.panel.h,"IcoPan",wiwer2.name)
 		local WeaponIco = createArea(27,26,214,67,"wepIco",IcoPan.name,nil,{imgP = {img = ":Draws/Elements/BS/WeaponIcons/AK-47.png",originalSize = {w = 214,h = 67}}})
-		createLabel(SFonts.medium12,8,S_BS.panel.th - 26,300,26,{text = "AK-47",alignY = "center",color = S_BS.gray1},"weponIco_name",IcoPan.name)
+		local WepName = createLabel(SFonts.medium12,8,S_BS.panel.th - 26,300,26,{text = "AK-47",alignY = "center",color = S_BS.gray1},"weponIco_name",IcoPan.name)
 		
 		local descrLabel = createLabel(SFonts.medium12,48,350,267,173,{text = "Легендарное советское оружие, разработанное в 1947 году и до сих пор стоящее на вооружении в нескольких десятках стран.\nКак правило в представлении не нуждается...",alignY = "center",color = blackCol},"weponDescript",wiwer2.name)
 
@@ -470,40 +460,16 @@ function BS()
 			updateCount(-1)
 		end)
 
-		local aE = {} -- animated Elements
-		local fadeFrames = 5
-		aE[#aE+1] = animate(IcoPan,Animations.simpleFade,{frameCount = fadeFrames},nil,false)
-		aE[#aE+1] = animate(WeaponIco,Animations.simpleFade,{frameCount = fadeFrames},nil,false)
-		 aE[#aE+1] = animate(params[1][1],Animations.simpleFade,{frameCount = fadeFrames},nil,false)--
-		 aE[#aE+1] = animate(params[1][2],Animations.simpleFade,{frameCount = fadeFrames},nil,false)
-		 aE[#aE+1] = animate(params[1][3],Animations.simpleFade,{frameCount = fadeFrames},function()
-		 																					  params[1][3].start() end,false)
-
-		  aE[#aE+1] = animate(params[2][1],Animations.simpleFade,{frameCount = fadeFrames},nil,false)--
-		  aE[#aE+1] = animate(params[2][2],Animations.simpleFade,{frameCount = fadeFrames},nil,false)
-		  aE[#aE+1] = animate(params[2][3],Animations.simpleFade,{frameCount = fadeFrames},function()
-		  																					   params[2][3].start() end,false)
-
-		   aE[#aE+1] = animate(params[3][1],Animations.simpleFade,{frameCount = fadeFrames},nil,false)--
-		   aE[#aE+1] = animate(params[3][2],Animations.simpleFade,{frameCount = fadeFrames},nil,false)
-		   aE[#aE+1] = animate(params[3][3],Animations.simpleFade,{frameCount = fadeFrames},function()
-		   																						params[3][3].start() end,false)
-
-		   	aE[#aE+1] = animate(params[4][1],Animations.simpleFade,{frameCount = fadeFrames},nil,false)--
-		   	aE[#aE+1] = animate(params[4][2],Animations.simpleFade,{frameCount = fadeFrames},nil,false)
-		   	aE[#aE+1] = animate(params[4][3],Animations.simpleFade,{frameCount = fadeFrames},function()
-		   																						 params[4][3].start() end,false)
-		aE[#aE+1] = animate(descrLabel,Animations.simpleFade,{frameCount = fadeFrames},nil,false)
-		aE[#aE+1] = animate(buyBut,Animations.simpleFade,{frameCount = fadeFrames},nil,false)
-		aE[#aE+1] = animate(costLabel,Animations.simpleFade,{frameCount = fadeFrames},nil,false)
-		aE[#aE+1] = animate(addbut,Animations.simpleFade,{frameCount = fadeFrames},nil,false)
-		aE[#aE+1] = animate(subBut,Animations.simpleFade,{frameCount = fadeFrames},nil,false)
-
-		for i,v in ipairs(aE) do
-			frameWait(2*i,function() 
-				v.start()
-			end,"wiwer2_anmElms_"..i)
-		end
+		------------- fade anim ------------------------------------------------------
+		local orderedFadeAnimElements = {IcoPan,WeaponIco, WepName,
+								params[1][1],params[1][2],{params[1][3],function() params[1][3].start() end},
+								params[2][1],params[2][2],{params[2][3],function() params[2][3].start() end},
+								params[3][1],params[3][2],{params[3][3],function() params[3][3].start() end},
+								params[4][1],params[4][2],{params[4][3],function() params[4][3].start() end},
+								descrLabel,buyBut,costLabel,addbut,subBut
+							}
+		animateOrderedElements(orderedFadeAnimElements,Animations.simpleFade,{frameCount = 8})
+		------------- /fade anim ------------------------------------------------------
 
 	end)
 end

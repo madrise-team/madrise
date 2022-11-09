@@ -666,8 +666,8 @@ function addLineArray(array,insert)
 	array.len = calcLinerArrayLenght(array)
 end
 
-function drawArray(parent,lines,argPLen)
-	local progressLen = argPLen or lines.len*lines.progress
+function drawArray(parent,lines,ProcessedLen)
+	local progressLen = ProcessedLen or lines.len*lines.progress
 
 	for i,elm in ipairs(lines) do
 		if progressLen > 0 then
@@ -747,6 +747,28 @@ function createRectFiller(x,y,w,h,name,parent,argi,AutoStart)
 	end
 
 	return fillrecter
+end
+
+function animateOrderedElements(orederedAnimatingElements,anim,animArgs,animInterval)
+	local aE = {}
+
+	for indx=1,#orederedAnimatingElements do
+		local elmnt = orederedAnimatingElements[indx]
+		local callbackFuc
+		if elmnt[2] then
+			callbackFuc = elmnt[2]
+			elmnt = elmnt[1]
+		end
+
+		aE[#aE+1] = {aBlock = animate(elmnt,anim,animArgs,callbackFuc,false), name = elmnt.name.."orderedAnimationWaiter"}		
+	end
+	local animInterval = animInterval or 2
+	for index,animInf in ipairs(aE) do
+		local animInfo = animInf
+		frameWait(animInterval*index,function()
+			animInfo.aBlock.start()
+		end,animInfo.name.." "..index)
+	end
 end
 
 --------------------------
