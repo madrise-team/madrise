@@ -105,8 +105,6 @@ Animations = {}
 			if (ab.elm.imgP.color.a > ab.args.endA) then endCheck = false end
 		end
 
-
-
 		if endCheck then
 			ab.destroy()
 		end
@@ -256,8 +254,6 @@ Animations = {}
 				local rander = math.random(-20,20)/100.0
 				chelm._da_phases[i] = chelm._da_phases[i] + rander
 			end
-			
-			chelm._frameTimeKoef = 1/(chelm._da_phases[1] + chelm._da_phases[2])
 
 			chelm._da_phase = 1
 			if ab.args.startF == 1 then chelm._da_phase = 3 end
@@ -295,7 +291,7 @@ Animations = {}
 			end
 		end
 		if ab.args.mode == "self" then applyFuc(ab.elm)
-		else applyToLowestElements(ab.elm,applyFuc) end
+		else ab.args.applyModeFuc(ab.elm,applyFuc) end  -- раскидываем анимку по нижним элементам, минуя технические.
 		
 	end,
 	destroyer = function(ab)
@@ -303,7 +299,7 @@ Animations = {}
 			chelm.Draw = chelm._savedOrigDraw
 		end
 		if ab.args.mode == "self" then applyFuc(ab.elm)
-		else applyToLowestElements(ab.elm,applyFuc) end
+		else ab.args.applyModeFuc(ab.elm,applyFuc) end
 	end,
 	frame = function(ab)
 		ab.args.frameN = ab.args.frameN + 1
@@ -320,7 +316,7 @@ Animations = {}
 			end
 		end
 		if ab.args.mode == "self" then applyFuc(ab.elm)
-		else applyToLowestElements(ab.elm,applyFuc) end
+		else ab.args.applyModeFuc(ab.elm,applyFuc) end
 	end }
 	-------------------------------- displayTurningArray //\\
 

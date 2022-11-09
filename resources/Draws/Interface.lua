@@ -394,21 +394,6 @@ function createButton(tab,x,y,w,h,textP,name,parent,functsci)
 	return Btn
 end
 function createListButton(tab,x,y,w,h,textP,name,parent,functsc,ListArray)
-	w = w or tab.w
-	h = h or tab.h
-	local buttnlocSize = {["x"] = x,["y"] = y,["w"] = w,["h"] = h}
-	if textP then
-		textP.x = tab.tx
-		textP.y = tab.ty
-		textP.w = tab.tw or w
-		textP.h = tab.th or h
-
-		textP.alignX = tab.textAlignX or "center"
-		textP.alignY = tab.textAlignY or "center"
-
-		textP = bakeFont(textP,tab.font)
-	end
-
 	functsc = functsc or {}
 	local functsPlus = {}
 
@@ -445,8 +430,7 @@ function createListButton(tab,x,y,w,h,textP,name,parent,functsc,ListArray)
 		lBut.imgP.img = tab.imgS
 		if functsc.cursorClick then functsc.cursorClick() end
 	end
-
-	lBut = cTIV:create(buttnlocSize,{["img"] = tab.imgN,originalSize=tab.originalSize},textP,name,parent,functsPlus)
+	lBut = createButton(tab,x,y,w,h,textP,name,parent,functsPlus)
 	return lBut
 end
 
