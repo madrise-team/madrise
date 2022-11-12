@@ -17,26 +17,30 @@ updated = false -- if true then RT`s was cleared
 
 
 --- Утилиты ---------------------------------------------------------------------------------------------------------------------------
+---RT`s
 _RTsLevels = {}
-function setRenderTarget(RT,clear)
+originalDxSetRT = dxSetRenderTarget
+local dxSetRenderTarget = function(RT,clear)
 	if RT == nil then
 		if #_RTsLevels > 0 then
-			dxSetRenderTarget(_RTsLevels[#_RTsLevels])
+			originalDxSetRT(_RTsLevels[#_RTsLevels])
 			return
 		end
 	end
-	dxSetRenderTarget(RT,clear)
+	originalDxSetRT(RT,clear)
 end
 function enterToRT(RT,clear)
 	if not RT then outputDebugString("no RT to save!!") ; return end
 
 	_RTsLevels[#_RTsLevels + 1] = RT
-	setRenderTarget(RT,clear)
+	dxSetRenderTarget(RT,clear)
 end
 function escapeRT()
 	_RTsLevels[#_RTsLevels] = nil
-	setRenderTarget()
+	dxSetRenderTarget()
 end
+---/RT
+
 function drawBorder(x,y,w,h,color,lineW)
 	dxDrawLine (x,y,x+w,y, 		color, lineW, true)
 	dxDrawLine (x+w,y,x+w,y+h, 	color, lineW, true)
@@ -423,7 +427,7 @@ function TIV:Draw(drawing,childsDraw,selfDraw)
 			local leftHcut = maxer(size.h - imgT.tl.h - imgT.bl.h,imgSize.h - imgT.tl.h - imgT.bl.h)
 			local rightHcut = maxer(size.h - imgT.tr.h - imgT.br.h,imgSize.h - imgT.tr.h - imgT.br.h)
 			
-			setRenderTarget(self.imgP.slice9RT,true)
+			dxSetRenderTarget(self.imgP.slice9RT,true)
 			local savedBM = dxGetBlendMode()
 			dxSetBlendMode("add")
 			-----
@@ -442,7 +446,7 @@ function TIV:Draw(drawing,childsDraw,selfDraw)
 																																																																		--
 			-----
 			dxSetBlendMode(savedBM)
-			setRenderTarget()
+			dxSetRenderTarget()
 			dxDrawImage(self.locSize.cutX, self.locSize.cutY, self.locSize.cutW, self.locSize.cutH, self.imgP.slice9RT)
 
 		elseif self.imgP.img then										-- normall image draw
@@ -475,7 +479,7 @@ function TIV:Draw(drawing,childsDraw,selfDraw)
 
 			local savedBM = dxGetBlendMode()
 			dxSetBlendMode("modulate_add")
-			setRenderTarget(self.textP.textRT,true)
+			dxSetRenderTarget(self.textP.textRT,true)
 
 			dxDrawText (self.textP.text, left, top, left + self.textP.w, top + self.textP.h,
 				self.textP.color or tocolor(255,255,255,255), self.textP.scaleXY or 1.0, self.textP.scaleY or 1.0 , self.textP.font or "default",
@@ -483,7 +487,7 @@ function TIV:Draw(drawing,childsDraw,selfDraw)
 				self.textP.fRotation or 0.0,self.textP.fRotationCenterX or 0.0,self.textP.fRotationCenterY or 0.0)
 
 			dxSetBlendMode(savedBM)
-			setRenderTarget()
+			dxSetRenderTarget()
 			dxDrawImage(self.locSize.cutX, self.locSize.cutY, self.locSize.cutW, self.locSize.cutH, self.textP.textRT, 0,0,0 ,theColor)
 		end
 	 end
@@ -943,7 +947,7 @@ addEventHandler("onClientRender",root,function()
 
 
 
-	setRenderTarget(_winDebugDrawRT,true)
+	dxSetRenderTarget(_winDebugDrawRT,true)
 	
 	dxDrawRectangle(0,0,screenW*_wDDT_w,screenH*_wDDT_h,tocolor(25,45,35,25))
 	dxDrawLine(0,0,screenW*_wDDT_w,0,nil,7.4)
@@ -955,7 +959,7 @@ addEventHandler("onClientRender",root,function()
 
 
 
-	setRenderTarget(_winDebugMemoryRT,true)
+	dxSetRenderTarget(_winDebugMemoryRT,true)
 
 	dxDrawRectangle(0,0,270,100,tocolor(25,45,35,25))
 	dxDrawLine(0,0,screenW,0,nil,1)
@@ -969,7 +973,7 @@ addEventHandler("onClientRender",root,function()
 	dxDrawText("[RTs] -   "..dxMemoryStatus.VideoMemoryUsedByRenderTargets,35 - 24,40,nil,nil,nil,1.8,1.6)
 	dxDrawText("[Tex] -   "..dxMemoryStatus.VideoMemoryUsedByTextures,35 - 24,65,nil,nil,nil,1.8,1.6)
 
-	setRenderTarget()
+	dxSetRenderTarget()
 
 	if _winDebugDrawFullScreen then
 		if _winDebugDrawGraf then dxDrawImageSection(1,1,screenW-2,screenH-2,0,0,screenW*_winDebugDrawZoom,screenH*_winDebugDrawZoom,_winDebugDrawRT,0,0,0,tocolor(255,255,255,200),true) end

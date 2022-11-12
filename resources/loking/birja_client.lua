@@ -78,6 +78,7 @@ function openBirjaTruda(jobs)
 
     topWin = createAligner(0,0.5,birjaTopWin)
     local black = Blackout(birjaTopWin)
+	
 
     local areaW = createArea(0,SWins.big1.y,screenW,SWins.big1.h,birjaWinArea,birjaTopWin)
 	createBlurer(SWins.big1.x,SWins.big1.y,SWins.big1.noShadow.w,SWins.big1.noShadow.h,birjaWinArea)	

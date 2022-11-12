@@ -12,6 +12,8 @@ local scrRts = rlsc:getScreenRTs()
 _scrRT = scrRts[1]
 _scrRT2 = scrRts[2] ; scrRts = nil
 
+_LayerMaskShader = dxCreateShader(":Draws/fx/LayerMask.fx")
+
 _PatternShT =  rlsc:getPatternsTex()
 patternEbdTex = _PatternShT.patternEbdTex
 patternEbdTex2 = _PatternShT.patternEbdTex2
@@ -20,6 +22,8 @@ triangleTex = rlsc:getTxture("triangleTex")
 
 whiteCol = tocolor(255,255,255,255)
 blackCol = tocolor(0,0,0,255)
+
+
 
 --- -------------  --------------------------------------------------
 ------------------ Stantarts --------------------------------------------

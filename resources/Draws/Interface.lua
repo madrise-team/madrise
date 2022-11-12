@@ -51,13 +51,13 @@ function createTexFucFromDraws(w,h,drawsFunction,rendMode)
 	local process = function(render,obj)
 		local TexRT = render or dxCreateRenderTarget(w,h,true)
 		
-		setRenderTarget(TexRT,true)
+		dxSetRenderTarget(TexRT,true)
 		drawInBlendMode(rendMode or "add",function()
 		---
 			drawsFunction(render,obj)	
 		---
 		end)
-		setRenderTarget()
+		dxSetRenderTarget()
 
 		return TexRT
 	end
@@ -93,53 +93,54 @@ usingBlur = 0
 blurBuffer = dxCreateRenderTarget(screenW, screenH, true)
 
 screenSource = dxCreateScreenSource(screenW,screenH)
-if shaderBlurSim then --не биндим всю эту тему если нет шаейдера
+if shaderBlurSim then --не биндим всю эту тему если нет шаейдера заебет
 
-function razmit(texture,shaderChar)	--S = Simple ; G = Gaus
-	setRenderTarget (blurBuffer,false)							-- выставлем рендер таргет ( -> буфер)
-	
-	local shader
-	
-	if shaderChar == "S" then
-		shader = shaderBlurSim
-	end
-	if shaderChar == "G" then
-		shader = shaderBlurGaus
-	end
-	
-	if shaderChar == "G" then
-		dxSetShaderValue(shader,"texel_radius",0,1/screenH,10)	-- ставим параметр под вертикал размытие
-		dxSetShaderValue(shader,"screen",blurBuffer)				-- вставляем буфер во 2й проход
-		dxDrawImage(0,0,screenW,screenH,shader)					--  рендер 2го прохода в буфер
-	end
-	
-	dxSetShaderValue(shader,"texel_radius",1/screenW,0,10)  -- ставим параметр под горизонтал размытие
-	dxSetShaderValue(shader,"screen",texture); 				-- вставляем текстуру в 1й проход
-	dxDrawImage(0,0,screenW,screenH,shader)					--  рендер 1го прохода в буфер
-	
+	function razmit(texture,shaderChar)	--S = Simple ; G = Gaus
+		dxSetRenderTarget (blurBuffer,false)							-- выставлем рендер таргет ( -> буфер)
+		
+		local shader
+		
+		if shaderChar == "S" then
+			shader = shaderBlurSim
+		end
+		if shaderChar == "G" then
+			shader = shaderBlurGaus
+		end
+		
+		if shaderChar == "G" then
+			dxSetShaderValue(shader,"texel_radius",0,1/screenH,10)	-- ставим параметр под вертикал размытие
+			dxSetShaderValue(shader,"screen",blurBuffer)				-- вставляем буфер во 2й проход
+			dxDrawImage(0,0,screenW,screenH,shader)					--  рендер 2го прохода в буфер
+		end
+		
+		dxSetShaderValue(shader,"texel_radius",1/screenW,0,10)  -- ставим параметр под горизонтал размытие
+		dxSetShaderValue(shader,"screen",texture); 				-- вставляем текстуру в 1й проход
+		dxDrawImage(0,0,screenW,screenH,shader)					--  рендер 1го прохода в буфер
+		
 
-	setRenderTarget ()										-- выставлем рендер таргет ( -> экран)
+		dxSetRenderTarget ()										-- выставлем рендер таргет ( -> экран)
+	end
+	blurEnabled = false 										
+	addEventHandler("onClientRender",getRootElement(),function() 	-- фуллскрин тестер блюров
+		if not blurEnabled then return end
+		
+		dxUpdateScreenSource(screenSource)							-- Получаем экран
+		
+		dxSetRenderTarget (blurBuffer,true)
+		razmit(screenSource,"S")
+		razmit(blurBuffer,"S")
+		razmit(blurBuffer,"G")
+		dxDrawImage(0,0,screenW,screenH,blurBuffer) 	--рисуем фулл скрин
+	end)
+	--[[
+	bindKey('m','down',function()
+		outputChatBox("Draws/TesterFace: testing shader")
+		blurEnabled = not blurEnabled
+		showChat(not blurEnabled)
+	end)]]
+else 
+	outputDebugString("Can't create blure shader in Interface")
 end
-blurEnabled = false
-addEventHandler("onClientRender",getRootElement(),function()
-	if not blurEnabled then return end
-	
-	dxUpdateScreenSource(screenSource)							-- Получаем экран
-	
-	setRenderTarget (blurBuffer,true)
-	razmit(screenSource,"S")
-	razmit(blurBuffer,"S")
-	razmit(blurBuffer,"G")
-	--dxDrawImage(0,0,screenW,screenH,blurBuffer) 	--рисуем фулл скрин
-end)
-end
---[[
-bindKey('m','down',function()
-	outputChatBox("Draws/TesterFace: testing shader")
-	blurEnabled = not blurEnabled
-	showChat(not blurEnabled)
-end)
-]]
 ------------- Blur shader ----------------------------------------------------------------
 
 function createArea(x,y,w,h,name,parent,typer,argi)
@@ -226,8 +227,8 @@ end
 BlackoutImg = dxCreateTexture(":Draws/Elements/Blackout/Blackout.png", "dxt5")
 function Blackout(parent)
 	local blacker = TIV:create({["x"] = 0,["y"] = 0,["w"] = screenW,["h"] = screenH},{frame = true,['img'] = function(_,obj)
-		setRenderTarget(_scrRT,true)
-		
+		dxSetRenderTarget(_scrRT,true)
+
 		drawInBlendMode("add",function()
 			dxDrawImage(-1,-1,screenW+2,screenH+2,BlackoutImg,0,0,0,tocolor(0,2,4,124))	
 		end)
@@ -237,7 +238,7 @@ function Blackout(parent)
 			end
 		end)
 
-		setRenderTarget()
+		dxSetRenderTarget()
 
 		dxDrawImage(0,0,screenW,screenH,_scrRT,0,0,0,tocolor(obj.imgP.color.r,obj.imgP.color.g,obj.imgP.color.b,obj.imgP.color.a))
 	end},nil,"Blackout",parent)
@@ -756,7 +757,7 @@ function animateOrderedElements(orederedAnimatingElements,anim,animArgs,animInte
 
 		aE[#aE+1] = {aBlock = animate(elmnt,anim,animArgs,callbackFuc,false), name = elmnt.name.."orderedAnimationWaiter"}		
 	end
-	local animInterval = animInterval or 2
+	local animInterval = animInterval or 3
 	for index,animInf in ipairs(aE) do
 		local animInfo = animInf
 		frameWait(animInterval*index,function()

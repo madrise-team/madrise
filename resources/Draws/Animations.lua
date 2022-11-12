@@ -263,7 +263,7 @@ Animations = {}
 			chelm._da_random2 = math.random(-chelm.locSize.cutW/20,chelm.locSize.cutW/20)
 			chelm._da_radomCol = math.random(-20,20)
 
-			chelm.Draw = function(doDraw)
+			chelm.Draw = function(self, doDraw)
 				if chelm._da_phase < 2 then
 					return
 				elseif chelm._da_phase == 2 then
@@ -324,7 +324,6 @@ Animations = {}
 	Animations.buildupStack = {
 		name = "buildupStack",
 		-- ARGS:
-			-- startF		[0;1] 	(0)
 			-- stackCount	___		(2)
 			-- stackSmesX 	___		(4)
 			-- stackSmesY 	___		(4)
@@ -357,9 +356,9 @@ Animations = {}
 		local reducerStep = 255/(ab.args.stackCount+1)
 
 		local savePAdapt = ab.elm.locSize.adapt
-		ab.elm.locSize.adapt = false
+		ab.elm.locSize.adapt = false -- отключим на время адаптивность, дабы она не попала к дочерним элементам (у родитиля уже адаптированные корды)
 		for i=1,ab.args.stackCount do
-			local elemel = TIV:create(ab.elm.locSize,ab.elm.imgP,ab.elm.textP,ab.elm.name.."_stackChildren"..i,ab.elm.parent.name)
+			local elemel = TIV:create(ab.elm.locSize,ab.elm.imgP, nil,ab.elm.name.."_stackChildren"..i,ab.elm.parent.name)
 			elemel.hierarchyDraw = false
 			elemel.toggle = false
 			
@@ -380,23 +379,22 @@ Animations = {}
 		end
 		ab.elm.locSize.adapt = savePAdapt
 
-		ab.elm._stackBUp_innerDraw = ab.elm.Draw
-		ab.elm.Draw = function(_,doDraw,dodrawChilds,dodrawSelf)
-			for k,v in rpairs(ab.elm._stackChilds) do
-				if dodrawSelf ~= false then
-					v:Draw(doDraw,dodrawChilds,drawSelf)
+		ab.elm._stackBUp_savedDraw = ab.elm.Draw
+		ab.elm.Draw = function(self,drawing,childsDraw,selfDraw)
+			if (drawing ~= false) and (selfDraw ~= false) then
+				for k,v in rpairs(ab.elm._stackChilds) do
+					v:Draw()
 				end
 			end
-			ab.elm:_stackBUp_innerDraw(doDraw,dodrawChilds,dodrawSelf)
+			ab.elm:_stackBUp_savedDraw(drawing,childsDraw,selfDraw)
 		end
 
-
-		local innerDestruction = ab.elm.destruction
-		ab.elm.destruction = function(doD)
+		ab.args.savedDestruction = ab.elm.destruction
+		ab.elm.destruction = function()
 			for k,v in pairs(ab.elm._stackChilds) do
 				v:Destroy()
 			end
-			if innerDestruction then innerDestruction() end
+			if ab.args.savedDestruction then ab.args.savedDestruction() end
 		end
 
 
@@ -413,9 +411,7 @@ Animations = {}
 		anims[#anims].start()
 		
 	end,
-	destroyer = function(ab)
-	end,
-	frame = function(ab)
+	frame = function()
 	end 
 }
 	-------------------------------- buildupStack //\\
@@ -427,50 +423,42 @@ Animations = {}
 			-- frame  (function) (required)
 
 	init = function(ab)
-		ab.elm._maskedLayerDraw_innerDraw = ab.elm.Draw
-		--if true then return end
+		ab.elm._maskedLayerDraw_savedDraw = ab.elm.Draw
 	
 		if not ab.args.frame then
 			outputDebugString("no frame arg in maskedLayerDraw animation! >"..ab.elm.name)
 		end
 
-		ab.layerMaskShader = dxCreateShader(":Draws/fx/LayerMask.fx")
+		ab.layerMaskShader = _LayerMaskShader
 
-		ab.elm.Draw = function()
-			-------
-			enterToRT(_scrRT,true)
-			local savedBM = dxGetBlendMode()
-			dxSetBlendMode("modulate_add")
+		ab.args.drawSelfSavedDraw = function() ab.elm:_maskedLayerDraw_savedDraw(true, false,true) end
+		ab.args.draw_scrRT =  function() dxDrawImage(0,0,screenW,screenH,_scrRT) end
 
-			ab.elm:_maskedLayerDraw_innerDraw(true,false,true)
+		ab.elm.Draw = function(self,drawing,childsDraw,selfDraw)
+			if drawing ~= false then
+				-------
+				enterToRT(_scrRT,true)
+				drawInBlendMode("modulate_add", ab.args.drawSelfSavedDraw)
+				escapeRT()
+				-------
+				drawInBlendMode("add",ab.args.draw_scrRT)
+				-------
+				enterToRT(_scrRT2,true)
+				ab.args.frame()
+				escapeRT()
+				-------
 
-			escapeRT()
-			dxSetBlendMode(savedBM)
-			
-			
-			local savedBM = dxGetBlendMode()
-			dxSetBlendMode("add")
-			dxDrawImage(0,0,screenW,screenH,_scrRT)
-			dxSetBlendMode(savedBM)
-			
-			-------
-			enterToRT(_scrRT2,true)
+				dxSetShaderValue(ab.layerMaskShader,"mask",_scrRT)
+				dxSetShaderValue(ab.layerMaskShader,"textura",_scrRT2)
 
-			ab.args.frame()
-
-			escapeRT()
-			-------
-
-			dxSetShaderValue(ab.layerMaskShader,"mask",_scrRT)
-			dxSetShaderValue(ab.layerMaskShader,"textura",_scrRT2)
-
-			dxDrawImage(0,0,screenW,screenH,ab.layerMaskShader)
-
-			ab.elm:_maskedLayerDraw_innerDraw(true,true,false)
+				dxDrawImage(0,0,screenW,screenH,ab.layerMaskShader)
+				ab.elm:_maskedLayerDraw_savedDraw(true, true,false)
+			else
+				ab.elm:_maskedLayerDraw_savedDraw(drawing)
+			end
 		end
 	end,
 	destroyer = function(ab)
-		
 	end,
 	frame = function(ab)
 	end}
