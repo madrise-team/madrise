@@ -91,7 +91,7 @@ blurBuffer = dxCreateRenderTarget(screenW,screenH,true)
 screenSource = dxCreateScreenSource(screenW,screenH)
 function razmit(texture,shaderChar)	--S = Simple ; G = Gaus
 	dxSetRenderTarget(blurBuffer,false)							-- выставлем рендер таргет ( -> буфер)
-	
+
 	local shader = _shaderBlurSim
 	if shaderChar == "G" then
 		shader = _shaderBlurGaus
@@ -111,13 +111,15 @@ end
 bluredSreenPrepared = false
 addEventHandler("onClientPreRender",root,function()
 	bluredSreenPrepared = false
+	dxSetRenderTarget(blurBuffer,true)
+	dxSetRenderTarget()
 end)
 function prepareBlurScreen()
 	if bluredSreenPrepared then return end
 	bluredSreenPrepared = true
 
 	dxUpdateScreenSource(screenSource)							-- Получаем экран
-	
+
 	razmit(screenSource,"S")
 	razmit(blurBuffer,"S")
 	razmit(blurBuffer,"G")
@@ -326,7 +328,7 @@ function createButton(tab,x,y,w,h,textP,name,parent,functsci)
 	end
 
 	local functsc = functsci or {}
-	if type(functsc) == 'function' then functsc = {cursorClick = functsc} end
+	if type(functsc) == 'function' then functsc = {cursorClick = functsci} end
 	local functsPlus = {}
 
 	local Btn
@@ -336,7 +338,7 @@ function createButton(tab,x,y,w,h,textP,name,parent,functsci)
 		local textTab = textTaber or normTextP
 		Btn.textP.color = textTab.color
 	end
-	
+
 	functsPlus.cursorEnter = function()
 		Btn.imgP.img = tab.imgH
 		retext(tab.textPHover)
@@ -353,7 +355,6 @@ function createButton(tab,x,y,w,h,textP,name,parent,functsci)
 		Btn.imgP.img = tab.imgD
 		retext(tab.textPDown)
 
-		Btn.selected = true
 		if functsc.cursorDown then functsc.cursorDown() end
 	end
 	functsPlus.cursorClick = functsc.cursorClick
@@ -362,30 +363,29 @@ function createButton(tab,x,y,w,h,textP,name,parent,functsci)
 	normTextP = copyTable(Btn.textP)
 	return Btn
 end
-function createListButton(tab,x,y,w,h,textP,name,parent,functsc,ListArray)
-	functsc = functsc or {}
-	local functsPlus = {}
+function createListButton(tab,x,y,w,h,textP,name,parent,functsci,ArrayOfList)
+	local lBut = createButton(tab,x,y,w,h,textP,name,parent,functsci)
+	local butFuncts = lBut.functs
+	local ListArray = ArrayOfList
 
-	local lBut
-	functsPlus.cursorEnter = function()
+	local functsPlusPlus = {}
+
+	functsPlusPlus.cursorEnter = function()
 		if lBut.selected then return end
 
-		lBut.imgP.img = tab.imgH
-		if functsc.cursorEnter then functsc.cursorEnter() end
+		if butFuncts.cursorEnter then butFuncts.cursorEnter() end
 	end
-	functsPlus.cursorExit = function()
+	functsPlusPlus.cursorExit = function()
 		if lBut.selected then return end
 
-		lBut.imgP.img = tab.imgN
-		if functsc.cursorExit then functsc.cursorExit() end
+		if butFuncts.cursorExit then butFuncts.cursorExit() end
 	end
-	functsPlus.cursorDown = function()
+	functsPlusPlus.cursorDown = function()
 		if lBut.selected then return end
 
-		lBut.imgP.img = tab.imgD
-		if functsc.cursorDown then functsc.cursorDown() end
+		if butFuncts.cursorDown then butFuncts.cursorDown() end
 	end
-	functsPlus.cursorClick = function()
+	functsPlusPlus.cursorClick = function()		
 		if lBut.selected then return end
 
 		for k,v in pairs(ListArray) do
@@ -395,11 +395,14 @@ function createListButton(tab,x,y,w,h,textP,name,parent,functsc,ListArray)
 			end
 		end
 		lBut.selected = true
-
 		lBut.imgP.img = tab.imgS
-		if functsc.cursorClick then functsc.cursorClick() end
+		if butFuncts.cursorClick then 
+			butFuncts.cursorClick()
+		end
 	end
-	lBut = createButton(tab,x,y,w,h,textP,name,parent,functsPlus)
+	lBut.functs = functsPlusPlus
+
+
 	return lBut
 end
 
@@ -457,7 +460,7 @@ function createSeparatorWinBlock(parent,x,y)
 	local w = ow
 	local h = oh	
 	
-	TIV:create({["x"] = x, ["y"] = y, ["w"] = w, ["h"] = h},{["img"] = ":Draws/Elements/SeparatorHeader/SeparatorHeader.png",originalSize={w=ow,h=oh}},	nil,nil,parent)
+	TIV:create({["x"] = x, ["y"] = y, ["w"] = w, ["h"] = h},{["img"] = ":Draws/Elements/SeparatorHeader/SeparatorHeader.png",originalSize={w=ow,h=oh}},	nil,"headerSeparator",parent)
 end
 function createPanel(tab,x,y,w,h,name,parent,argi)
 	local args = argi or {}
