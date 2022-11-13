@@ -17,25 +17,37 @@ updated = false -- if true then RT`s was cleared
 
 
 --- Утилиты ---------------------------------------------------------------------------------------------------------------------------
+---RT`s
 _RTsLevels = {}
-function setRenderTarget(RT,clear)
+
+local originalDxSetRT = dxSetRenderTarget
+dxSetRenderTarget = function(RT,clear)
 	if RT == nil then
 		if #_RTsLevels > 0 then
-			dxSetRenderTarget(_RTsLevels[#_RTsLevels])
+			originalDxSetRT(_RTsLevels[#_RTsLevels])
 			return
 		end
 	end
-	dxSetRenderTarget(RT,clear)
+	originalDxSetRT(RT,clear)
 end
 function enterToRT(RT,clear)
 	if not RT then outputDebugString("no RT to save!!") ; return end
 
 	_RTsLevels[#_RTsLevels + 1] = RT
-	setRenderTarget(RT,clear)
+	dxSetRenderTarget(RT,clear)
 end
 function escapeRT()
 	_RTsLevels[#_RTsLevels] = nil
-	setRenderTarget()
+	dxSetRenderTarget()
+end
+---/RT
+
+function drawBorder(x,y,w,h,color,lineW)
+	dxDrawLine (x,y,x+w,y, 		color, lineW, true)
+	dxDrawLine (x+w,y,x+w,y+h, 	color, lineW, true)
+	dxDrawLine (x+w,y+h,x,y+h, 	color, lineW, true)
+	dxDrawLine (x,y+h,x,y, 		color, lineW, true)
+	
 end
 
 --- Полезные функции работы с элементами ----------------------------------------------------------------------------------------------
@@ -237,15 +249,6 @@ function TIV:create(LocSize,Img,Text,Name,Parent)
 	this.imgP = copyTable(Img)
 	this.imgP.color = formattColor(this.imgP.color)
 	this.imgP.color.childA = 255
-	if this.imgP.img then
-		if type(this.imgP.img) == "table" then --- save imageFuc and draw it
-			this.imgP.slice9RT = dxCreateRenderTarget (2, 2, true)
-		end
-		if type(this.imgP.img) == "function" then --- save imageFuc and draw it
-			this.textureFuc = this.imgP.img
-			this.imgP.img = nil
-		end 
-	end
 	if this.imgP.originalSize then
 		this.imgP.maxS = {
 			maxW = createMaxerFuc(this.imgP.originalSize.w),
@@ -272,8 +275,18 @@ function TIV:create(LocSize,Img,Text,Name,Parent)
 	setmetatable(this, self)
 	self.__index = self
 
-	if this.parent.Draw then this.parent:Draw(false) end
+	if this.parent.Draw then this.parent:Draw(false) end     -- костылик, фиксит для некторых случаеа положение элементов на 1м кадре после создания, отрисовка без отрисовки.
 	this:Draw(false)
+
+	if this.imgP.img then
+		if type(this.imgP.img) == "table" then --- RT for nslice
+			this.imgP.slice9RT = dxCreateRenderTarget (2, 2, true)
+		end
+		if type(this.imgP.img) == "function" then --- save imageFuc to draw it
+			this.textureFuc = this.imgP.img
+			this.imgP.img = nil
+		end 
+	end
 	
 	this.hierarchyDraw = true
 
@@ -378,16 +391,17 @@ function TIV:Draw(drawing,childsDraw,selfDraw)
 
 	local doDraw = true
 	if drawing == false then doDraw = false end
-	local doSelfDraw = true
-	if selfDraw == false then doSelfDraw = false end
 	local doChildsDraw = true
 	if childsDraw == false then doChildsDraw = false end
+	local doSelfDraw = true
+	if selfDraw == false then doSelfDraw = false end
+	
 
 
 
 
 	if doDraw then
-		if (updated or self.imgP.frame) and (self.textureFuc ~= nil) then
+		if (updated or self.imgP.frame or (not self.imgP.img)) and (self.textureFuc ~= nil) then
 			self.imgP.img = self.textureFuc(self.imgP.img,self)
 		end
 	 if doSelfDraw then		
@@ -414,7 +428,7 @@ function TIV:Draw(drawing,childsDraw,selfDraw)
 			local leftHcut = maxer(size.h - imgT.tl.h - imgT.bl.h,imgSize.h - imgT.tl.h - imgT.bl.h)
 			local rightHcut = maxer(size.h - imgT.tr.h - imgT.br.h,imgSize.h - imgT.tr.h - imgT.br.h)
 			
-			setRenderTarget(self.imgP.slice9RT,true)
+			dxSetRenderTarget(self.imgP.slice9RT,true)
 			local savedBM = dxGetBlendMode()
 			dxSetBlendMode("add")
 			-----
@@ -433,7 +447,7 @@ function TIV:Draw(drawing,childsDraw,selfDraw)
 																																																																		--
 			-----
 			dxSetBlendMode(savedBM)
-			setRenderTarget()
+			dxSetRenderTarget()
 			dxDrawImage(self.locSize.cutX, self.locSize.cutY, self.locSize.cutW, self.locSize.cutH, self.imgP.slice9RT)
 
 		elseif self.imgP.img then										-- normall image draw
@@ -466,7 +480,7 @@ function TIV:Draw(drawing,childsDraw,selfDraw)
 
 			local savedBM = dxGetBlendMode()
 			dxSetBlendMode("modulate_add")
-			setRenderTarget(self.textP.textRT,true)
+			dxSetRenderTarget(self.textP.textRT,true)
 
 			dxDrawText (self.textP.text, left, top, left + self.textP.w, top + self.textP.h,
 				self.textP.color or tocolor(255,255,255,255), self.textP.scaleXY or 1.0, self.textP.scaleY or 1.0 , self.textP.font or "default",
@@ -474,17 +488,14 @@ function TIV:Draw(drawing,childsDraw,selfDraw)
 				self.textP.fRotation or 0.0,self.textP.fRotationCenterX or 0.0,self.textP.fRotationCenterY or 0.0)
 
 			dxSetBlendMode(savedBM)
-			setRenderTarget()
+			dxSetRenderTarget()
 			dxDrawImage(self.locSize.cutX, self.locSize.cutY, self.locSize.cutW, self.locSize.cutH, self.textP.textRT, 0,0,0 ,theColor)
-			
-			--dxDrawText(self.locSize.cpx,1200,900)
-			--dxDrawText(left,1200,910)
 		end
 	 end
 	end
 
 	if doChildsDraw then -------------------------------child Draw -{
-		local dynamic,_,xk,yk = self:getDirections()
+		local dynamic,_,xk,yk = self:getDirections() 
 
 		local lstCord = 0
 		for i,chElm in ipairs(self.elements) do
@@ -508,8 +519,9 @@ function TIV:Draw(drawing,childsDraw,selfDraw)
 	end 					-------------------------------------------------_}
 
    --  .  - - debDraw
-	--dxDrawRectangle(self.locSize.cpx,self.locSize.cpy,self.locSize.w,self.locSize.h,tocolor(200,200,200,30))
-	--dxDrawText(self.name,self.locSize.cpx + self.locSize.w,self.locSize.cpy + self.locSize.h)
+   	--drawBorder(self.locSize.cpx,self.locSize.cpy,self.locSize.w,self.locSize.h,tocolor(255,100,100,255),3)
+	--dxDrawRectangle(self.locSize.cpx,self.locSize.cpy,self.locSize.w,self.locSize.h,tocolor(0,0,0,60))
+	--dxDrawText(self.name,self.locSize.cpx,self.locSize.cpy)
    --  .  - - debDraw
 
 	return self.texture
@@ -545,11 +557,12 @@ function TIV:Destroy()
 		end
 	end
 
+	self.parent.elements[self.index] = nil
+
 	if self.destruction then
 		self.destruction(self)
 	end
 
-	self.parent.elements[self.index] = nil
 	self = nil	
 end
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -591,9 +604,8 @@ extended (scrollTIV, TIV)
 function scrollTIV:create(LocSize,Name,Parent)
 	local scrlP_name = Name.."_scroll"
 	local this = TIV:create(LocSize,nil,nil,scrlP_name,Parent)
-	--local this = TIV:create(LocSize,{img = ":Draws/win/winTest.png",color = tocolor(120,109,220,160),originalSize = {w= 2,h = 1}},nil,scrlP_name,Parent)
-	--this.area = TIV:create({x=0,y=0,w=this.locSize.w,h=this.locSize.h,sizeType = "dynamic"},{img = "win/winTest.png",color = tocolor(220,229,20,160)},nil,Name,scrlP_name)
 	this.area = TIV:create({x=0,y=0,w=this.locSize.w,h=this.locSize.h,adapt = false},nil,nil,Name,this.name)
+	this.area.destruction = function() 	this:Destroy()	end
 
 	this.type = "scrollTIV"
 
@@ -604,46 +616,63 @@ function scrollTIV:create(LocSize,Name,Parent)
 	this.contentToHkoef = 1
 
 	this.slidersT = {
-		{x = 0, 				w = 8, h = 16, color = tocolor(140,140,140,200)},
-		{x = this.locSize.w - 8,w = 8, h = 16, color = tocolor(140,140,140,200)}
+		{x = 0, 				 w = 8, h = 16, color = tocolor(140,140,140,200),frame = false, dontFadeSlider = false},
+		{x = this.locSize.w - 8, w = 8, h = 16, color = tocolor(140,140,140,200),frame = false, dontFadeSlider = false}
 	}
 	
 	if LocSize.slidersT then
 		this.slidersT = LocSize.slidersT
 	end
-
-	this.slidersCount = #this.slidersT
 	this.sliderShowed = false
 
 	setmetatable(this, self)
 	self.__index = self
 
-	this:createSilers()
+	this:createSliders()
 
 	return this
 end
-function scrollTIV:createSilers()
+function scrollTIV:createSliders()
+	if self.sliders then
+		for k,v in pairs(self.sliders) do
+			v:Destroy()
+		end
+	end
+	self.slidersCount = #self.slidersT
+
 	self.sliders = {}
 	for i=1,self.slidersCount do
 		local slTab = self.slidersT[i]
-		local sliderTex = createTexFucFromDraws(slTab.w,slTab.h,function()
+		local sliderTex = slTab.img or createTexFucFromDraws(slTab.w,slTab.h,function()
 			dxDrawRectangle(0,0,slTab.w,slTab.h,slTab.color)
 		end)
-		self.sliders[i] = TIV:create({x=slTab.x,y=0,w=slTab.w,h=slTab.h},{img = sliderTex},nil,self.name.."slider"..i,self.name)
-	end	
+		self.sliders[i] = TIV:create({x=slTab.x,y=0,w=slTab.w,h=slTab.h},{adapt = slTab.adapt, frame = slTab.frame,img = sliderTex},nil,self.name.."slider"..i,self.name)
+		
+		self.sliders[i].sliderShowFrames = slTab.showFrames or 8
+		self.sliders[i].sliderHideFrames = slTab.hideFrames or self.sliders[i].sliderShowFrames
+
+		if slTab.dontFadeSlider then 	self.sliders[i].dontFadeSlider = slTab.dontFadeSlider
+		else 							self.sliders[i].imgP.color.a = 0 				end
+	end
 end
 function scrollTIV:processSliders()
 	if self.scrollVelocity ~= 0 then
 		if not self.sliderShowed then
 			for k,v in pairs(self.sliders) do
-				animate(v,Animations.simpleFade,{frameCount = 5})
+				if not v.dontFadeSlider then
+					local showFrames = v.sliderShowFrames
+					animate(v,Animations.simpleFade,{frameCount = showFrames,startA = 0,endA = 255})
+				end
 			end
 			self.sliderShowed = true
 		end
 	else
 		if self.sliderShowed and (not self.mPressed) then
 			for i,v in rpairs(self.sliders) do
-				animate(v,Animations.simpleFade,{frameCount = 5})
+				if not v.dontFadeSlider then
+					local hideFrames = v.sliderHideFrames
+					animate(v,Animations.simpleFade,{frameCount = hideFrames,startA = v.imgP.color.a,endA = 0})
+				end
 			end
 			self.sliderShowed = false
 		end
@@ -919,7 +948,7 @@ addEventHandler("onClientRender",root,function()
 
 
 
-	setRenderTarget(_winDebugDrawRT,true)
+	dxSetRenderTarget(_winDebugDrawRT,true)
 	
 	dxDrawRectangle(0,0,screenW*_wDDT_w,screenH*_wDDT_h,tocolor(25,45,35,25))
 	dxDrawLine(0,0,screenW*_wDDT_w,0,nil,7.4)
@@ -931,7 +960,7 @@ addEventHandler("onClientRender",root,function()
 
 
 
-	setRenderTarget(_winDebugMemoryRT,true)
+	dxSetRenderTarget(_winDebugMemoryRT,true)
 
 	dxDrawRectangle(0,0,270,100,tocolor(25,45,35,25))
 	dxDrawLine(0,0,screenW,0,nil,1)
@@ -945,7 +974,7 @@ addEventHandler("onClientRender",root,function()
 	dxDrawText("[RTs] -   "..dxMemoryStatus.VideoMemoryUsedByRenderTargets,35 - 24,40,nil,nil,nil,1.8,1.6)
 	dxDrawText("[Tex] -   "..dxMemoryStatus.VideoMemoryUsedByTextures,35 - 24,65,nil,nil,nil,1.8,1.6)
 
-	setRenderTarget()
+	dxSetRenderTarget()
 
 	if _winDebugDrawFullScreen then
 		if _winDebugDrawGraf then dxDrawImageSection(1,1,screenW-2,screenH-2,0,0,screenW*_winDebugDrawZoom,screenH*_winDebugDrawZoom,_winDebugDrawRT,0,0,0,tocolor(255,255,255,200),true) end

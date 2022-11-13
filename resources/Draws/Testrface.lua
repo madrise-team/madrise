@@ -4,8 +4,8 @@ import('Draws/drawsCore.lua')()
 ------------------------------------------------------------------------
 outputDebugString("-*-------- TesterFace --------*-")
 ------------------------------------------------------------------------
---_DoWinDubugDraw() f g c num_x
------ FPS ---------------------------------------------------------
+--_DoWinDubugDraw()  - испльзование _DWDD
+----- FPS calc ---------------------------------------------------------
 fps = 0
 nextTick = 0
 function getCurrentFPS() -- Setup the useful function
@@ -99,45 +99,40 @@ end)]]
 	end
 end)]]
 
-framer = 0
-created = false
-bindKey("u","up",function()
-  if true then return end
+framt = 0
+local randColRecter = function(_,obj)
+	framt = framt+1
 
-  if created then
-	local glaver = searchByName(GElements,"glav")
-	if glaver then glaver:Destroy() end 
-	created = false
-	destroyElement(rectr)
-  else
-  	rectr = createTexFucFromDraws(25,25,function()
-		dxDrawRectangle(0,10,25,5,tocolor(16,220,169,255))
-	end)()
+	local colR = 	((math.sin(framt/100) + 1)/2)*255
+	local colG = 	((math.cos(framt/50) + 1)/2)*255
+	local colB = 	((math.sin(framt/28) + 1)/2)*255
 
-  	created = true
-	local etoDrugoe = TIV:create({x = 1010 + SButton.button1small.w,y = 800,y2 = 4,w = SButton.button1small.w*2,h = SButton.button1small.h*2},{img = "win/winTest.png",color = {r = 180,g=150,b=60,a = 220}},{w = 120,h = 1000},"glav")
+	local lS = obj.locSize
+	dxDrawRectangle(lS.cutX,lS.cutY,lS.cutW,lS.cutH,tocolor(colR,colG,colB,obj.imgP.color.a))
+end
+
+bindKey("6","up",function()	
+	local scrollAreaName = "scrollыч"
 
 
-	createBlurer(700,800,200,120,parent)
-
-
-	local etoDrugoe3Crototen = TIV:create({x = 100,y = 40,w = 50,h = 50},{img = createTexFucFromDraws(50,50,function()	
-		framer = framer + 1
-		dxDrawImage (0, 0, 50,50,rectr,math.floor(framer*300.12341342513),0,0)
-		--dxDrawImage (0,0, 25,25,rectr)
-	end),frame = true},nil,"podglav","glav")
-
-	--[[local etoDrugoe2 = TIV:create({x = -160,y = -60,w = SButton.button1small.w,h = SButton.button1small.h},{img = SButton.button1small.imgN},{text = "blDoL",alignX = "center",scaleXY = 2,alignY = "center"},"podglav","glav")
-	local sus = 0
-	addEventHandler("onClientRender",root,function()
-		sus = sus + 1
-
-		etoDrugoe2.locSize.y1 = etoDrugoe2.locSize.y1 + math.sin(sus/15)*6
-		etoDrugoe2.locSize.x1 = etoDrugoe2.locSize.x1 + math.sin(sus/60)*5
-
-	end)]]
-  end
+	local slidersTable =  {}
+	local scrollZone = scrollTIV:create({x = 500,y = 400,w = 300,h = 350},scrollAreaName,nil)
+	scrollZone.slidersT[2] = {x = scrollZone.locSize.w/2 - 30, 	w = 40, h  = 10, img = randColRecter,frame = true}
+	scrollZone.slidersT[3] = {x = scrollZone.locSize.w - 4, 	w = 4, h  = 8,  img = createTexFucFromDraws(6,8,function()
+		outputChatBox("kok")
+		dxDrawLine(0,0,3,0)
+		dxDrawLine(3,0,3,7)
+		dxDrawLine(3,7,0,7)
+		dxDrawLine(0,7,0,0)
+	end)}
+	scrollZone:createSliders()
+	
+	for i=0,9 do
+		local liker = TIV:create({x = 20,y = 10 + SButton.button1small.h*i,w = SButton.button1small.w,h = SButton.button1small.h},
+			{img = SButton.button1small.imgN},nil,"clickTiv"..i,scrollAreaName)
+	end		
 end)
+
 credet = false
 --[[bindKey("u","up",function()
 	if credet then
@@ -367,83 +362,74 @@ bindKey("u","down",adderPatterner)
 
 
 
+----------------------------------------- BRAIN STORM FACE -------------------------------------------------------------------------------------------------------------------------------------------------------------
 function BS()
 	if topAlign then topAlign:Destroy() end
 
-	topAlign = createAligner(1,0.5,"aligner")
+	topAlign = createAligner(1,0.5,"alignerBS")
 	local wiwer = createWindow(SWins.miniwin2,"theWin",topAlign.name,SWins.miniwin2.offset.x,0,SWins.miniwin2.w,SWins.miniwin2.h)
 	local wiwer2 = createWindow(SWins.BS.miniwin,"theWin2",wiwer.name,20,19,SWins.BS.miniwin.w,SWins.BS.miniwin.h)
 
 	function vetkiAdd(array,y)
 		addLinePoint(array, 21.5, y, 	8, y/2)
 
-		local BSvetki = createLinesArray(5)
-				local _,ya2 = addLinePoint(	BSvetki,46,		y	)
-				local xa,ya = addLinePoint(	BSvetki,46,		y -8)
-				local ea = addLinePoint(	BSvetki,46 + 16,y -8)
-				addLinePoint(				BSvetki,46 + 16,y +8)
-				addLinePoint(				BSvetki,46,		y +8)
-				addLinePoint(				BSvetki,46,		y 	)
-			addLineArray(array,BSvetki)
+		local paramWhiteWetki = createLinesArray(5)
+				addLinePoint(	paramWhiteWetki,46,		y	)
+				addLinePoint(	paramWhiteWetki,46,		y -8)
+				addLinePoint(	paramWhiteWetki,46 + 16,y -8)
+				addLinePoint(	paramWhiteWetki,46 + 16,y +8)
+				addLinePoint(	paramWhiteWetki,46,		y +8)
+				addLinePoint(	paramWhiteWetki,46,		y 	)
+			addLineArray(array,paramWhiteWetki)
 
-
-		local BSvetki = createLinesInheritedArray(array)
-				addLinePoint(				BSvetki,21.5,	y		,8, 		y/2)
-				local _,ya2 = addLinePoint(	BSvetki,46,		y	)
-				local xa,ya = addLinePoint(	BSvetki,46,		y -8)
-				local ea = addLinePoint(	BSvetki,46 + 16,y -8)
-				addLinePoint(				BSvetki,46 + 16,y +8)
-				addLinePoint(				BSvetki,46,		y +8)
-				addLinePoint(				BSvetki,46,		y 	)
-			addLineArray(array,BSvetki)
-
+		local paramVetki = createLinesInheritedArray(array)
+				addLinePoint(				paramVetki,21.5,	y		,8, y/2)
+				local _,ya2 = addLinePoint(	paramVetki,46,		y	)
+				local xa,ya = addLinePoint(	paramVetki,46,		y -8)
+				local ea = addLinePoint(	paramVetki,46 + 16, y -8)
+				addLinePoint(				paramVetki,46 + 16, y +8)
+				addLinePoint(				paramVetki,46,		y +8)
+				addLinePoint(				paramVetki,46,		y 	)
+			addLineArray(array,paramVetki)
 
 		return xa,ya,ea,ya2
 	end
 
 	animate(wiwer2,Animations.buildupStack,_,function()
-		local lines = {}
+		wiwer2.BSFonlines = {}
 		animate(wiwer2,Animations.maskedLayerDraw,{frame = function()
-			BSLinesHandler(lines,50,wiwer2.locSize.cpx,wiwer2.locSize.cpy,wiwer2.locSize.cutW,wiwer2.locSize.cutH)
+			BSLinesHandler(wiwer2.BSFonlines,50,wiwer2.locSize.cpx,wiwer2.locSize.cpy,wiwer2.locSize.cutW,wiwer2.locSize.cutH)
 		end})
 
 		local colorer = fromColor(S_BS.darkGray1)
 		local BSLines = createLinesArray(3,colorer.r,colorer.g,colorer.b)
-			addLinePoint(BSLines,334, 20.5		,160, 8)
-			addLinePoint(BSLines,48, 20.5		,37, 8)
-			addLinePoint(BSLines,21.5, 47		,8, 37)
+		addLinePoint(BSLines,334, 20.5		,160, 8)
+		addLinePoint(BSLines,48, 20.5		,37, 8)
+		addLinePoint(BSLines,21.5, 47		,8, 37)
 
-			function shitPost(y,text,fillWer)
-				local xa,ya,ea,ya2 = vetkiAdd(BSLines,y)
-					local parametr = {createRectangle(xa + 3,ya + 3,ea - xa - 3,(ya2 - ya)*2-3,S_BS.darkGray1,'paramRect_'..text,wiwer2.name,{adapt = false}),
-									 createLabel(SFonts.medium10,ea + 6,ya2 - 7,100,13,{text = text,color = tocolor(0,0,0,255),alignY = "center"},"label_"..text,wiwer2.name,{adaptPos = false}),
-									 createRectFiller(ea+110*msw,ya2-4,142*msw,8,"fillREcter"..text,wiwer2.name,{fillW = fillWer,maxW = 1000,adaptPos = false,colFill = S_BS.darkGray1,colIn = S_BS.gray2}),
-									}
-				return parametr
-			end
+		function paramAdd(y,text,filledW)
+			local xa,ya,ea,ya2 = vetkiAdd(BSLines,y)
+			local parametr = {createRectangle(xa + 3,ya + 3,ea - xa - 3,(ya2 - ya)*2-3,S_BS.darkGray1,'paramRect_'..text,wiwer2.name,{adapt = false}),
+							  createLabel(SFonts.medium10,ea + 6,ya2 - 7,100,13,{text = text,color = tocolor(0,0,0,255),alignY = "center"},"label_"..text,wiwer2.name,{adaptPos = false}),
+							  createRectFiller(ea+110*msw,ya2-4,142*msw,8,"fillREcter"..text,wiwer2.name,{fillW = filledW,maxW = 1000,adaptPos = false,colFill = S_BS.darkGray1,colIn = S_BS.gray2}),
+							}
+			return parametr
+		end
+		local params = {}
+			params[1] = paramAdd(213,"ПОВРЕЖДЕНИЯ",600)
+			params[2] = paramAdd(251,"ТОЧНОСТЬ",400)
+			params[3] = paramAdd(286,"ТЕМП СТРЕЛЬБЫ",400)
+			params[4] = paramAdd(321,"ЕМК. МАГАЗИНА",300)
+		addLinePoint(BSLines,21.5, 358		,8, 179)
 
-			local params = {}
-				params[1] = shitPost(213,"ПОВРЕЖДЕНИЯ",600)
-				params[2] = shitPost(251,"ТОЧНОСТЬ",400)
-				params[3] = shitPost(286,"ТЕМП СТРЕЛЬБЫ",400)
-				params[4] = shitPost(321,"ЕМК. МАГАЗИНА",300)
-			addLinePoint(BSLines,21.5, 358		,8, 179)
-
-			addLinePoint(BSLines,21.5, 608		,8, 302)
-			addLinePoint(BSLines,218.5, 608		,65, 302)
-
-		
-		local BSUgolok = createLinesInheritedArray(BSLines)
-			addLinePoint(BSUgolok,358 - 23 - 1 - 25,636 - 17 - 8 - 3 - 15 - 25 + 25)
-			addLinePoint(BSUgolok,358 - 23 - 1,636 - 17 - 8 - 3 - 15 - 25)
-			addLinePoint(BSUgolok,358 - 23 - 1,636 - 17 - 8 - 3 - 15 - 60)
-		--addLineArray(BSLines,BSUgolok)
+		addLinePoint(BSLines,21.5, 608		,8, 302)
+		addLinePoint(BSLines,218.5, 608		,65, 302)
 
 		linerer = createArea(0,0,SWins.BS.miniwin.w,SWins.BS.miniwin.h,"linesArea",wiwer2.name,"liner",{frameCount = 100,lines = BSLines}).show()
 
 		local IcoPan = createPanel(S_BS.panel,46,42,S_BS.panel.w,S_BS.panel.h,"IcoPan",wiwer2.name)
 		local WeaponIco = createArea(27,26,214,67,"wepIco",IcoPan.name,nil,{imgP = {img = ":Draws/Elements/BS/WeaponIcons/AK-47.png",originalSize = {w = 214,h = 67}}})
-		createLabel(SFonts.medium12,8,S_BS.panel.th - 26,300,26,{text = "AK-47",alignY = "center",color = S_BS.gray1},"weponIco_name",IcoPan.name)
+		local WepName = createLabel(SFonts.medium12,8,S_BS.panel.th - 26,300,26,{text = "AK-47",alignY = "center",color = S_BS.gray1},"weponIco_name",IcoPan.name)
 		
 		local descrLabel = createLabel(SFonts.medium12,48,350,267,173,{text = "Легендарное советское оружие, разработанное в 1947 году и до сих пор стоящее на вооружении в нескольких десятках стран.\nКак правило в представлении не нуждается...",alignY = "center",color = blackCol},"weponDescript",wiwer2.name)
 
@@ -474,47 +460,23 @@ function BS()
 			updateCount(-1)
 		end)
 
-		local aE = {} -- animated Elements
-		local fadeFrames = 5
-		aE[#aE+1] = animate(IcoPan,Animations.simpleFade,{frameCount = fadeFrames},nil,false)
-		aE[#aE+1] = animate(WeaponIco,Animations.simpleFade,{frameCount = fadeFrames},nil,false)
-		 aE[#aE+1] = animate(params[1][1],Animations.simpleFade,{frameCount = fadeFrames},nil,false)--
-		 aE[#aE+1] = animate(params[1][2],Animations.simpleFade,{frameCount = fadeFrames},nil,false)
-		 aE[#aE+1] = animate(params[1][3],Animations.simpleFade,{frameCount = fadeFrames},function()
-		 																					  params[1][3].start() end,false)
-
-		  aE[#aE+1] = animate(params[2][1],Animations.simpleFade,{frameCount = fadeFrames},nil,false)--
-		  aE[#aE+1] = animate(params[2][2],Animations.simpleFade,{frameCount = fadeFrames},nil,false)
-		  aE[#aE+1] = animate(params[2][3],Animations.simpleFade,{frameCount = fadeFrames},function()
-		  																					   params[2][3].start() end,false)
-
-		   aE[#aE+1] = animate(params[3][1],Animations.simpleFade,{frameCount = fadeFrames},nil,false)--
-		   aE[#aE+1] = animate(params[3][2],Animations.simpleFade,{frameCount = fadeFrames},nil,false)
-		   aE[#aE+1] = animate(params[3][3],Animations.simpleFade,{frameCount = fadeFrames},function()
-		   																						params[3][3].start() end,false)
-
-		   	aE[#aE+1] = animate(params[4][1],Animations.simpleFade,{frameCount = fadeFrames},nil,false)--
-		   	aE[#aE+1] = animate(params[4][2],Animations.simpleFade,{frameCount = fadeFrames},nil,false)
-		   	aE[#aE+1] = animate(params[4][3],Animations.simpleFade,{frameCount = fadeFrames},function()
-		   																						 params[4][3].start() end,false)
-		aE[#aE+1] = animate(descrLabel,Animations.simpleFade,{frameCount = fadeFrames},nil,false)
-		aE[#aE+1] = animate(buyBut,Animations.simpleFade,{frameCount = fadeFrames},nil,false)
-		aE[#aE+1] = animate(costLabel,Animations.simpleFade,{frameCount = fadeFrames},nil,false)
-		aE[#aE+1] = animate(addbut,Animations.simpleFade,{frameCount = fadeFrames},nil,false)
-		aE[#aE+1] = animate(subBut,Animations.simpleFade,{frameCount = fadeFrames},nil,false)
-
-		for i,v in ipairs(aE) do
-			frameWait(2*i,function() 
-				v.start()
-			end,"wiwer2_anmElms_"..i)
-		end
+		------------- fade anim ------------------------------------------------------
+		local orderedFadeAnimElements = {IcoPan,WeaponIco, WepName,
+								params[1][1],params[1][2],{params[1][3], params[1][3].start },
+								params[2][1],params[2][2],{params[2][3], params[2][3].start },
+								params[3][1],params[3][2],{params[3][3], params[3][3].start },
+								params[4][1],params[4][2],{params[4][3], params[4][3].start },
+								descrLabel,buyBut,costLabel,addbut,subBut
+							}
+		animateOrderedElements(orderedFadeAnimElements,Animations.simpleFade,{frameCount = 8})
+		------------- /fade anim ------------------------------------------------------
 
 	end)
 end
-bindKey("y","down",function()
+bindKey("7","down",function()
 	BS()	
 end)
-
+----------------------------------------- BRAIN STORM FACE -------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
 
@@ -1063,6 +1025,4 @@ addEventHandler("onClientRender",root,function()
 	--dxDrawMaterialLine3D(x1,y1,z1, x2,y2,z2,false,":Draws/win/winTest.png", 1, tocolor(255,255,255,255),true)
 end)
 
-
---[[outputDebugString("sobaka+")--]]
---[[_DoWinDubugDraw()--]]
+--_DoWinDubugDraw()

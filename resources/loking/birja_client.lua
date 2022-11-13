@@ -7,7 +7,7 @@ rlsc = exports.RRL_Scripts
 JobsContent = {}
 JobsContent["busWork"] = {
 	name = "Водитель автобуса",
-	jobText = [[Давно выяснено, что <Водитель автобуса> при оценке дизайна и композиции мешает сосредоточиться.Lorem Ipsum используют потому, что тот обеспечивает более или менее стандартное заполнение шаблона, а также реальное распределение букв и пробелов в]]
+	jobText = [[А вот это описание будет в разы длинне чем остальные но это позволит проверить работает ли динамический размер и выравнивание. Давно выяснено, что <Водитель автобуса> при оценке дизайна и композиции мешает сосредоточиться.Lorem Ipsum используют потому, что тот обеспечивает более или менее стандартное заполнение шаблона, а также реальное распределение букв и пробелов в]]
 }
 JobsContent["dostavWork"] = {
 	name = "Грузопереозчик",
@@ -78,18 +78,17 @@ function openBirjaTruda(jobs)
 
     topWin = createAligner(0,0.5,birjaTopWin)
     local black = Blackout(birjaTopWin)
+	
 
     local areaW = createArea(0,SWins.big1.y,screenW,SWins.big1.h,birjaWinArea,birjaTopWin)
 	createBlurer(SWins.big1.x,SWins.big1.y,SWins.big1.noShadow.w,SWins.big1.noShadow.h,birjaWinArea)	
-
-
 
     local win = createWindow(SWins.big1,birjaTrudaWinName,birjaWinArea)
     createPattern(SPattern.EDBA,birjaTrudaWinName)
     createButton(SButton.close1,1292,0,  nil , nil , nil,"close",birjaTrudaWinName,{["cursorClick"] = function()
 		animate(win,Animations.displayTurningArray,{startF = 1,frameCount = 20,mode = "self"},function()
+			black.setVoid()
 			areaW:Destroy()
-			black.setBlack()
 		end)
 		animate(black,Animations.simpleFade,{startA = 255,endA = 0,framesCount = 60},function()
 			closeBirjaTrude()
@@ -111,26 +110,21 @@ function openBirjaTruda(jobs)
   	for k,j in pairs(jobs) do
   		i = i + 1
 
-  		JobsListbutsArray[i] = createListButton(SListButton.list1,0,(74 + 5)*(i-1),  nil , nil ,{["text"] = JobsContent[k].name},birjaTrudaWinName.."-JobsListButton"..i,JobsAreaName,{["cursorClick"] = function()
+  		JobsListbutsArray[i] = createListButton(SListButton.list1,0,(74 + 5)*(i-1),  nil , nil ,{["text"] = JobsContent[k].name},birjaTrudaWinName.."-JobsListButton"..i,JobsAreaName,function()
 			if desrcAreaTIV then 
 				desrcAreaTIV:Destroy()
 			end
 
-
-		  	desrcAreaTIV = createDynamicAlignArea(482,62,900,690,jobDescriptionArea,birjaTrudaWinName,0,0.5)
-			  
-			  createLabel(SFonts.ebda.h2,0,0,500,40,{["text"] = JobsContent[k].name},birjaTrudaWinName.."-jobDescriptionHeader",jobDescriptionArea)
-			  outputDebugString("-     1")
-			  local jobText = JobsContent[k].jobText
-			  local bubt = createLabel(SFonts.ebda.text,0,40,500,400,{["text"] = jobText},birjaTrudaWinName.."-jobDescription",jobDescriptionArea,{sizeType = 'dynamic'})
-			  outputDebugString("-     2")
-			  createButton(SButton.button1small,0,40,  nil , nil ,{["text"] = "Начать"},"startNewSelectedJob",jobDescriptionArea,{["cursorClick"] = function()
-			  	triggerServerEvent("startNewJob",root,localPlayer,k)
-			  end})
+		  	desrcAreaTIV = createDynamicAlignArea(482,62,900,690,jobDescriptionArea,birjaTrudaWinName,0,0.5)  
+			createLabel(SFonts.ebda.h2,0,0,500,40,{["text"] = JobsContent[k].name},birjaTrudaWinName.."-jobDescriptionHeader",jobDescriptionArea)
+			local jobText = JobsContent[k].jobText
+			local bubt = createLabel(SFonts.ebda.text,0,40,500,400,{["text"] = jobText},birjaTrudaWinName.."-jobDescription",jobDescriptionArea,{sizeType = 'dynamic'})
+			createButton(SButton.button1small,0,40,  nil , nil ,{["text"] = "Начать"},"startNewSelectedJob",jobDescriptionArea,{["cursorClick"] = function()
+				triggerServerEvent("startNewJob",root,localPlayer,k)
+			end})
 			animate(desrcAreaTIV,Animations.moveAndFade,{startPos = 100})
-  		end},JobsListbutsArray)
+  		end,JobsListbutsArray)
   	end 
-  	--outputChatBox
 
   	win.toggle = false
   	animate(black,Animations.simpleFade,{framesCount = 60})
@@ -138,7 +132,7 @@ function openBirjaTruda(jobs)
 		win.toggle = true
 	end,false)
 	local patternA = animate(areaW,Animations.theresholdPattern,_,function()
-		black.setBlack(win.locSize.x,areaW.locSize.y,SWins.big1.noShadow.w,SWins.big1.noShadow.h)
+		black.setVoid(win.locSize.x,areaW.locSize.y,SWins.big1.noShadow.w,SWins.big1.noShadow.h)
 	end,false)
 	frameWait(22,function() 
 		displayA.start()

@@ -51,13 +51,13 @@ function createTexFucFromDraws(w,h,drawsFunction,rendMode)
 	local process = function(render,obj)
 		local TexRT = render or dxCreateRenderTarget(w,h,true)
 		
-		setRenderTarget(TexRT,true)
+		dxSetRenderTarget(TexRT,true)
 		drawInBlendMode(rendMode or "add",function()
 		---
 			drawsFunction(render,obj)	
 		---
 		end)
-		setRenderTarget()
+		dxSetRenderTarget()
 
 		return TexRT
 	end
@@ -86,30 +86,18 @@ end
 
 -------------------------------------------------------------------------
 ------------- Blur shader ----------------------------------------------------------------
-shaderBlurSim = dxCreateShader (":Draws/fx/blurSim.fx")
-shaderBlurGaus = dxCreateShader (":Draws/fx/blurGaus.fx")
-
-usingBlur = 0
-blurBuffer = dxCreateRenderTarget(screenW, screenH, true)
+blurBuffer = dxCreateRenderTarget(screenW,screenH,true)
 
 screenSource = dxCreateScreenSource(screenW,screenH)
-if shaderBlurSim then --не биндим всю эту тему если нет шаейдера
-
 function razmit(texture,shaderChar)	--S = Simple ; G = Gaus
-	setRenderTarget (blurBuffer,false)							-- выставлем рендер таргет ( -> буфер)
-	
-	local shader
-	
-	if shaderChar == "S" then
-		shader = shaderBlurSim
-	end
+	dxSetRenderTarget(blurBuffer,false)							-- выставлем рендер таргет ( -> буфер)
+
+	local shader = _shaderBlurSim
 	if shaderChar == "G" then
-		shader = shaderBlurGaus
-	end
+		shader = _shaderBlurGaus
 	
-	if shaderChar == "G" then
 		dxSetShaderValue(shader,"texel_radius",0,1/screenH,10)	-- ставим параметр под вертикал размытие
-		dxSetShaderValue(shader,"screen",blurBuffer)				-- вставляем буфер во 2й проход
+		dxSetShaderValue(shader,"screen",blurBuffer)			-- вставляем буфер во 2й проход
 		dxDrawImage(0,0,screenW,screenH,shader)					--  рендер 2го прохода в буфер
 	end
 	
@@ -117,29 +105,25 @@ function razmit(texture,shaderChar)	--S = Simple ; G = Gaus
 	dxSetShaderValue(shader,"screen",texture); 				-- вставляем текстуру в 1й проход
 	dxDrawImage(0,0,screenW,screenH,shader)					--  рендер 1го прохода в буфер
 	
-
-	setRenderTarget ()										-- выставлем рендер таргет ( -> экран)
+	dxSetRenderTarget()										-- возврат RT ( -> exitRT)
 end
-blurEnabled = false
-addEventHandler("onClientRender",getRootElement(),function()
-	if not blurEnabled then return end
-	
+
+bluredSreenPrepared = false
+addEventHandler("onClientPreRender",root,function()
+	bluredSreenPrepared = false
+	dxSetRenderTarget(blurBuffer,true)
+	dxSetRenderTarget()
+end)
+function prepareBlurScreen()
+	if bluredSreenPrepared then return end
+	bluredSreenPrepared = true
+
 	dxUpdateScreenSource(screenSource)							-- Получаем экран
-	
-	setRenderTarget (blurBuffer,true)
+
 	razmit(screenSource,"S")
 	razmit(blurBuffer,"S")
 	razmit(blurBuffer,"G")
-	--dxDrawImage(0,0,screenW,screenH,blurBuffer) 	--рисуем фулл скрин
-end)
 end
---[[
-bindKey('m','down',function()
-	outputChatBox("Draws/TesterFace: testing shader")
-	blurEnabled = not blurEnabled
-	showChat(not blurEnabled)
-end)
-]]
 ------------- Blur shader ----------------------------------------------------------------
 
 function createArea(x,y,w,h,name,parent,typer,argi)
@@ -202,32 +186,20 @@ function createDynamicAlignArea(x,y,w,h,name,parent,ax,ay)
 end
 
 
-function createBlurer(x,y,w,h,parent,padding)
+function createBlurer(x,y,w,h,parent)
 	local tiver
-	tiver = TIV:create({x = x,y = y,w = w,h = h},{frame = true,img = createTexFucFromDraws(w,h,function(render,obj)
-		if obj.locSize then
-			dxDrawImageSection (0,0, obj.locSize.cutW, obj.locSize.cutH,
-                          		obj.locSize.cutX,obj.locSize.cutY, obj.locSize.cutW, obj.locSize.cutH, blurBuffer)
-		end
-	end)},nil,nil,parent)
-	
-	usingBlur = usingBlur + 1
-	blurEnabled = true
+	tiver = TIV:create({x = x,y = y,w = w,h = h},{frame = true,img = function(render,obj)
+		prepareBlurScreen()
+		dxDrawImageSection(obj.locSize.cutX, obj.locSize.cutY, obj.locSize.cutW, obj.locSize.cutH,
+                      		obj.locSize.cutX,obj.locSize.cutY, obj.locSize.cutW, obj.locSize.cutH, blurBuffer)
+	end},nil,"Blurer",parent)
 
-	tiver.destruction = function()
-		usingBlur = usingBlur - 1
-		if usingBlur <= 0 then
-			usingBlur = 0
-			blurEnabled = false
-		end
-	end
 	return tiver
 end
 BlackoutImg = dxCreateTexture(":Draws/Elements/Blackout/Blackout.png", "dxt5")
 function Blackout(parent)
 	local blacker = TIV:create({["x"] = 0,["y"] = 0,["w"] = screenW,["h"] = screenH},{frame = true,['img'] = function(_,obj)
-		setRenderTarget(_scrRT,true)
-		
+		dxSetRenderTarget(_scrRT,true)
 		drawInBlendMode("add",function()
 			dxDrawImage(-1,-1,screenW+2,screenH+2,BlackoutImg,0,0,0,tocolor(0,2,4,124))	
 		end)
@@ -236,12 +208,11 @@ function Blackout(parent)
 				dxDrawRectangle(obj.imgP.black.x,obj.imgP.black.y,obj.imgP.black.w,obj.imgP.black.h,tocolor(255,255,255,obj.imgP.blackout or 0))
 			end
 		end)
-
-		setRenderTarget()
-
+		dxSetRenderTarget()
 		dxDrawImage(0,0,screenW,screenH,_scrRT,0,0,0,tocolor(obj.imgP.color.r,obj.imgP.color.g,obj.imgP.color.b,obj.imgP.color.a))
 	end},nil,"Blackout",parent)
-	blacker.setBlack = function(x,y,w,h)
+
+	blacker.setVoid = function(x,y,w,h)
 		blacker.imgP.black = {x=x,y=y,w=w,h=h}
 		if not x then
 			blacker.imgP.black = false
@@ -338,62 +309,6 @@ function createLabel(tabWithFont,x,y,w,h,textP,name,parent,argi)
 	return TIV:create({["x"] = x,["y"] = y,["w"] = w,["h"] = h,["sizeType"] = args.sizeType,["adapt"] = args.adapt,["adapt"] = args.adaptPos},nil,textP,name,parent)
 end
 
-function createListButton(tab,x,y,w,h,textP,name,parent,functsc,ListArray)
-	w = w or tab.w
-	h = h or tab.h
-	local buttnlocSize = {["x"] = x,["y"] = y,["w"] = w,["h"] = h}
-	if textP then
-		textP.x = tab.tx
-		textP.y = tab.ty
-		textP.w = tab.tw or w
-		textP.h = tab.th or h
-
-		textP.alignX = tab.textAlignX or "center"
-		textP.alignY = tab.textAlignY or "center"
-
-		textP = bakeFont(textP,tab.font)
-	end
-
-	functsc = functsc or {}
-	local functsPlus = {}
-
-	local lBut
-	functsPlus.cursorEnter = function()
-		if lBut.selected then return end
-
-		lBut.imgP.img = tab.imgH
-		if functsc.cursorEnter then functsc.cursorEnter() end
-	end
-	functsPlus.cursorExit = function()
-		if lBut.selected then return end
-
-		lBut.imgP.img = tab.imgN
-		if functsc.cursorExit then functsc.cursorExit() end
-	end
-	functsPlus.cursorDown = function()
-		if lBut.selected then return end
-
-		lBut.imgP.img = tab.imgD
-		if functsc.cursorDown then functsc.cursorDown() end
-	end
-	functsPlus.cursorClick = function()
-		if lBut.selected then return end
-
-		for k,v in pairs(ListArray) do
-			if v ~= lBut then
-				v.selected = false
-				v:cursorExit()
-			end
-		end
-		lBut.selected = true
-
-		lBut.imgP.img = tab.imgS
-		if functsc.cursorClick then functsc.cursorClick() end
-	end
-
-	lBut = cTIV:create(buttnlocSize,{["img"] = tab.imgN,originalSize=tab.originalSize},textP,name,parent,functsPlus)
-	return lBut
-end
 function createButton(tab,x,y,w,h,textP,name,parent,functsci)
 	tab = tab or {}
 	w = w or tab.w
@@ -413,7 +328,7 @@ function createButton(tab,x,y,w,h,textP,name,parent,functsci)
 	end
 
 	local functsc = functsci or {}
-	if type(functsc) == 'function' then functsc = {cursorClick = functsc} end
+	if type(functsc) == 'function' then functsc = {cursorClick = functsci} end
 	local functsPlus = {}
 
 	local Btn
@@ -423,7 +338,7 @@ function createButton(tab,x,y,w,h,textP,name,parent,functsci)
 		local textTab = textTaber or normTextP
 		Btn.textP.color = textTab.color
 	end
-	
+
 	functsPlus.cursorEnter = function()
 		Btn.imgP.img = tab.imgH
 		retext(tab.textPHover)
@@ -440,7 +355,6 @@ function createButton(tab,x,y,w,h,textP,name,parent,functsci)
 		Btn.imgP.img = tab.imgD
 		retext(tab.textPDown)
 
-		Btn.selected = true
 		if functsc.cursorDown then functsc.cursorDown() end
 	end
 	functsPlus.cursorClick = functsc.cursorClick
@@ -448,6 +362,48 @@ function createButton(tab,x,y,w,h,textP,name,parent,functsci)
 	Btn = cTIV:create(buttnlocSize,{img = tab.imgN,originalSize=tab.originalSize},textP,name,parent,functsPlus)
 	normTextP = copyTable(Btn.textP)
 	return Btn
+end
+function createListButton(tab,x,y,w,h,textP,name,parent,functsci,ArrayOfList)
+	local lBut = createButton(tab,x,y,w,h,textP,name,parent,functsci)
+	local butFuncts = lBut.functs
+	local ListArray = ArrayOfList
+
+	local functsPlusPlus = {}
+
+	functsPlusPlus.cursorEnter = function()
+		if lBut.selected then return end
+
+		if butFuncts.cursorEnter then butFuncts.cursorEnter() end
+	end
+	functsPlusPlus.cursorExit = function()
+		if lBut.selected then return end
+
+		if butFuncts.cursorExit then butFuncts.cursorExit() end
+	end
+	functsPlusPlus.cursorDown = function()
+		if lBut.selected then return end
+
+		if butFuncts.cursorDown then butFuncts.cursorDown() end
+	end
+	functsPlusPlus.cursorClick = function()		
+		if lBut.selected then return end
+
+		for k,v in pairs(ListArray) do
+			if v ~= lBut then
+				v.selected = false
+				v:cursorExit()
+			end
+		end
+		lBut.selected = true
+		lBut.imgP.img = tab.imgS
+		if butFuncts.cursorClick then 
+			butFuncts.cursorClick()
+		end
+	end
+	lBut.functs = functsPlusPlus
+
+
+	return lBut
 end
 
 function createSeparatorVert(x,y,h,parent)
@@ -504,7 +460,7 @@ function createSeparatorWinBlock(parent,x,y)
 	local w = ow
 	local h = oh	
 	
-	TIV:create({["x"] = x, ["y"] = y, ["w"] = w, ["h"] = h},{["img"] = ":Draws/Elements/SeparatorHeader/SeparatorHeader.png",originalSize={w=ow,h=oh}},	nil,nil,parent)
+	TIV:create({["x"] = x, ["y"] = y, ["w"] = w, ["h"] = h},{["img"] = ":Draws/Elements/SeparatorHeader/SeparatorHeader.png",originalSize={w=ow,h=oh}},	nil,"headerSeparator",parent)
 end
 function createPanel(tab,x,y,w,h,name,parent,argi)
 	local args = argi or {}
@@ -604,17 +560,20 @@ end
 
 
 function calcLinerArrayLenght(lines)
+	local MaxLen = 0
 	local len = 0
 	for i,elm in ipairs(lines) do
 		if elm.lineArray then
-			len = len + calcLinerArrayLenght(elm)
+			inLen = calcLinerArrayLenght(elm)
+			if (inLen + len) > MaxLen then MaxLen = inLen + len end
 		else
 			if lines[i].nextPoint then
 				len = len + getDistanceBetweenPoints2D(lines[i].x,lines[i].y,lines[i].nextPoint.x,lines[i].nextPoint.y)
+				if len > MaxLen then MaxLen = len end
 			end
 		end
 	end
-	return len
+	return MaxLen
 end
 function findLastLinePoint(array)
 	local lastPoint
@@ -666,7 +625,6 @@ function createLinesArray(w,r,g,b,a)
 	lines.adapt = true
 
 	lines.progress = 0
-	lines.goToProgress = 0
 
 	return lines
 end
@@ -682,8 +640,8 @@ function addLineArray(array,insert)
 	array.len = calcLinerArrayLenght(array)
 end
 
-function drawArray(parent,lines,argPLen)
-	local progressLen = argPLen or lines.len*lines.progress
+function drawArray(parent,lines,ProcessedLen)
+	local progressLen = ProcessedLen or lines.len*lines.progress
 
 	for i,elm in ipairs(lines) do
 		if progressLen > 0 then
@@ -710,14 +668,6 @@ function drawArray(parent,lines,argPLen)
 					end
 
 					dxDrawLine(sx,sy,ex,ey,tocolor(lines.color.r,lines.color.g,lines.color.b,lines.color.a),lines.w)
-
-					
-
-					--[[
-					dxDrawRectangle(sx,sy+10,40,20,tocolor(0,0,0,255))
-					dxDrawText(lines[i].x,sx,sy+10)
-					dxDrawRectangle(sx,sy+26,40,20,tocolor(0,0,0,255))
-					dxDrawText(lines[i].y,sx,sy+26)]]
 
 					progressLen = progressLen - dist
 				end
@@ -763,6 +713,28 @@ function createRectFiller(x,y,w,h,name,parent,argi,AutoStart)
 	end
 
 	return fillrecter
+end
+
+function animateOrderedElements(orederedAnimatingElements,anim,animArgs,animInterval)
+	local aE = {}
+
+	for indx=1,#orederedAnimatingElements do
+		local elmnt = orederedAnimatingElements[indx]
+		local callbackFuc
+		if elmnt[2] then
+			callbackFuc = elmnt[2]
+			elmnt = elmnt[1]
+		end
+
+		aE[#aE+1] = {aBlock = animate(elmnt,anim,animArgs,callbackFuc,false), name = elmnt.name.."orderedAnimationWaiter"}		
+	end
+	local animInterval = animInterval or 3
+	for index,animInf in ipairs(aE) do
+		local animInfo = animInf
+		frameWait(animInterval*index,function()
+			animInfo.aBlock.start()
+		end,animInfo.name.." "..index)
+	end
 end
 
 --------------------------
