@@ -129,3 +129,27 @@ for k,v in pairs(controlButs) do
 	end)
 end
 --]]
+
+
+
+local nadpisRT = dxCreateRenderTarget(600,400, true)
+
+local p1 = {2501.4538574219, -1687.1776123047, 13.523121833801}
+local p2 = {2486.3640136719, -1687.5388183594, 13.509897232056}
+local frame = 0
+addEventHandler("onClientRender",root,function()
+	frame = frame + 1/50
+
+	local colR = maxer(((math.sin(frame) + 1)/2)*255*3,255)
+	local colG = maxer(((math.sin(frame*2) + 1)/2)*255*3,255)
+	local colB = maxer(((math.sin(frame*3) + 1)/2)*255*3,255)
+
+
+	dxSetRenderTarget(nadpisRT,true)
+	dxDrawText ("Грув сосать!\n Харе тут залупаться) Вип зону накой пилили? (toHome команда)", 0, 0, 600, 400, tocolor(colR,colG,colB,255), 1.2, 1.2,
+                  "default", "center","center", false)
+	dxSetRenderTarget()
+
+	dxDrawMaterialLine3D (p1[1], p1[2], p1[3] + 4 + math.sin(frame)/2 + math.sin(frame/1.5), p2[1], p2[2], p2[3]  + 4 + math.sin(frame)/2 - math.sin(frame/1.5), true, nadpisRT, 10)
+
+end)

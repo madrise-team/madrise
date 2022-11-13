@@ -16,7 +16,7 @@ end
 
 function Remove()
 	for _, val in pairs(B1) do val:Destroy() end
-	B1 = {}	
+	B1 = {}	  --< крассавчик шо избавился от ссылок на убитые кнопки, респект
 end
 
 function Generator_Zadanii(zadanieK)
@@ -46,6 +46,8 @@ function Render_Zad()
 	else
 		Remove()
 		Access = true		
+		-- не оч хорошо, что ремув будет высираться каждый кадр, когда его нужно вызвать всего раз
+		-- хотя массив и пустой, в эталоне, перенести бы ремув в биндКей("0"), и вызвать его только при непосредственном перекл на Created = true (крч как батонайзер, ток при другом условии)
 	end						
 end
 addEventHandler("onClientRender", root, Render_Zad)
@@ -61,6 +63,9 @@ function Header(Head)
 			removeEventHandler("onClientRender", root, Draw_Header)
 		end	
 	end	
-	addEventHandler("onClientRender", root, Draw_Header)	
+	addEventHandler("onClientRender", root, Draw_Header)	---------- Сейчас в натуре код чистый и сАсный. Тем не менее, на отрисовку заголовка его выделено оч много.
+															-- У тебя уже есть 1 обработчик кадра, которым ты рисуешь главное окно, и название "Zad Mastera". 
+															-- Во первых, зачем создавать под заголовок задания ЕЩЕ 1 обработчик? Тем более что еще и пришлось поебаться с его биндом и очисткой...
+															-- во вторых, реще было бы просто поменять надпись Zad Mastera на название задания и опять таки не ебать себе мозги. 
 end
---- Gor loh
+--- Gor molodec)

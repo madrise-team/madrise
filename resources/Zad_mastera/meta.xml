@@ -11,6 +11,6 @@
 	<file src="Picture_mastera/Plase/Rectangle_230.png" />
 
 	<script src="zadNica_Zadaniya.lua"  type="client"/>
-	<!--script src="zadNica_Master_cl.lua" type="client"/-->
+	<script src="zadNica_Master_cl.lua" type="client"/>
 	
 </meta>
