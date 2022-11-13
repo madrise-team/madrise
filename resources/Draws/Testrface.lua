@@ -1025,4 +1025,4 @@ addEventHandler("onClientRender",root,function()
 	--dxDrawMaterialLine3D(x1,y1,z1, x2,y2,z2,false,":Draws/win/winTest.png", 1, tocolor(255,255,255,255),true)
 end)
 
-_DoWinDubugDraw()
+--_DoWinDubugDraw()

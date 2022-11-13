@@ -86,60 +86,41 @@ end
 
 -------------------------------------------------------------------------
 ------------- Blur shader ----------------------------------------------------------------
-shaderBlurSim = dxCreateShader (":Draws/fx/blurSim.fx")
-shaderBlurGaus = dxCreateShader (":Draws/fx/blurGaus.fx")
-
-usingBlur = 0
-blurBuffer = dxCreateRenderTarget(screenW, screenH, true)
+blurBuffer = dxCreateRenderTarget(screenW,screenH,true)
 
 screenSource = dxCreateScreenSource(screenW,screenH)
-if shaderBlurSim then --не биндим всю эту тему если нет шаейдера заебет
-
-	function razmit(texture,shaderChar)	--S = Simple ; G = Gaus
-		dxSetRenderTarget (blurBuffer,false)							-- выставлем рендер таргет ( -> буфер)
-		
-		local shader
-		
-		if shaderChar == "S" then
-			shader = shaderBlurSim
-		end
-		if shaderChar == "G" then
-			shader = shaderBlurGaus
-		end
-		
-		if shaderChar == "G" then
-			dxSetShaderValue(shader,"texel_radius",0,1/screenH,10)	-- ставим параметр под вертикал размытие
-			dxSetShaderValue(shader,"screen",blurBuffer)				-- вставляем буфер во 2й проход
-			dxDrawImage(0,0,screenW,screenH,shader)					--  рендер 2го прохода в буфер
-		end
-		
-		dxSetShaderValue(shader,"texel_radius",1/screenW,0,10)  -- ставим параметр под горизонтал размытие
-		dxSetShaderValue(shader,"screen",texture); 				-- вставляем текстуру в 1й проход
-		dxDrawImage(0,0,screenW,screenH,shader)					--  рендер 1го прохода в буфер
-		
-
-		dxSetRenderTarget ()										-- выставлем рендер таргет ( -> экран)
+function razmit(texture,shaderChar)	--S = Simple ; G = Gaus
+	dxSetRenderTarget(blurBuffer,false)							-- выставлем рендер таргет ( -> буфер)
+	
+	local shader = _shaderBlurSim
+	if shaderChar == "G" then
+		shader = _shaderBlurGaus
+	
+		dxSetShaderValue(shader,"texel_radius",0,1/screenH,10)	-- ставим параметр под вертикал размытие
+		dxSetShaderValue(shader,"screen",blurBuffer)			-- вставляем буфер во 2й проход
+		dxDrawImage(0,0,screenW,screenH,shader)					--  рендер 2го прохода в буфер
 	end
-	blurEnabled = false 										
-	addEventHandler("onClientRender",getRootElement(),function() 	-- фуллскрин тестер блюров
-		if not blurEnabled then return end
-		
-		dxUpdateScreenSource(screenSource)							-- Получаем экран
-		
-		dxSetRenderTarget (blurBuffer,true)
-		razmit(screenSource,"S")
-		razmit(blurBuffer,"S")
-		razmit(blurBuffer,"G")
-		dxDrawImage(0,0,screenW,screenH,blurBuffer) 	--рисуем фулл скрин
-	end)
-	--[[
-	bindKey('m','down',function()
-		outputChatBox("Draws/TesterFace: testing shader")
-		blurEnabled = not blurEnabled
-		showChat(not blurEnabled)
-	end)]]
-else 
-	outputDebugString("Can't create blure shader in Interface")
+	
+	dxSetShaderValue(shader,"texel_radius",1/screenW,0,10)  -- ставим параметр под горизонтал размытие
+	dxSetShaderValue(shader,"screen",texture); 				-- вставляем текстуру в 1й проход
+	dxDrawImage(0,0,screenW,screenH,shader)					--  рендер 1го прохода в буфер
+	
+	dxSetRenderTarget()										-- возврат RT ( -> exitRT)
+end
+
+bluredSreenPrepared = false
+addEventHandler("onClientPreRender",root,function()
+	bluredSreenPrepared = false
+end)
+function prepareBlurScreen()
+	if bluredSreenPrepared then return end
+	bluredSreenPrepared = true
+
+	dxUpdateScreenSource(screenSource)							-- Получаем экран
+	
+	razmit(screenSource,"S")
+	razmit(blurBuffer,"S")
+	razmit(blurBuffer,"G")
 end
 ------------- Blur shader ----------------------------------------------------------------
 
@@ -203,32 +184,20 @@ function createDynamicAlignArea(x,y,w,h,name,parent,ax,ay)
 end
 
 
-function createBlurer(x,y,w,h,parent,padding)
+function createBlurer(x,y,w,h,parent)
 	local tiver
-	tiver = TIV:create({x = x,y = y,w = w,h = h},{frame = true,img = createTexFucFromDraws(w,h,function(render,obj)
-		if obj.locSize then
-			dxDrawImageSection (0,0, obj.locSize.cutW, obj.locSize.cutH,
-                          		obj.locSize.cutX,obj.locSize.cutY, obj.locSize.cutW, obj.locSize.cutH, blurBuffer)
-		end
-	end)},nil,nil,parent)
-	
-	usingBlur = usingBlur + 1
-	blurEnabled = true
+	tiver = TIV:create({x = x,y = y,w = w,h = h},{frame = true,img = function(render,obj)
+		prepareBlurScreen()
+		dxDrawImageSection(obj.locSize.cutX, obj.locSize.cutY, obj.locSize.cutW, obj.locSize.cutH,
+                      		obj.locSize.cutX,obj.locSize.cutY, obj.locSize.cutW, obj.locSize.cutH, blurBuffer)
+	end},nil,"Blurer",parent)
 
-	tiver.destruction = function()
-		usingBlur = usingBlur - 1
-		if usingBlur <= 0 then
-			usingBlur = 0
-			blurEnabled = false
-		end
-	end
 	return tiver
 end
 BlackoutImg = dxCreateTexture(":Draws/Elements/Blackout/Blackout.png", "dxt5")
 function Blackout(parent)
 	local blacker = TIV:create({["x"] = 0,["y"] = 0,["w"] = screenW,["h"] = screenH},{frame = true,['img'] = function(_,obj)
 		dxSetRenderTarget(_scrRT,true)
-
 		drawInBlendMode("add",function()
 			dxDrawImage(-1,-1,screenW+2,screenH+2,BlackoutImg,0,0,0,tocolor(0,2,4,124))	
 		end)
@@ -237,12 +206,11 @@ function Blackout(parent)
 				dxDrawRectangle(obj.imgP.black.x,obj.imgP.black.y,obj.imgP.black.w,obj.imgP.black.h,tocolor(255,255,255,obj.imgP.blackout or 0))
 			end
 		end)
-
 		dxSetRenderTarget()
-
 		dxDrawImage(0,0,screenW,screenH,_scrRT,0,0,0,tocolor(obj.imgP.color.r,obj.imgP.color.g,obj.imgP.color.b,obj.imgP.color.a))
 	end},nil,"Blackout",parent)
-	blacker.setBlack = function(x,y,w,h)
+
+	blacker.setVoid = function(x,y,w,h)
 		blacker.imgP.black = {x=x,y=y,w=w,h=h}
 		if not x then
 			blacker.imgP.black = false

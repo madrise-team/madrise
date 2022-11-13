@@ -1,11 +1,14 @@
 <meta>
     <min_mta_version client="1.5.8-9.20704" />
     
-    <script src="Animations.lua" type="client" />
-    <script src="Interface.lua" type="client" />
-    <script src="Testrface.lua" type="client" />
-    <script src="drawsCore.lua" type="client" />
+   <script src="draws_local.lua" type="client" />
     <script src="Standarts.lua" type="client" />
+    <script src="drawsCore.lua" type="client" />
+    <script src="Interface.lua" type="client" />
+    <script src="Animations.lua" type="client" />
+    <script src="Testrface.lua" type="client" />
+    
+    <export function="getDrawsLocalData" type="client" />
     
     
     <file src="fx/blurSim.fx" type="client" />
@@ -37,8 +40,6 @@
 
     
        
-    
-    
     
     <!-- Fonts -->
     <file src="Fonts/Jost-ExtraLight.ttf" type="client" />

@@ -20,8 +20,9 @@ bindKey("f6","down",function()
 	sDrawTerritorys = not sDrawTerritorys
 end)
 
-------------------------------------
-test = rlsc:getTxture("test")
+----------------------------------
+drawsLocalData = exports.Draws:getDrawsLocalData()
+test = drawsLocalData.test
 
 function reformatTP(tPointsT,z)
 	

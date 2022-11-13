@@ -83,8 +83,6 @@ function openBirjaTruda(jobs)
     local areaW = createArea(0,SWins.big1.y,screenW,SWins.big1.h,birjaWinArea,birjaTopWin)
 	createBlurer(SWins.big1.x,SWins.big1.y,SWins.big1.noShadow.w,SWins.big1.noShadow.h,birjaWinArea)	
 
-
-
     local win = createWindow(SWins.big1,birjaTrudaWinName,birjaWinArea)
     createPattern(SPattern.EDBA,birjaTrudaWinName)
     createButton(SButton.close1,1292,0,  nil , nil , nil,"close",birjaTrudaWinName,{["cursorClick"] = function()
@@ -117,7 +115,6 @@ function openBirjaTruda(jobs)
 				desrcAreaTIV:Destroy()
 			end
 
-
 		  	desrcAreaTIV = createDynamicAlignArea(482,62,900,690,jobDescriptionArea,birjaTrudaWinName,0,0.5)
 			  
 			  createLabel(SFonts.ebda.h2,0,0,500,40,{["text"] = JobsContent[k].name},birjaTrudaWinName.."-jobDescriptionHeader",jobDescriptionArea)
@@ -131,7 +128,6 @@ function openBirjaTruda(jobs)
 			animate(desrcAreaTIV,Animations.moveAndFade,{startPos = 100})
   		end},JobsListbutsArray)
   	end 
-  	--outputChatBox
 
   	win.toggle = false
   	animate(black,Animations.simpleFade,{framesCount = 60})
@@ -139,7 +135,7 @@ function openBirjaTruda(jobs)
 		win.toggle = true
 	end,false)
 	local patternA = animate(areaW,Animations.theresholdPattern,_,function()
-		black.setBlack(win.locSize.x,areaW.locSize.y,SWins.big1.noShadow.w,SWins.big1.noShadow.h)
+		black.setVoid(win.locSize.x,areaW.locSize.y,SWins.big1.noShadow.w,SWins.big1.noShadow.h)
 	end,false)
 	frameWait(22,function() 
 		displayA.start()
@@ -177,4 +173,4 @@ addEventHandler("updateBirjaTruda",root,function(jobs)
 end)    
 ---------------------------------------------------------------------
 
---_DoWinDubugDraw()
+_DoWinDubugDraw()

@@ -7,22 +7,24 @@ msw = screenW/1920		--;msw = 1
 msh = screenH/1080		--;msw = 0.71145833333
 						--;msw = 0.5
 
-rlsc = exports.RRL_Scripts
-local scrRts = rlsc:getScreenRTs()
-_scrRT = scrRts[1]
-_scrRT2 = scrRts[2] ; scrRts = nil
 
-_LayerMaskShader = dxCreateShader(":Draws/fx/LayerMask.fx")
+drawsLocalData = exports.Draws:getDrawsLocalData()
+	_scrRT = drawsLocalData.scrRts[1]
+	_scrRT2 = drawsLocalData.scrRts[2]
 
-_PatternShT =  rlsc:getPatternsTex()
-patternEbdTex = _PatternShT.patternEbdTex
-patternEbdTex2 = _PatternShT.patternEbdTex2
+	_LayerMaskShader = drawsLocalData.LayerMaskShader 
+	_TheresholdPatternShader = drawsLocalData.TheresholdPatternShader
+	_shaderBlurSim = drawsLocalData.shaderBlurSim
+	_shaderBlurGaus = drawsLocalData.shaderBlurGaus
 
-triangleTex = rlsc:getTxture("triangleTex")
+	patternEbdTex = drawsLocalData.patternEbdTex
+	patternEbdTex2 = drawsLocalData.patternEbdTex2 
+
+	triangleTex = drawsLocalData.triangleTex
+	test = drawsLocalData.test
 
 whiteCol = tocolor(255,255,255,255)
 blackCol = tocolor(0,0,0,255)
-
 
 
 --- -------------  --------------------------------------------------

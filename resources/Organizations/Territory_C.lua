@@ -5,7 +5,6 @@ import('RRL_Scripts/usfulC.lua')()    -- Usful Client
 import('Organizations/Territory_Sh.lua')()    -- Terrytory_Sh
 
 rlsc = exports.RRL_Scripts
-testTex = rlsc:getTxture("test")
 
 ------------------------------------
 Terrytorys = {}

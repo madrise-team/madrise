@@ -159,13 +159,8 @@ Animations = {}
 						--Проблема: для рендера нового элемента требуется его передовать в шейдер как текстуру
 						--Возможное решение: использование вспомогательного _scrRT, предварительный рендер элемента на _scrRT2, рендер чилдренов отдельно!
 
-	init = function(ab)
-		if not ab.elm.imgP then
-			outputDebugString("Creating Pattern Shader for 'no img TIV'!")
-			return
-		end
-		
-		ab.theresholdPatternShader = dxCreateShader(":Draws/fx/TheresholdPattern.fx")
+	init = function(ab)		
+		ab.theresholdPatternShader = _TheresholdPatternShader
 
 		ab.Th = 0
 		ab.args.frameCount = ab.args.frameCount or 100
@@ -194,25 +189,19 @@ Animations = {}
 		dxSetShaderValue(ab.theresholdPatternShader,"threshold",ab.Th)
 
 		ab.elm.Draw = function(doDraw)
-			
-			
 			enterToRT(_scrRT,true)
-			local savedBM = dxGetBlendMode()
-			dxSetBlendMode("modulate_add")
-			ab.elm:_savedOrigDraw()
+			drawInBlendMode("modulate_add",function()
+				ab.elm:_savedOrigDraw()
+			end)
 			escapeRT()
-			dxSetBlendMode(savedBM)
 			
 			dxSetShaderValue(ab.theresholdPatternShader,"textura",_scrRT)
 			dxDrawImage(0,0,screenW,screenH,ab.theresholdPatternShader)
-
-			--ab.originalDraw(doDraw,true,false)
 		end
 
 	end,
 	destroyer = function(ab)
 		ab.elm.Draw = ab.originalDraw
-		destroyElement(ab.theresholdPatternShader)
 	end,
 	frame = function(ab)
 		ab.Th = ab.Th + ab.args.frameDif

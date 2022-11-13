@@ -16,12 +16,7 @@
     <script src="usfulS_local.lua" type="server" />
     <script src="usfulC_local.lua" type="client" />
     <script src="usfulSh_local.lua" type="shared" />
-    
-    <script src="draws_local.lua" type="client" />
-    <export function="getPatternsTex" type="client" />
-    <export function="getScreenRTs" type="client" />
-    <export function="getTxture" type="client" />
-    
+        
     <script src="Sound.lua" type="shared" />
     
     <script src="camera.lua" type="client" />
