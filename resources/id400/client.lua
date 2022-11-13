@@ -3,6 +3,7 @@ engineImportTXD (txd, 400)
 dff = engineLoadDFF ('id400.dff', 400)
 engineReplaceModel (dff, 400)
 
+setBlurLevel(0)
 
 function isAvto()
     local veh = getPedOccupiedVehicle(localPlayer)
@@ -61,7 +62,11 @@ local per = - math.pi / 2
 
 addEventHandler("onClientRender",root,function()    
     if per >= 3 * math.pi / 2 then per = - math.pi / 2 end
+<<<<<<< Updated upstream
     per = per + 0.008
+=======
+    per = per + 0.004
+>>>>>>> Stashed changes
 
 -- (sin x + 1.1) * 0.45
     
@@ -283,6 +288,7 @@ addEventHandler("onClientRender", root, function()
     dxDrawText(tostring(isVehicleReversing(veh)), 1800, 600)
 end)
 
+
 ------------------------------------------------------------------------------------------------------
 function consoleVehicleLights ()
     if isPedInVehicle(getLocalPlayer()) then
@@ -303,15 +309,33 @@ bindKey("num_8", "down", consoleVehicleLights)
 
 
 
-
 ---dubug
 addEventHandler("onClientRender", root, function()
     local veh = isAvto()
     if not veh then return end
-    dxDrawText("clientavtos400", 1750, 680)
+    dxDrawText("client.id400", 1750, 680)
     dxDrawText("Num 5 - аварийка", 1750, 700)
     dxDrawText("Num 4 - левый поворотник", 1750, 720)
     dxDrawText("Num 6 - правый поворотник", 1750, 740)
     dxDrawText("Num 2 - габариты", 1750, 760)
     dxDrawText("Num 8 - фары", 1750, 780)
 end)
+
+--[[
+
+-------- vot eto prikol
+bindKey("num_2","down",function()
+    local veher = getPedOccupiedVehicle(localPlayer)
+    if veher then
+        local shah = dxCreateShader("coloder.fx")
+
+        outputChatBox(getElementModel(veher))
+        local texters = engineGetModelTextureNames(getElementModel(veher))
+        for k,v in pairs(texters) do
+            --outputChatBox(tostring(v))
+            engineApplyShaderToWorldTexture(shah,v,veher)
+        end
+    end
+end)
+
+]]--
