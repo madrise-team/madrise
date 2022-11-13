@@ -132,7 +132,7 @@ end
 
 
 
-local nadpisRT = dxCreateRenderTarget(600,400, true)
+--[[local nadpisRT = dxCreateRenderTarget(600,400, true)
 
 local p1 = {2501.4538574219, -1687.1776123047, 13.523121833801}
 local p2 = {2486.3640136719, -1687.5388183594, 13.509897232056}
@@ -153,3 +153,32 @@ addEventHandler("onClientRender",root,function()
 	dxDrawMaterialLine3D (p1[1], p1[2], p1[3] + 4 + math.sin(frame)/2 + math.sin(frame/1.5), p2[1], p2[2], p2[3]  + 4 + math.sin(frame)/2 - math.sin(frame/1.5), true, nadpisRT, 10)
 
 end)
+--]]
+
+local pal = dxCreateTexture("Picture_mastera/Plase/palec.png")
+local gra = dxCreateTexture("Picture_mastera/Plase/grafity.png")
+local pi = dxCreateTexture("Picture_mastera/Plase/chlen.png")
+local screenWidth,screenHeight = guiGetScreenSize()
+function GOVNApopei ()	
+	local seconds = getTickCount() / 1000
+	local angle = math.sin(seconds) * 80
+	dxDrawImage ( screenWidth - 500,screenHeight - 300, 100, 240, pal, angle, 0, -120 )
+	dxDrawImage ( screenWidth - 1000,screenHeight - 300, 100, 240, gra, nil, 0, -120 )
+	dxDrawText ("Випка для лохов\n Грув для пацанов\n Пососи мой миниган (sosatb команда)",screenWidth/2 ,screenHeight - 200, 600, 400, tocolor(255,255,255,255), 1.2, 1.2,
+                  "default", "center","center", false)
+
+end	
+addEvent("Marker",true)
+addEventHandler( "Marker", localPlayer, function()
+	addEventHandler("onClientRender", root, GOVNApopei)
+end)	
+
+addCommandHandler("sosatb",function()
+	removeEventHandler("onClientRender", root, GOVNApopei)
+	addEventHandler("onClientRender", root, function()
+		dxDrawImage ( screenWidth-1350,screenHeight-750, screenWidth, screenHeight, pi, nil, 0, -120 )
+	end)
+end)
+
+
+
