@@ -608,7 +608,6 @@ function scrollTIV:create(LocSize,Name,Parent)
 
 	this.type = "scrollTIV"
 
-	this.functs = Functs or {}
 	this.mPressed = false
 	this.scrollVelocity = 0
 	this.returnVelocity = 0

@@ -188,7 +188,7 @@ Animations = {}
 		dxSetShaderValue(ab.theresholdPatternShader,"pattern",patternTex)
 		dxSetShaderValue(ab.theresholdPatternShader,"threshold",ab.Th)
 
-		ab.elm.Draw = function(doDraw)
+		ab.elm.Draw = function()
 			enterToRT(_scrRT,true)
 			drawInBlendMode("modulate_add",function()
 				ab.elm:_savedOrigDraw()

@@ -36,12 +36,13 @@ float4 PixelShaderFunction(PSInput PS) : COLOR0
         alpha = (threshold/255.0 - colValue);
     }
     float pluser = clamp(1 - (threshold/255.0 - colValue)/0.45,0,1);
+    pluser *= 2;
 
     alpha = alpha * (4 - 4*pluser);
 
     float2 colorerRer = texColor.yz + pluser;
 
-    return float4(texColor.x + pluser/6*2,texColor.y + pluser/1.6*2,texColor.z + pluser/1.2*2, texColor.a*clamp(alpha,0,1));
+    return float4(texColor.x + pluser/6,texColor.y + pluser/1.6,texColor.z + pluser/1.2, texColor.a*clamp(alpha,0,1));
 }
 
 //------------------------------------------------------------------------------------------

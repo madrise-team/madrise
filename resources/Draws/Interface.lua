@@ -47,12 +47,12 @@ function drawInBlendMode(mode,funct)
 		funct()
 	dxSetBlendMode(save)
 end
-function createTexFucFromDraws(w,h,drawsFunction,rendMode)
+function createTexFucFromDraws(w,h,drawsFunction,rendBlendMode)
 	local process = function(render,obj)
 		local TexRT = render or dxCreateRenderTarget(w,h,true)
 		
 		dxSetRenderTarget(TexRT,true)
-		drawInBlendMode(rendMode or "add",function()
+		drawInBlendMode(rendBlendMode or "add",function()
 		---
 			drawsFunction(render,obj)	
 		---
@@ -83,6 +83,29 @@ function applyToLowestElements(element,funct)
 		funct(element)
 	end
 end
+
+function animateOrderedElements(orederedAnimatingElements,anim,animArgs,animInterval)
+	local aE = {}
+
+	for indx=1,#orederedAnimatingElements do
+		local elmnt = orederedAnimatingElements[indx]
+		local callbackFuc
+		if elmnt[2] then
+			callbackFuc = elmnt[2]
+			elmnt = elmnt[1]
+		end
+
+		aE[#aE+1] = {aBlock = animate(elmnt,anim,animArgs,callbackFuc,false), name = elmnt.name.."orderedAnimationWaiter"}		
+	end
+	local animInterval = animInterval or 3
+	for index,animInf in ipairs(aE) do
+		local animInfo = animInf
+		frameWait(animInterval*index,function()
+			animInfo.aBlock.start()
+		end,animInfo.name.." "..index)
+	end
+end
+
 
 -------------------------------------------------------------------------
 ------------- Blur shader ----------------------------------------------------------------
@@ -174,10 +197,9 @@ function createDynamicAlignArea(x,y,w,h,name,parent,ax,ay)
 	local tehTop = createAlignArea(x,y,w,h,alignAreaName,parent,ax,ay)
 	local pod = TIV:create({["x"] = 1,["y"] = 1,["w"] = 0,["h"] = 0,["sizeType"] = "dynamic"},nil,nil,name,alignAreaName)
 
-
 	
 	pod.destruction = function()
-		pod.destruction = nil
+		pod.destruction = nil    -- убиваем destruction, чтобы tehTop его не вызвал и не зациклил переадресации
 		tehTop:Destroy()
 	end
 	return pod
@@ -185,14 +207,11 @@ end
 
 
 function createBlurer(x,y,w,h,parent)
-	local tiver
-	tiver = TIV:create({x = x,y = y,w = w,h = h},{frame = true,img = function(render,obj)
+	return createArea(x,y,w,h,name,"Blurer",nil,{imgP = {frame = true,img = function(render,obj)
 		prepareBlurScreen()
 		dxDrawImageSection(obj.locSize.cutX, obj.locSize.cutY, obj.locSize.cutW, obj.locSize.cutH,
                       		obj.locSize.cutX,obj.locSize.cutY, obj.locSize.cutW, obj.locSize.cutH, blurBuffer)
-	end},nil,"Blurer",parent)
-
-	return tiver
+	end}})
 end
 BlackoutImg = dxCreateTexture(":Draws/Elements/Blackout/Blackout.png", "dxt5")
 function Blackout(parent)
@@ -248,14 +267,15 @@ function createWindow(tab,name,parent,x,y,w,h)
 end
 
 
-function createLoader(x,y,wh,parenter)
-	local loader =  TIV:create({x=x,y=y,w=w or 50,h=h or 50},{frame = true,["img"] = function(render,obj)
+function createLoader(x,y,wh,parent)
+	local loader = TIV:create({x=x,y=y,w=w or 50,h=h or 50},{frame = true,["img"] = function(render,obj)
+		obj._framer = obj._framer or 0
 		local x = obj.locSize.cpx
 		local y = obj.locSize.cpy
 		local wh = obj.locSize.w
 
 		local triangle = triangleTex
-		local framer = obj._framer
+		local framer = obj._framer or 0
 
 		local _reder = 7*4
 		local _greener = 32*4.4
@@ -292,7 +312,7 @@ function createLoader(x,y,wh,parenter)
 		end
 		obj._framer = obj._framer + 40
 
-	end},nil,'loader',parenter)
+	end},nil,'loader',parent)
 	loader._framer = 0
 end
 
@@ -397,6 +417,8 @@ function createListButton(tab,x,y,w,h,textP,name,parent,functsc,ListArray)
 		lBut.selected = true
 
 		lBut.imgP.img = tab.imgS
+		retext(tab.textPSelected)
+
 		if functsc.cursorClick then functsc.cursorClick() end
 	end
 	lBut = createButton(tab,x,y,w,h,textP,name,parent,functsPlus)
@@ -482,9 +504,9 @@ function createPanel(tab,x,y,w,h,name,parent,argi)
 
 	return TIV:create({x=x,y=y,w=w,h=h,adapt = args.adapt},panelImgP,nil,name,parent)
 end
-function createRectangle(x,y,w,h,colorer,name,parent,argi)
+function createRectangle(x,y,w,h,color,name,parent,argi)
 	local args = argi or {}
-	return TIV:create({x=x,y=y,w=w,h=h,adapt = args.adapt,adaptPos = args.adaptPos},{color = colorer,frame = true,img = function(_,obj)
+	return TIV:create({x=x,y=y,w=w,h=h,adapt = args.adapt,adaptPos = args.adaptPos},{color = color,frame = true,img = function(_,obj)
 		dxDrawRectangle(obj.locSize.cutX,obj.locSize.cutY,obj.locSize.cutW,obj.locSize.cutH,tocolor(obj.imgP.color.r,obj.imgP.color.g,obj.imgP.color.b,obj.imgP.color.a))
 	end},nil,name,parent)
 end
@@ -710,28 +732,6 @@ function createRectFiller(x,y,w,h,name,parent,argi,AutoStart)
 	end
 
 	return fillrecter
-end
-
-function animateOrderedElements(orederedAnimatingElements,anim,animArgs,animInterval)
-	local aE = {}
-
-	for indx=1,#orederedAnimatingElements do
-		local elmnt = orederedAnimatingElements[indx]
-		local callbackFuc
-		if elmnt[2] then
-			callbackFuc = elmnt[2]
-			elmnt = elmnt[1]
-		end
-
-		aE[#aE+1] = {aBlock = animate(elmnt,anim,animArgs,callbackFuc,false), name = elmnt.name.."orderedAnimationWaiter"}		
-	end
-	local animInterval = animInterval or 3
-	for index,animInf in ipairs(aE) do
-		local animInfo = animInf
-		frameWait(animInterval*index,function()
-			animInfo.aBlock.start()
-		end,animInfo.name.." "..index)
-	end
 end
 
 --------------------------
