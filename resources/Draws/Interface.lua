@@ -209,7 +209,7 @@ end
 
 
 function createBlurer(x,y,w,h,parent)
-	return createArea(x,y,w,h,name,"Blurer",nil,{imgP = {frame = true,img = function(render,obj)
+	return createArea(x,y,w,h,"Blurer",parent,nil,{imgP = {frame = true,img = function(render,obj)
 		prepareBlurScreen()
 		dxDrawImageSection(obj.locSize.cutX, obj.locSize.cutY, obj.locSize.cutW, obj.locSize.cutH,
                       		obj.locSize.cutX,obj.locSize.cutY, obj.locSize.cutW, obj.locSize.cutH, blurBuffer)
@@ -354,26 +354,26 @@ function createButton(tab,x,y,w,h,textP,name,parent,functsci)
 	local Btn
 	local normTextP
 
-	local retext = function(textTaber)
+	functsPlus.retext = function(textTaber)
 		local textTab = textTaber or normTextP
 		Btn.textP.color = textTab.color
 	end
 
 	functsPlus.cursorEnter = function()
 		Btn.imgP.img = tab.imgH
-		retext(tab.textPHover)
+		functsPlus.retext(tab.textPHover)
 
 		if functsc.cursorEnter then functsc.cursorEnter() end
 	end
 	functsPlus.cursorExit = function()
 		Btn.imgP.img = tab.imgN
-		retext()
+		functsPlus.retext()
 
 		if functsc.cursorExit then functsc.cursorExit() end
 	end
 	functsPlus.cursorDown = function()
 		Btn.imgP.img = tab.imgD
-		retext(tab.textPDown)
+		functsPlus.retext(tab.textPDown)
 
 		if functsc.cursorDown then functsc.cursorDown() end
 	end
@@ -417,9 +417,9 @@ function createListButton(tab,x,y,w,h,textP,name,parent,functsci,ArrayOfList)
 		lBut.selected = true
 		
 		lBut.imgP.img = tab.imgS
-		retext(tab.textPSelected)
+		butFuncts.retext(tab.textPSelected)
 
-		if functsc.cursorClick then functsc.cursorClick() end
+		if butFuncts.cursorClick then butFuncts.cursorClick() end
 	end
 	lBut.functs = functsPlusPlus
 
