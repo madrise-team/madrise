@@ -87,8 +87,8 @@ function openBirjaTruda(jobs)
     createPattern(SPattern.EDBA,birjaTrudaWinName)
     createButton(SButton.close1,1292,0,  nil , nil , nil,"close",birjaTrudaWinName,{["cursorClick"] = function()
 		animate(win,Animations.displayTurningArray,{startF = 1,frameCount = 20,mode = "self"},function()
+			black.setVoid()
 			areaW:Destroy()
-			black.setBlack()
 		end)
 		animate(black,Animations.simpleFade,{startA = 255,endA = 0,framesCount = 60},function()
 			closeBirjaTrude()
@@ -110,23 +110,20 @@ function openBirjaTruda(jobs)
   	for k,j in pairs(jobs) do
   		i = i + 1
 
-  		JobsListbutsArray[i] = createListButton(SListButton.list1,0,(74 + 5)*(i-1),  nil , nil ,{["text"] = JobsContent[k].name},birjaTrudaWinName.."-JobsListButton"..i,JobsAreaName,{["cursorClick"] = function()
+  		JobsListbutsArray[i] = createListButton(SListButton.list1,0,(74 + 5)*(i-1),  nil , nil ,{["text"] = JobsContent[k].name},birjaTrudaWinName.."-JobsListButton"..i,JobsAreaName,function()
 			if desrcAreaTIV then 
 				desrcAreaTIV:Destroy()
 			end
 
-		  	desrcAreaTIV = createDynamicAlignArea(482,62,900,690,jobDescriptionArea,birjaTrudaWinName,0,0.5)
-			  
-			  createLabel(SFonts.ebda.h2,0,0,500,40,{["text"] = JobsContent[k].name},birjaTrudaWinName.."-jobDescriptionHeader",jobDescriptionArea)
-			  outputDebugString("-     1")
-			  local jobText = JobsContent[k].jobText
-			  local bubt = createLabel(SFonts.ebda.text,0,40,500,400,{["text"] = jobText},birjaTrudaWinName.."-jobDescription",jobDescriptionArea,{sizeType = 'dynamic'})
-			  outputDebugString("-     2")
-			  createButton(SButton.button1small,0,40,  nil , nil ,{["text"] = "Начать"},"startNewSelectedJob",jobDescriptionArea,{["cursorClick"] = function()
-			  	triggerServerEvent("startNewJob",root,localPlayer,k)
-			  end})
+		  	desrcAreaTIV = createDynamicAlignArea(482,62,900,690,jobDescriptionArea,birjaTrudaWinName,0,0.5)  
+			createLabel(SFonts.ebda.h2,0,0,500,40,{["text"] = JobsContent[k].name},birjaTrudaWinName.."-jobDescriptionHeader",jobDescriptionArea)
+			local jobText = JobsContent[k].jobText
+			local bubt = createLabel(SFonts.ebda.text,0,40,500,400,{["text"] = jobText},birjaTrudaWinName.."-jobDescription",jobDescriptionArea,{sizeType = 'dynamic'})
+			createButton(SButton.button1small,0,40,  nil , nil ,{["text"] = "Начать"},"startNewSelectedJob",jobDescriptionArea,{["cursorClick"] = function()
+				triggerServerEvent("startNewJob",root,localPlayer,k)
+			end})
 			animate(desrcAreaTIV,Animations.moveAndFade,{startPos = 100})
-  		end},JobsListbutsArray)
+  		end,JobsListbutsArray)
   	end 
 
   	win.toggle = false

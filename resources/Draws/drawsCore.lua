@@ -19,8 +19,9 @@ updated = false -- if true then RT`s was cleared
 --- Утилиты ---------------------------------------------------------------------------------------------------------------------------
 ---RT`s
 _RTsLevels = {}
-originalDxSetRT = dxSetRenderTarget
-local dxSetRenderTarget = function(RT,clear)
+
+local originalDxSetRT = dxSetRenderTarget
+dxSetRenderTarget = function(RT,clear)
 	if RT == nil then
 		if #_RTsLevels > 0 then
 			originalDxSetRT(_RTsLevels[#_RTsLevels])
@@ -283,7 +284,7 @@ function TIV:create(LocSize,Img,Text,Name,Parent)
 		end
 		if type(this.imgP.img) == "function" then --- save imageFuc to draw it
 			this.textureFuc = this.imgP.img
-			this.imgP.img = this.textureFuc(nil,this)
+			this.imgP.img = nil
 		end 
 	end
 	
@@ -400,7 +401,7 @@ function TIV:Draw(drawing,childsDraw,selfDraw)
 
 
 	if doDraw then
-		if (updated or self.imgP.frame) and (self.textureFuc ~= nil) then
+		if (updated or self.imgP.frame or (not self.imgP.img)) and (self.textureFuc ~= nil) then
 			self.imgP.img = self.textureFuc(self.imgP.img,self)
 		end
 	 if doSelfDraw then		
