@@ -1,5 +1,5 @@
-<meta>
-     <min_mta_version client="1.5.9-9.20704"></min_mta_version>
-     <script src="bank_C.lua" type="client" />
-     <script src="bank_S.lua" type="server" />
-</meta>
+<meta>					 <!-- -->
+     <min_mta_version client="1.5.9-9.20704"></min_mta_version>					 <!-- -->
+     <script src="bank_C.lua" type="client" />					 <!-- -->
+     <script src="bank_S.lua" type="server" />					 <!-- -->
+</meta>					 <!-- -->

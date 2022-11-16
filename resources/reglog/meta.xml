@@ -1,18 +1,18 @@
-<meta>
-     <min_mta_version client="1.5.9-9.20704"></min_mta_version>
-     <script src="reglog.lua" type="server" />
-     <script src="reglog_client.lua" type="client" />
-
-     <script src="acc.lua" type="server" />
-     <script src="accUsful.lua" type="server" />
-     <script src="spawn.lua" type="server" />
-
-
-     <export function="getLoggedPlyers" type="server"/>
-     <export function="getPlayerByNickName" type="server"/>
-     <export function="giveAccountMoney" type="server"/>
-     <export function="takeAccountMoney" type="server"/>
-     <export function="setAccountMoney" type="server"/>
-     <export function="addToAccountAvtoLink" type="server"/>
-     <export function="removeFromAccountAvtoLink" type="server"/>
-</meta>
+<meta>					 <!-- -->
+     <min_mta_version client="1.5.9-9.20704"></min_mta_version>					 <!-- -->
+     <script src="reglog.lua" type="server" />					 <!-- -->
+     <script src="reglog_client.lua" type="client" />					 <!-- -->
+					 <!-- -->
+     <script src="acc.lua" type="server" />					 <!-- -->
+     <script src="accUsful.lua" type="server" />					 <!-- -->
+     <script src="spawn.lua" type="server" />					 <!-- -->
+					 <!-- -->
+					 <!-- -->
+     <export function="getLoggedPlyers" type="server"/>					 <!-- -->
+     <export function="getPlayerByNickName" type="server"/>					 <!-- -->
+     <export function="giveAccountMoney" type="server"/>					 <!-- -->
+     <export function="takeAccountMoney" type="server"/>					 <!-- -->
+     <export function="setAccountMoney" type="server"/>					 <!-- -->
+     <export function="addToAccountAvtoLink" type="server"/>					 <!-- -->
+     <export function="removeFromAccountAvtoLink" type="server"/>					 <!-- -->
+</meta>					 <!-- -->

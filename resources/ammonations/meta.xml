@@ -1,5 +1,5 @@
-<meta>
-     <script src="ammonations.lua" type="server" />
-     <script src="ammonations_c.lua" type="client" />
-     <script src="ammonations_map.lua" type="client" />
-</meta>
+<meta>					 <!-- -->
+     <script src="ammonations.lua" type="server" />					 <!-- -->
+     <script src="ammonations_c.lua" type="client" />					 <!-- -->
+     <script src="ammonations_map.lua" type="client" />					 <!-- -->
+</meta>					 <!-- -->

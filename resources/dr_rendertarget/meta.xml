@@ -1,26 +1,26 @@
-<meta>
-	<info name="dr_renderTarget" author="Ren712" version="0.0.9" type="script" />
-	<min_mta_version client="1.5.0" server="1.5.0" />
-	<oop>true</oop>
-	<script src="c_main.lua" type="client" />
-	<script src="c_common.lua" type="client" />
-	<script src="c_switch.lua" type="client" />
-	<script src="c_exports.lua" type="client" />
-	
-	<file src="fx/mta-helper.fx" />
-	<file src="fx/RTinput_car_paint.fx" />
-	<file src="fx/RTinput_world.fx" />
-	<file src="fx/RTinput_world_noZWrite.fx" />
-	<file src="fx/RTinput_world_norSob.fx" />
-	<file src="fx/RTinput_world_nor.fx" />
-	<file src="fx/RTinput_water.fx" />
-	<file src="fx/RTinput_grass.fx" />
-	<file src="fx/RTinput_ped.fx" />
-	<file src="fx/material3D_prepRTs.fx" />
-	
-	<export function="getRenderTargets" type="client" />
-	<export function="getShaderDistanceFade" type="client" />
-	<export function="applyNormalMappingToTexture" type="client" />
-	<export function="applyNormalMappingToTextureList" type="client" />
-	<export function="applyNormalMappingToObject" type="client" />
-</meta>
+<meta>					 <!-- -->
+	<info name="dr_renderTarget" author="Ren712" version="0.0.9" type="script" />					 <!-- -->
+	<min_mta_version client="1.5.0" server="1.5.0" />					 <!-- -->
+	<oop>true</oop>					 <!-- -->
+	<script src="c_main.lua" type="client" />					 <!-- -->
+	<script src="c_common.lua" type="client" />					 <!-- -->
+	<script src="c_switch.lua" type="client" />					 <!-- -->
+	<script src="c_exports.lua" type="client" />					 <!-- -->
+						 <!-- -->
+	<file src="fx/mta-helper.fx" />					 <!-- -->
+	<file src="fx/RTinput_car_paint.fx" />					 <!-- -->
+	<file src="fx/RTinput_world.fx" />					 <!-- -->
+	<file src="fx/RTinput_world_noZWrite.fx" />					 <!-- -->
+	<file src="fx/RTinput_world_norSob.fx" />					 <!-- -->
+	<file src="fx/RTinput_world_nor.fx" />					 <!-- -->
+	<file src="fx/RTinput_water.fx" />					 <!-- -->
+	<file src="fx/RTinput_grass.fx" />					 <!-- -->
+	<file src="fx/RTinput_ped.fx" />					 <!-- -->
+	<file src="fx/material3D_prepRTs.fx" />					 <!-- -->
+						 <!-- -->
+	<export function="getRenderTargets" type="client" />					 <!-- -->
+	<export function="getShaderDistanceFade" type="client" />					 <!-- -->
+	<export function="applyNormalMappingToTexture" type="client" />					 <!-- -->
+	<export function="applyNormalMappingToTextureList" type="client" />					 <!-- -->
+	<export function="applyNormalMappingToObject" type="client" />					 <!-- -->
+</meta>					 <!-- -->

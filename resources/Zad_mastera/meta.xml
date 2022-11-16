@@ -1,19 +1,21 @@
-<meta>
-	<min_mta_version client="1.5.9-9.20704"/>
-
-	<!--client-->
-	<script src="zad_mastera_C.lua" type="client"/>
-
-	<!--server-->
-	<script src="zad_mastera_S.lua" type="server"/>
-
-	<!--picture-->
-	<file src="Picture_mastera/Plase/Rectangle_230.png" />
-	 <file src="Picture_mastera/Plase/palec.png" type="client" />
-    <file src="Picture_mastera/Plase/grafity.png" type="client" />
-    <file src="Picture_mastera/Plase/chlen.png" type="client" />
-
-	<script src="zadNica_Zadaniya.lua"  type="client"/>
-	<script src="zadNica_Master_cl.lua" type="client"/>
-	
-</meta>
+<meta>					 <!-- -->
+	<min_mta_version client="1.5.9-9.20704"/>					 <!-- -->
+					 <!-- -->
+	<!--client-->					 <!-- -->
+	<script src="zad_mastera_C.lua" type="client"/>					 <!-- -->
+					 <!-- -->
+	<!--server-->					 <!-- -->
+	<script src="zad_mastera_S.lua" type="server"/>					 <!-- -->
+					 <!-- -->
+	<!--picture-->					 <!-- -->
+	<file src="Picture_mastera/Plase/Rectangle_230.png" />					 <!-- -->
+	 <file src="Picture_mastera/Plase/palec.png" type="client" />					 <!-- -->
+    <file src="Picture_mastera/Plase/grafity.png" type="client" />					 <!-- -->
+    <file src="Picture_mastera/Plase/chlen.png" type="client" />					 <!-- -->
+					 <!-- -->
+    <file src="pixel.png" type="client" />					 <!-- -->
+					 <!-- -->
+	<script src="zadNica_Zadaniya.lua"  type="client"/>					 <!-- -->
+	<script src="zadNica_Master_cl.lua" type="client"/>					 <!-- -->
+						 <!-- -->
+</meta>					 <!-- -->

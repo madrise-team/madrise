@@ -1,19 +1,20 @@
-<meta>
-    <min_mta_version client="1.5.8-9.20740"></min_mta_version>
-    
-    <script src="cannons.lua" type="server" />
-    <script src="cannons_fx.lua" type="client" />
-    <script src="cannons_C.lua" type="client" />
-    <script src="cannons_Attaching.lua" type="client" />
-    <script src="cannons_misC.lua" type="client" />
-    <script src="cannons_Prefabs.lua" type="shared" />
-
-    <file src="deb/Rotator.png" />
-
-    <file src="void.dff" />
-
-    <file src="can/Police/tazer/tazer.dff" />
-    <file src="can/Police/tazer/tazer.txd" />
-    <file src="can/Police/tazer/targer.png" />
-    <file src="can/Police/tazer/icovolt.png" />
-</meta>
+<meta>					 <!-- -->
+    <min_mta_version client="1.5.8-9.20740"></min_mta_version>					 <!-- -->
+    					 <!-- -->
+    <script src="cannons.lua" type="server" />					 <!-- -->
+    <script src="cannons_fx.lua" type="client" />					 <!-- -->
+    <script src="cannons_C.lua" type="client" />					 <!-- -->
+    <script src="cannons_Attaching.lua" type="client" />					 <!-- -->
+    <script src="cannons_misC.lua" type="client" />					 <!-- -->
+    <script src="cannons_Prefabs.lua" type="shared" />					 <!-- -->
+    <export function="getPlayerCanonPosition" type="client" />					 <!-- -->
+					 <!-- -->
+    <file src="deb/Rotator.png" />					 <!-- -->
+					 <!-- -->
+    <file src="void.dff" />					 <!-- -->
+					 <!-- -->
+    <file src="can/Police/tazer/tazer.dff" /> <!-- -->					 <!-- -->
+    <file src="can/Police/tazer/tazer.txd" />					 <!-- -->
+    <file src="can/Police/tazer/targer.png" />					 <!-- -->
+    <file src="can/Police/tazer/icovolt.png" />					 <!-- -->
+</meta>					 <!-- -->

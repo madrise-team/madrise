@@ -1,6 +1,6 @@
-<meta>
-    <min_mta_version client="1.5.8-9.20740"></min_mta_version>
-    
-    <script src="sceneControl.lua" type="client" />
-    <script src="s_sceneControl.lua" type="server" />
-</meta>
+<meta>					 <!-- -->
+    <min_mta_version client="1.5.8-9.20740"></min_mta_version>					 <!-- -->
+    					 <!-- -->
+    <script src="sceneControl.lua" type="client" />					 <!-- -->
+    <script src="s_sceneControl.lua" type="server" />					 <!-- -->
+</meta>					 <!-- -->
