@@ -1,8 +1,8 @@
-<meta>					 <!-- -->
-    <script src="avtos.lua" type="server" />					 <!-- -->
-    <script src="avtos_C.lua" type="client" />					 <!-- -->
-    <script src="avtos_mapS.lua" type="server" />					 <!-- -->
-    <script src="avtos_mapC.lua" type="client" />					 <!-- -->
-    <script src="avtos_chips.lua" type="server" />					 <!-- -->
-    <min_mta_version server="1.5.8-9.20740"></min_mta_version>					 <!-- -->
-</meta>					 <!-- -->
+<meta>
+    <script src="avtos.lua" type="server" />
+    <script src="avtos_C.lua" type="client" />
+    <script src="avtos_mapS.lua" type="server" />
+    <script src="avtos_mapC.lua" type="client" />
+    <script src="avtos_chips.lua" type="server" />
+    <min_mta_version server="1.5.8-9.20740"></min_mta_version>
+</meta>

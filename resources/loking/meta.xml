@@ -1,18 +1,18 @@
-<meta>					 <!-- -->
-     <min_mta_version client="1.5.9-9.20704"></min_mta_version>					 <!-- -->
-     <script src="loking.lua" type="server" />					 <!-- -->
-     <script src="loking_client.lua" type="client" />					 <!-- -->
-     <script src="birja_client.lua" type="client" />					 <!-- -->
-     <script src="loking_map.lua" type="client" />					 <!-- -->
-     <script src="lokingWoksCoords.lua" type="client" />					 <!-- -->
-					 <!-- -->
-     <file src="but.png" />					 <!-- -->
-					 <!-- -->
-     <export function="getElMontajStolbi" type="client"/>					 <!-- -->
-					 <!-- -->
-     <file src="elMontaj/elMontajnik.ifp" type="client" />					 <!-- -->
-     <file src="elMontaj/claws_11.dff" />					 <!-- -->
-     <file src="elMontaj/claws_12.dff" />					 <!-- -->
-     <file src="elMontaj/claws_21.dff" />					 <!-- -->
-     <file src="elMontaj/claws_22.dff" />					 <!-- -->
-</meta>					 <!-- -->
+<meta>
+     <min_mta_version client="1.5.9-9.20704"></min_mta_version>
+     <script src="loking.lua" type="server" />
+     <script src="loking_client.lua" type="client" />
+     <script src="birja_client.lua" type="client" />
+     <script src="loking_map.lua" type="client" />
+     <script src="lokingWoksCoords.lua" type="client" />
+
+     <file src="but.png" />
+
+     <export function="getElMontajStolbi" type="client"/>
+
+     <file src="elMontaj/elMontajnik.ifp" type="client" />
+     <file src="elMontaj/claws_11.dff" />
+     <file src="elMontaj/claws_12.dff" />
+     <file src="elMontaj/claws_21.dff" />
+     <file src="elMontaj/claws_22.dff" />
+</meta>

@@ -1,55 +1,55 @@
-<meta>					 <!-- -->
-     <min_mta_version client="1.5.9-9.20704"></min_mta_version>					 <!-- -->
-     <script src="garage.lua" type="server" />					 <!-- -->
-     <script src="Organs.lua" type="server" />					 <!-- -->
-     <script src="OrgansTable.lua" type="server" />					 <!-- -->
-     <script src="Territory.lua" type="server" />					 <!-- -->
-					 <!-- -->
-     <script src="Territory_Sh.lua" type="client" />  					 <!-- -->
-     <script src="Territory_C.lua" type="client" />  					 <!-- -->
-     <script src="TerritoryDebug_C.lua" type="client" />  					 <!-- -->
-					 <!-- -->
-     <script src="hospital/revival.lua" type="server" />					 <!-- -->
-					 <!-- -->
-     <script src="police/police_ls_map.lua" type="server" />					 <!-- -->
-     <script src="police/police_sf_map.lua" type="server" />					 <!-- -->
-     <script src="police/police_lv_map.lua" type="server" />					 <!-- -->
-					 <!-- -->
-					 <!-- -->
-     <script src="army/ARMA_s.lua" type="server" />					 <!-- -->
-     <script src="army/army_ls_map.lua" type="server" />					 <!-- -->
-     <script src="army/army_sf_map.lua" type="server" />					 <!-- -->
-     <script src="army/army_lv_map.lua" type="server" />					 <!-- -->
-					 <!-- -->
-     <script src="hospital/hosp_map_once.lua" type="server" />					 <!-- -->
-     <script src="hospital/hosp_ls_map.lua" type="server" />					 <!-- -->
-     <script src="hospital/hosp_sf_map.lua" type="server" />					 <!-- -->
-     <script src="hospital/hosp_lv_map.lua" type="server" />					 <!-- -->
-					 <!-- -->
-     <script src="gover/merii_map.lua" type="server" />					 <!-- -->
-					 <!-- -->
-     <script src="mafia/mafs_map_once.lua" type="server" />					 <!-- -->
-     <script src="mafia/lcn_maf_map.lua" type="server" />					 <!-- -->
-     <script src="mafia/rus_maf_map.lua" type="server" />					 <!-- -->
-     <script src="mafia/triada_maf_map.lua" type="server" />					 <!-- -->
-     <script src="mafia/yakudza_maf_map.lua" type="server" />					 <!-- -->
-					 <!-- -->
-     <script src="bands/bands_map_once.lua" type="server" />					 <!-- -->
-     <script src="bands/ballas_band_map.lua" type="server" />					 <!-- -->
-     <script src="bands/aztek_band_map.lua" type="server" />					 <!-- -->
-     <script src="bands/groove_band_map.lua" type="server" />					 <!-- -->
-     <script src="bands/rifa_band_map.lua" type="server" />					 <!-- -->
-     <script src="bands/vagos_band_map.lua" type="server" />					 <!-- -->
-					 <!-- -->
-     <file src="deffIco.png"/>					 <!-- -->
-     <file src="smoke.png"/>					 <!-- -->
-     <file src="warning.png"/>					 <!-- -->
-     <file src="battleIco.png"/>					 <!-- -->
-					 <!-- -->
-     <file src="moveLineMask.png"/>					 <!-- -->
-     <file src="moveLineMask_end.png"/>					 <!-- -->
-     <file src="moveLine.png"/>					 <!-- -->
-					 <!-- -->
-					 <!-- -->
-     <export function="createReviveSequense" type="server"/>					 <!-- -->
-</meta>					 <!-- -->
+<meta>
+     <min_mta_version client="1.5.9-9.20704"></min_mta_version>
+     <script src="garage.lua" type="server" />
+     <script src="Organs.lua" type="server" />
+     <script src="OrgansTable.lua" type="server" />
+     <script src="Territory.lua" type="server" />
+
+     <script src="Territory_Sh.lua" type="client" />  
+     <script src="Territory_C.lua" type="client" />  
+     <script src="TerritoryDebug_C.lua" type="client" />  
+
+     <script src="hospital/revival.lua" type="server" />
+
+     <script src="police/police_ls_map.lua" type="server" />
+     <script src="police/police_sf_map.lua" type="server" />
+     <script src="police/police_lv_map.lua" type="server" />
+
+
+     <script src="army/ARMA_s.lua" type="server" />
+     <script src="army/army_ls_map.lua" type="server" />
+     <script src="army/army_sf_map.lua" type="server" />
+     <script src="army/army_lv_map.lua" type="server" />
+
+     <script src="hospital/hosp_map_once.lua" type="server" />
+     <script src="hospital/hosp_ls_map.lua" type="server" />
+     <script src="hospital/hosp_sf_map.lua" type="server" />
+     <script src="hospital/hosp_lv_map.lua" type="server" />
+
+     <script src="gover/merii_map.lua" type="server" />
+
+     <script src="mafia/mafs_map_once.lua" type="server" />
+     <script src="mafia/lcn_maf_map.lua" type="server" />
+     <script src="mafia/rus_maf_map.lua" type="server" />
+     <script src="mafia/triada_maf_map.lua" type="server" />
+     <script src="mafia/yakudza_maf_map.lua" type="server" />
+
+     <script src="bands/bands_map_once.lua" type="server" />
+     <script src="bands/ballas_band_map.lua" type="server" />
+     <script src="bands/aztek_band_map.lua" type="server" />
+     <script src="bands/groove_band_map.lua" type="server" />
+     <script src="bands/rifa_band_map.lua" type="server" />
+     <script src="bands/vagos_band_map.lua" type="server" />
+
+     <file src="deffIco.png"/>
+     <file src="smoke.png"/>
+     <file src="warning.png"/>
+     <file src="battleIco.png"/>
+
+     <file src="moveLineMask.png"/>
+     <file src="moveLineMask_end.png"/>
+     <file src="moveLine.png"/>
+
+
+     <export function="createReviveSequense" type="server"/>
+</meta>

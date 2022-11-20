@@ -1,36 +1,36 @@
-<meta> 					 <!-- -->
-	<info name="Camera2RenderTarget" version="0.2.4" type="script" />					 <!-- -->
-	<min_mta_version client="1.5" server="1.5" />					 <!-- -->
-	<oop>true</oop>					 <!-- -->
-	<script src="c_cam2RTMirror.lua" type="client" />					 <!-- -->
-	<file src="fx/cam2RTMirror_vehicle.fx" type="client" />					 <!-- -->
-	<file src="fx/cam2RTMirror_world.fx" type="client" />					 <!-- -->
-	<file src="fx/cam2RTMirror_world_add.fx" type="client" />					 <!-- -->
-	<file src="fx/cam2RTMirror_world_smap.fx" type="client" />					 <!-- -->
-					 <!-- -->
-	<script src="c_cam2RTAlternate.lua" type="client" />					 <!-- -->
-	<file src="fx/cam2RTAlternate_vehicle.fx" type="client" />						 <!-- -->
-	<file src="fx/cam2RTAlternate_world.fx" type="client" />					 <!-- -->
-	<file src="fx/cam2RTAlternate_world_add.fx" type="client" />					 <!-- -->
-	<file src="fx/cam2RTAlternate_world_smap.fx" type="client" />						 <!-- -->
-						 <!-- -->
-	<script src="line2material3D/c_material3D_mask_proj.lua" type="client" />					 <!-- -->
-	<file src="line2material3D/fx/material3D_mask_proj.fx" type="client" />					 <!-- -->
-						 <!-- -->
-	<script src="c_cam2RTImage.lua" type="client" />						 <!-- -->
-	<script src="c_cam2RTScreen.lua" type="client" />					 <!-- -->
-	<file src="fx/cam2RTScreen_vehicle.fx" type="client" />						 <!-- -->
-	<file src="fx/cam2RTScreen_world.fx" type="client" />					 <!-- -->
-	<file src="fx/cam2RTScreen_world_add.fx" type="client" />					 <!-- -->
-	<file src="fx/cam2RTScreen_world_smap.fx" type="client" />					 <!-- -->
-					 <!-- -->
-	<script src="line2material3D/c_material3D_mask.lua" type="client" />					 <!-- -->
-	<file src="line2material3D/fx/material3D_mask.fx" type="client" />					 <!-- -->
-						 <!-- -->
-	<file src="tex/mask.png" type="client" />					 <!-- -->
-						 <!-- -->
-	<script src="c_common.lua" type="client" />					 <!-- -->
-	<file src="fx/mta-helper.fx" type="client" />					 <!-- -->
-					 <!-- -->
-	<script src="c_resource_test.lua" type="client" />					 <!-- -->
-</meta>					 <!-- -->
+<meta> 
+	<info name="Camera2RenderTarget" version="0.2.4" type="script" />
+	<min_mta_version client="1.5" server="1.5" />
+	<oop>true</oop>
+	<script src="c_cam2RTMirror.lua" type="client" />
+	<file src="fx/cam2RTMirror_vehicle.fx" type="client" />
+	<file src="fx/cam2RTMirror_world.fx" type="client" />
+	<file src="fx/cam2RTMirror_world_add.fx" type="client" />
+	<file src="fx/cam2RTMirror_world_smap.fx" type="client" />
+
+	<script src="c_cam2RTAlternate.lua" type="client" />
+	<file src="fx/cam2RTAlternate_vehicle.fx" type="client" />	
+	<file src="fx/cam2RTAlternate_world.fx" type="client" />
+	<file src="fx/cam2RTAlternate_world_add.fx" type="client" />
+	<file src="fx/cam2RTAlternate_world_smap.fx" type="client" />	
+	
+	<script src="line2material3D/c_material3D_mask_proj.lua" type="client" />
+	<file src="line2material3D/fx/material3D_mask_proj.fx" type="client" />
+	
+	<script src="c_cam2RTImage.lua" type="client" />	
+	<script src="c_cam2RTScreen.lua" type="client" />
+	<file src="fx/cam2RTScreen_vehicle.fx" type="client" />	
+	<file src="fx/cam2RTScreen_world.fx" type="client" />
+	<file src="fx/cam2RTScreen_world_add.fx" type="client" />
+	<file src="fx/cam2RTScreen_world_smap.fx" type="client" />
+
+	<script src="line2material3D/c_material3D_mask.lua" type="client" />
+	<file src="line2material3D/fx/material3D_mask.fx" type="client" />
+	
+	<file src="tex/mask.png" type="client" />
+	
+	<script src="c_common.lua" type="client" />
+	<file src="fx/mta-helper.fx" type="client" />
+
+	<script src="c_resource_test.lua" type="client" />
+</meta>

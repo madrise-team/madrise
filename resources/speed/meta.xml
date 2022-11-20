@@ -1,4 +1,4 @@
-<meta>					 <!-- -->
-     <min_mta_version client="1.5.9-9.20704"></min_mta_version>					 <!-- -->
-     <script src="speeed.lua" type="client" />					 <!-- -->
-</meta>					 <!-- -->
+<meta>
+     <min_mta_version client="1.5.9-9.20704"></min_mta_version>
+     <script src="speeed.lua" type="client" />
+</meta>

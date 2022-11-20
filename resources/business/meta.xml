@@ -1,6 +1,6 @@
-<meta>					 <!-- -->
-     <min_mta_version client="1.5.9-9.20704"></min_mta_version>					 <!-- -->
-     <script src="business.lua" type="server" />					 <!-- -->
-     <script src="business_map.lua" type="server" />					 <!-- -->
-     <script src="business_C.lua" type="client" />					 <!-- -->
-</meta>					 <!-- -->
+<meta>
+     <min_mta_version client="1.5.9-9.20704"></min_mta_version>
+     <script src="business.lua" type="server" />
+     <script src="business_map.lua" type="server" />
+     <script src="business_C.lua" type="client" />
+</meta>
