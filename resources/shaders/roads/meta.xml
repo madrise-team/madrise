@@ -1,0 +1,8 @@
+<meta>
+	<script src="shader.lua" type="client" cache="false"/>
+	<file src="shader.fx" />	
+	<file src="img/road.png" />
+
+	<export function="toggleRoads" type="client"/>
+	<export function="isRoads" type="client"/>
+</meta>

@@ -1,0 +1,14 @@
+<meta>
+    <info author="Skynet (vk.com/studioskynet)" version="01-03-22" name="graphics"/>
+    <oop>true</oop>
+
+    <script src="shared/shared.lua" type="shared"/>
+    <script src="client/utils.lua" type="client"/>
+    <script src="client/client.lua" type="client"/>
+
+    <file src="assets/fonts/gotham-bold.ttf"/>
+    <file src="assets/fonts/gotham-light.ttf"/>
+    <file src="assets/fonts/gotham-medium.ttf"/>
+
+    <file src="assets/sounds/select.wav"/>
+</meta>

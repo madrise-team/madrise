@@ -1,0 +1,10 @@
+<settings>
+    <type>real</type>
+    <density>2000</density>
+    <winddirection xdir="0.01" ydir="-1"></winddirection>
+    <windspeed>0</windspeed>
+    <snowflakesize min="1" max="2"></snowflakesize>
+    <fallspeed min="1" max="2"></fallspeed>
+    <highlightcursor>true</highlightcursor>
+    <jitter>false</jitter>
+</settings>
