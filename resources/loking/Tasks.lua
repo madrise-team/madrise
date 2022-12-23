@@ -76,7 +76,7 @@ TasksPrefabs.markerCapture.create = function(tB)
 			tB.endTask({true})
 		elseif arg.type == 2 then
 
-			for k,v in pairs(args.objects) do
+			for k,v in pairs(arg.objects) do
 				if not arg.capObjecs[tostring(v)] then return end
 			end
 			-- все объекты внутри маркера
@@ -151,14 +151,14 @@ addCommandHandler("dayTask",function(player,_,tasksGroup,description)
 	end
 
 	local grupSer = rlg:createGroupFromPlayer(player)
-
-
+		
 	local reEnd = false
 	local taskBlock 
 	taskBlock = createTask(grupSer,tasksGroup or "simpleGroup","markerCapture",{
 		x = 1690.8992919922,
 		y= -1729.6876220703,
 		z = 13.390605926514,
+		type = 2,
 		objects = {object},
 		description = description or target 
 	},function(result)
