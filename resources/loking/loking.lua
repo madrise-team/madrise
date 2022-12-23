@@ -174,7 +174,7 @@ dostJob.nachalo = function(session)
 	addNewMarker(-49.89774, -267.93707, 5.64368, "cylinder", 2.0, 225, 0, 0, 200, session.player,session,function()
 		if zalogDone(session.player, dostJob.zalog) then
 		
-		local avtoNum = findClearPlaceIndex(dostJob.autos)
+			local avtoNum = findClearPlaceIndex(dostJob.autos)
 			if not avtoNum then 
 				outputChatBox("В данный момент рабочий транспрот не может быть выдан, пожалуйста попробуйте позже")
 				return "cancel" 
@@ -2380,10 +2380,13 @@ end
 function startNewJob(thePlayer,comandName,jobName)
 	local job = JobsContent[jobName]
 	if job == nil then 
-		outputConsole("WARING! Trying starting doesn't existed job ("..jobName.."), check job name!!!!")
+		outputConsole("ERROR! Trying starting doesn't existed job ("..jobName.."), check job name!!!!")
 		return
 	end
-	if not getPlayerName(thePlayer) then outputConsole("WARING! Trying starting job ("..jobName..") for incorrect player!!!!") end
+	if not getPlayerName(thePlayer) then 
+		outputConsole("ERROR! Trying starting job ("..jobName..") for incorrect player!!!!") 
+		return
+	end
 
 	--"" debuh
 	--setPlayerMoney (thePlayer,0)
@@ -2442,7 +2445,7 @@ JobsContent["gangWork"] = ammoJob
 --JobsContent["fermaWork"] = fermaJob
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 -------------------------------------------------------------------------------------------------------------
-
+--		Биржа труда		
 -------------------------------------------------------------------------------------------------------------
 -------------------------------------------------------------------------------------------------------------
 -------------------------------------------------------------------------------------------------------------

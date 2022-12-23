@@ -13,11 +13,12 @@ function getAccountColumn(nick,clumn,callback)
 end
 
 function setAccountMoney(nickname,mony,type)
-	type = type or 'money'
-	if not checkArgs({nickname,mony,type},"setAccMony") then return end
-	setAccountColumn(nickname,type,mony)
+	type = type or 'money'  -- Если не указано то просто валюта а не вклад
+	if not checkArgs({nickname,mony,type},"setAccountMoney") then return end
 	
-	if type ~= "money" then return end
+	setAccountColumn(nickname, type,mony)
+
+	if type ~= "money" then return end -- Если это просто деньги а не вклад или еще шо то надо и на клиенте обновить
 	local player = exports.reglog:getPlayerByNickName(nickname)
 	if player then
 		setPlayerMoney(player,mony)

@@ -8,6 +8,11 @@
      <script src="spawn.lua" type="server" />
 
 
+     <script src="Groups.lua" type="server" />
+     
+     <export function="createGroup" type="server"/>
+     <export function="getGroup" type="server"/>
+
      <export function="getLoggedPlyers" type="server"/>
      <export function="getPlayerByNickName" type="server"/>
      <export function="giveAccountMoney" type="server"/>
@@ -15,4 +20,26 @@
      <export function="setAccountMoney" type="server"/>
      <export function="addToAccountAvtoLink" type="server"/>
      <export function="removeFromAccountAvtoLink" type="server"/>
+
+
+     
+
+     <export function="createGroup" type="server"/>
+     <export function="getGroups" type="server"/>
+     <export function="getGroup" type="server"/>
+     <export function="destroyGroup" type="server"/>
+     <export function="groupAddMember" type="server"/>
+     <export function="groupRemoveMember" type="server"/>
+     <export function="groupIsMember" type="server"/>
+     <export function="groupSetLeader" type="server"/>
+     <export function="groupAddTag" type="server"/>
+     <export function="groupGetTags" type="server"/>
+     <export function="groupRemoveTag" type="server"/>
+     <export function="groupAddTask" type="server"/>
+     <export function="groupGetTasks" type="server"/>
+     <export function="groupRemoveTask" type="server"/>
+     
+     <export function="createGroupFromNickname" type="server"/>
+     <export function="createGroupFromPlayer" type="server"/>
+
 </meta>

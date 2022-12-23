@@ -38,9 +38,10 @@
     <export function="hideInterface" type="client" />
     <export function="showInterface" type="client" />
     
-    
-    
     <export function="createSound" type="server" />
     <export function="PlaySond3d" type="client" />
-    
+
+    <script src="testerServer.lua" type="server" />
+
+
 </meta>

@@ -16,17 +16,15 @@ addEventHandler("onPlayerQuit",root,function()
 end)
 function getPlayerByNickName(nickname)
 	local player = loggedPlayers[nickname]
-	if nickname then return player end
+	if player then return player end
 end
 function getLoggedPlyers()
 	return loggedPlayers
 end
 
------------DEBUG сбор всех акков как будт они уже залогинилсь это временно потом удалить навсякий
-	
+-----------DEBUG сбор всех акков на restarte как будт они уже залогинилсь это временно потом удалить навсякий
 for k,v in pairs(getElementsByType('player') ) do
  	loggedPlayers[getPlayerNickName(v)] = v
- 	outputDebugString("asdds")
  	triggerClientEvent(v,"playerLogin",root)
 end
 
