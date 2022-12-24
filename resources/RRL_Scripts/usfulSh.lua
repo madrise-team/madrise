@@ -48,41 +48,49 @@ end
 
 local createdTimersCount = 0
 local createdTimers = {}
+local needToRemoveTimers = {}
+setTimer(function()                                 --- кастомные таймеры
+    
+    if createdTimersCount < 1 then return end
+
+    local curtime = getRealTime().timestamp
+
+    local debCount = 0
+    for crtIndx,v in pairs(createdTimers) do
+        if curtime >= v.timerEndTime then
+            table.insert(needToRemoveTimers,crtIndx) 
+            if v.callback then v.callback() end
+        end
+        debCount = debCount + 1
+    end
+
+    for k,indx in pairs(needToRemoveTimers) do
+        createdTimers[ indx ] = nil
+        needToRemoveTimers[k] = nil
+        createdTimersCount = createdTimersCount - 1    
+    end
+end,1900,0)
+
 function createTimer(hours,mins,secs,callback)
     local starTime = getRealTime()
+    hours = hours or 0
+    mins = mins or 0
+    secs = secs or 0
 
     local totalMins = mins + hours*60
     local totalSecs = secs + totalMins*60
 
     local timerIndex = #createdTimers + 1
 
-    if createdTimersCount < 1 then
-        local sTimer
-        sTimer = setTimer(function()
-            local curtime = getRealTime().timestamp
-            
-            local needToR = {}
-            for k,v in pairs(createdTimers) do
-                local crtIndx = k
-                if curtime >= v.timerEndTime then
-                    if v.callback then v.callback() end
-                    needToR[#needToR + 1] = crtIndx
-                    createdTimersCount = createdTimersCount - 1
-                end
-            end
-            for _,crtIndx in pairs(needToR) do
-                createdTimers[crtIndx] = nil
-            end
-            if createdTimersCount < 1 then
-                killTimer(sTimer)
-            end
-        end,1900,0)
-    end
     createdTimers[timerIndex] = {timerEndTime = starTime.timestamp + totalSecs,callback = callback}
     createdTimersCount = createdTimersCount + 1
 
-    return createdTimers[timerIndex].timerEndTime,createdTimers[timerIndex]
+    return timerIndex, createdTimers[timerIndex], createdTimers[timerIndex].timerEndTime
 end
+function removeTimer(timerIndex)
+    table.insert(needToRemoveTimers,timerIndex)
+end
+
 
 
 function isInPolygon(poly,point)

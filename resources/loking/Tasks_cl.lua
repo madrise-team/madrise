@@ -41,7 +41,16 @@ addEventHandler("onClientRender",root,function()
 				
 			end
 
-			dxDrawText (v.description .. " •", screenW - 500,yPos, screenW-15, 1000, col, 1,1,"default","right","top")	
+			local dopInf = " "
+			if v.timer then
+				local tm = getTimeToEnd(v.timer)
+				local hours = tm.hours .. " : "
+				if tm.hours == 0 then hours = "" end
+
+				local case = "[ ".. hours  .. tm.mins .. " : " .. tm.secs  .." ] "
+				dopInf = dopInf..case 
+			end
+			dxDrawText (v.description .. dopInf .. " •", screenW - 500,yPos, screenW-15, 1000, col, 1,1,"default","right","top")	
 
 			if reasonAdded then
 				yPos = yPos + 15
