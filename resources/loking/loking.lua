@@ -1,6 +1,6 @@
 ----- imports
 loadstring(exports.importer:load())()
-import('RRL_Scripts/usfulS.lua')()    -- Usful Server
+--import('RRL_Scripts/usfulS.lua')()    -- Usful Server
 
 import('loking/lokingWoksCoords.lua')()    -- Works Coords [+ Usful Shared]
 ------------------------------------
@@ -15,15 +15,7 @@ end
 -------------------------------------------------------------------------------------------------------------
 -------------------------------------------------------------------------------------------------------------
 
-function zalogDone(player, zalog)
-	if getPlayerMoney(player) >= zalog then
-		takePlayerMoney (player, zalog)
-		return true
-	else
-		outputChatBox("У вас не хватает денег для оплаты залога за рабочий транспорт.", player)
-		return false 
-	end
-end
+
 
 function isItAPlayer(element,player)
 	if not element then return false end
@@ -2470,13 +2462,6 @@ end)
 
 
 addCommandHandler("startNewJob", startNewJob)
-
-
-outputChatBox("money in loking gmMoney")
-addCommandHandler("gmMoney", function(thePlayer)
-	outputChatBox("loking gmMoney 909090")
-	givePlayerMoney(thePlayer,909090)
-end)
 
 
 

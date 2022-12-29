@@ -36,8 +36,10 @@
         <object name="user.Console"></object>
         <object name="user.qwery"></object>
         <object name="user.qwert"></object>
+        <object name="user.asdfg"></object>
+        <object name="user.asdf"></object>
         <object name="user.BradW"></object>
-        <object name="resource.login"></object>
+        <object name="resource.reglog"></object>
         <object name="resource.importer"></object>
     </group>
     <group name="RPC">

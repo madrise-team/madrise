@@ -350,6 +350,32 @@ addCommandHandler("dmt",function()
 	addEventHandler ( "onClientRender", root, displayMyTask )
 end)
 
+--[[
+adad = {}
+addEvent("tat",true)
+addEventHandler("tat",root,function(tata,name)
+	if name == "loking" then
+		adad = tata
+	end
+end)
 
+addEventHandler("onClientRender",root,function()
+    local timerC = 0
+    for k,v in pairs(adad) do
+        timerC = timerC + 1
+    end
+    dxDrawText("Timers: "..timerC, 600, 200)
+    local yPOs = 220
+
+    for i=1,25 do
+        local tm = adad[i]
+        if tm then
+            local endTime = getTimeToEnd(tm.timerEndTime)
+            dxDrawText("ind: "..i.." end: ["..endTime.mins.." : "..endTime.secs.."] ", 600, yPOs)
+        end
+        yPOs = yPOs + 15
+    end
+end)
+]]--
 
 outputDebugString("----------------------------------------------------------------------")

@@ -1,10 +1,17 @@
 <meta>
      <min_mta_version client="1.5.9-9.20704"></min_mta_version>
-     <script src="loking.lua" type="server" />
-     <script src="loking_client.lua" type="client" />
-     <script src="birja_client.lua" type="client" />
-     <script src="loking_map.lua" type="client" />
+     
      <script src="lokingWoksCoords.lua" type="client" />
+     <script src="loking_map.lua" type="client" />
+
+     <script src="Tasks.lua" type="server" />
+     <script src="Tasks_cl.lua" type="client" />
+
+     <script src="works.lua" type="server" />
+     <!-- script src="loking.lua" type="server" / -->
+     <!-- script src="loking_client.lua" type="client" / -->
+     <script src="birja_client.lua" type="client" />
+     
 
      <file src="but.png" />
 
@@ -15,8 +22,5 @@
      <file src="elMontaj/claws_12.dff" />
      <file src="elMontaj/claws_21.dff" />
      <file src="elMontaj/claws_22.dff" />
-
-     <script src="Tasks.lua" type="server" />
-     <script src="Tasks_cl.lua" type="client" />
 
 </meta>

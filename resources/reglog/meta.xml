@@ -9,6 +9,7 @@
 
 
      <script src="Groups.lua" type="server" />
+     <script src="Groups_cl.lua" type="client" />
      
      <export function="createGroup" type="server"/>
      <export function="getGroup" type="server"/>
@@ -22,24 +23,25 @@
      <export function="removeFromAccountAvtoLink" type="server"/>
 
 
-     
-
-     <export function="createGroup" type="server"/>
-     <export function="getGroups" type="server"/>
-     <export function="getGroup" type="server"/>
-     <export function="destroyGroup" type="server"/>
-     <export function="groupAddMember" type="server"/>
-     <export function="groupRemoveMember" type="server"/>
-     <export function="groupIsMember" type="server"/>
-     <export function="groupSetLeader" type="server"/>
-     <export function="groupAddTag" type="server"/>
-     <export function="groupGetTags" type="server"/>
-     <export function="groupRemoveTag" type="server"/>
-     <export function="groupAddTask" type="server"/>
-     <export function="groupGetTasks" type="server"/>
-     <export function="groupRemoveTask" type="server"/>
-     
-     <export function="createGroupFromNickname" type="server"/>
-     <export function="createGroupFromPlayer" type="server"/>
+     <export function= "createGroup"             type="server"/>
+     <export function= "groupChanged"            type="server"/>
+     <export function= "groupSetLeader"          type="server"/>
+     <export function= "groupGetLeader"          type="server"/>
+     <export function= "groupGetLeaderPlayer"    type="server"/>
+     <export function= "groupGetMemberIndex"     type="server"/>
+     <export function= "groupGetMembers"         type="server"/>
+     <export function= "groupAddMember"          type="server"/>
+     <export function= "groupRemoveMember"       type="server"/>
+     <export function= "groupIsMember"           type="server"/>
+     <export function= "groupDestroy"            type="server"/>
+     <export function= "groupAddTag"             type="server"/>
+     <export function= "groupRemoveTag"          type="server"/>
+     <export function= "groupGetTags"            type="server"/>
+     <export function= "groupAddTask"            type="server"/>
+     <export function= "groupRemoveTask"         type="server"/>
+     <export function= "groupGetTasks"           type="server"/>
+     <export function= "createGroupFromNickname" type="server"/>
+     <export function= "createGroupFromPlayer"   type="server"/>
+     <export function= "groupGetPlayers"         type="server"/>
 
 </meta>

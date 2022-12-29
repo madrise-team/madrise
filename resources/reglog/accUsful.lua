@@ -69,6 +69,14 @@ function getAccountRoots(nick,callback)
 	end)
 end
 
+
+function setPlayerGroupData(player,groupS)
+	setElementData(player,"gruop",groupS)
+end
+function getPlayerGroupData(player)
+	return getElementData(player,"gruop")
+end
+
 ------------------------------------------------------------------------------------------------------------
 end
 return usfulAcc

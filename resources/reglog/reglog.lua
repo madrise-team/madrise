@@ -9,20 +9,20 @@ function onJoin()
 	setPlayerPositon(source, 0, 0, 10000, 0, 0, 1)
 	setElementFrozen (source, true)
 	outputChatBox("Добро пожаловать!", source)
-	outputChatBox("Для регистрации введите: /reg 'login' 'password'", source)
+	outputChatBox("Для регистрации введите: /reg 'login' 'password' 'nickname'", source)
 	outputChatBox("Для входа введите: /log 'login' 'password'", source)
 end
 function getLocalBdAccount(username,password)
 	local localBdAccount = getAccount(username, password)
 	if not localBdAccount then localBdAccount = addAccount(username,password) end
-	return localBdAccount or false
+	return localBdAccount
 end
 
-function regPlayer(source, commandName, username, password)
-	if(password ~= "" and password ~= nil and username ~= "" and username ~= nil) then
+function regPlayer(source, commandName, username, password, nickname)
+	if( (password ~= "") and (password ~= nil) and (username ~= "") and (username ~= nil) and (nickname ~= nil) and (nickname ~= "")) then
 		local accountCreated = getLocalBdAccount(username,password)
 		if(accountCreated) then
-			if dbExec(SQLStorage,"INSERT INTO `accounts` (`login`, `password`) VALUES (?,?)",username,password) then
+			if dbExec(SQLStorage,"INSERT INTO `accounts` (`login`, `password`, `nickname`) VALUES (?,?,?)",username,password,nickname) then
 				outputChatBox("Аккаунт успешно зарегистрирован!",source)
 				outputChatBox("Для входа введите: /log 'login' 'password'", source)
 			end
@@ -32,7 +32,7 @@ function regPlayer(source, commandName, username, password)
 	else
 		outputChatBox("Ошибка создания аккаунта",source)
 		outputChatBox("Для регистрации введите: /reg 'login' 'password'", source)
-		outputChatBox("Логин и пароль должны содердать от 1 до 30 символов", source)
+		outputChatBox("Логин, пароль и никнейм должны содержать от 1 до 30 символов", source)
 	end
 end
 

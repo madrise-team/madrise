@@ -46,29 +46,41 @@ function getTimeToEnd(endTime)
     return res
 end
 
+
+function timerDebTrigger()
+    local name = getResourceName(getThisResource())
+    if triggerClientEvent then triggerClientEvent("tat",root,createdTimers,name) end
+end
+
 local createdTimersCount = 0
 local createdTimers = {}
 local needToRemoveTimers = {}
-setTimer(function()                                 --- кастомные таймеры
-    
+setTimer(function()                                 --- кастомные таймеры    
     if createdTimersCount < 1 then return end
 
     local curtime = getRealTime().timestamp
 
-    local debCount = 0
     for crtIndx,v in pairs(createdTimers) do
-        if curtime >= v.timerEndTime then
-            table.insert(needToRemoveTimers,crtIndx) 
-            if v.callback then v.callback() end
+        if not v.deleted then
+            if curtime >= (v.timerEndTime) then
+                removeTimer(crtIndx)
+                if v.callback then v.callback() end
+            end
         end
-        debCount = debCount + 1
     end
 
+    local helpArray = {}
     for k,indx in pairs(needToRemoveTimers) do
         createdTimers[ indx ] = nil
-        needToRemoveTimers[k] = nil
-        createdTimersCount = createdTimersCount - 1    
+        table.insert(helpArray,k)
+        createdTimersCount = createdTimersCount - 1 
+        
+        --timerDebTrigger()
     end
+    for k,v in pairs(helpArray) do
+        needToRemoveTimers[v] = nil    
+    end
+
 end,1900,0)
 
 function createTimer(hours,mins,secs,callback)
@@ -85,12 +97,14 @@ function createTimer(hours,mins,secs,callback)
     createdTimers[timerIndex] = {timerEndTime = starTime.timestamp + totalSecs,callback = callback}
     createdTimersCount = createdTimersCount + 1
 
+    --timerDebTrigger()
+
     return timerIndex, createdTimers[timerIndex], createdTimers[timerIndex].timerEndTime
 end
 function removeTimer(timerIndex)
+    createdTimers[timerIndex].deleted = true
     table.insert(needToRemoveTimers,timerIndex)
 end
-
 
 
 function isInPolygon(poly,point)
