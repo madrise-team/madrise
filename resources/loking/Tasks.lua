@@ -153,6 +153,7 @@ TasksPrefabs.markerCapture.create = function(tB)
 	arg.r = arg.r or 0; arg.g = arg.g or 0;	arg.b = arg.b or 0;	arg.a = arg.a or 0
 	arg.size = arg.size or 3
 
+	if arg.a == 0 then arg.markerType = "cylinder" end
 	arg.marker = createMarker(arg.x,arg.y,arg.z, arg.markerType or "checkpoint",arg.size, arg.r, arg.g, arg.b, arg.a)
 	if tB.membersGroup then setElementVisibleToPlayers(tB.grpPlayers,arg.marker,true) end
 
@@ -194,7 +195,7 @@ TasksPrefabs.markerCapture.create = function(tB)
 					removeTimer(arg.eventTimerIndex)
 				end
 				
-				tB.timer = false
+				tB.timer = nil
 				triggerMembersState(tB)
 			end
 		else
@@ -220,11 +221,9 @@ TasksPrefabs.markerCapture.create = function(tB)
 		if not object then return end
 		if (getElementDimension(object) ~= arg.dim) or (getElementInterior(object) ~= arg.int) then return end
 
-		local objectStr = tostring(object)
-		if arg.objectsKey[objectStr] then 
-			arg.capObjecs[objectStr] = enable 
-			checkCapObjects()
-		end
+		local objectStr = tostring(object) 
+		arg.capObjecs[objectStr] = enable 
+		checkCapObjects()
 	end
 	tB.markerEventHandler = function(object)
 		hanleObject(object, true)
@@ -238,9 +237,7 @@ TasksPrefabs.markerCapture.create = function(tB)
 			arg.objects = tB.grpPlayers
 			getObjectsKeys()
 
-			if arg.type == 2 then
-				checkCapObjects()
-			end
+			checkCapObjects()
 
 			setElementVisibleToPlayers(tB.grpPlayers,arg.marker,true)
 			if arg.blip then setElementVisibleToPlayers(tB.grpPlayers,arg.blip,true) end

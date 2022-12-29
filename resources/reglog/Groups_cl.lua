@@ -42,6 +42,8 @@ addEventHandler("onClientRender",root,function()
 	if myGroup then
 
 		dxDrawText ("Группа: serial#"..myGroup.serial, screenW - 500,yPos, screenW-15, 1000, tocolor(255,255,255,255), 1.2,1.2,"bold","right","top")
+		--yPos = yPos + 25
+		--dxDrawText ("Задачи: ", screenW - 500,yPos, screenW-15, 1000, tocolor(255,255,255,255), 1.2,1.2,"bold","right","top")
 		yPos = yPos + 25
 		drawer(true)
 		drawer(false)

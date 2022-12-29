@@ -170,8 +170,8 @@ addEventHandler( 'onClientRender', root,
         	dxDrawText(y,screenW-150,15)
         	dxDrawText(z,screenW-150,30)
         	dxDrawText("corder us_c (h disable)",screenW-150,50)
+	        setTime( 20, 59 )
     	end
-        --setTime( 20, 40 )
     end
 )
 
@@ -350,7 +350,10 @@ addCommandHandler("dmt",function()
 	addEventHandler ( "onClientRender", root, displayMyTask )
 end)
 
---[[
+
+
+--[[ Server Timers Debug
+
 adad = {}
 addEvent("tat",true)
 addEventHandler("tat",root,function(tata,name)
@@ -364,18 +367,21 @@ addEventHandler("onClientRender",root,function()
     for k,v in pairs(adad) do
         timerC = timerC + 1
     end
-    dxDrawText("Timers: "..timerC, 600, 200)
-    local yPOs = 220
+    local xPOs = 400
+    local yPOs = 200
+
+    dxDrawText("Timers: "..timerC, xPOs, 200)
+	yPOs = yPOs + 20
 
     for i=1,25 do
         local tm = adad[i]
         if tm then
             local endTime = getTimeToEnd(tm.timerEndTime)
-            dxDrawText("ind: "..i.." end: ["..endTime.mins.." : "..endTime.secs.."] ", 600, yPOs)
+            dxDrawText("ind: "..i.." end: ["..endTime.mins.." : "..endTime.secs.."] ", xPOs, yPOs)
         end
         yPOs = yPOs + 15
     end
 end)
-]]--
+--]]--
 
 outputDebugString("----------------------------------------------------------------------")

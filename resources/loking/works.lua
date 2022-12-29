@@ -52,7 +52,12 @@ function sessionTask(session,taskPrefabName,args,taskParams,callback)
 	args.succsesReason = taskParams.succsesReason
 	args.failReason = taskParams.failReason
 
-	local task = createTask(session.groupS,Works[session.jobName].taskGroup,taskPrefabName,args,callback)
+	local index = #session.tasks + 1
+	local task = createTask(session.groupS,Works[session.jobName].taskGroup,taskPrefabName,args,function(tB)
+		if callback(tB) then
+			table.remove(session.tasks,index)		
+		end
+	end)
 	table.insert(session.tasks,task)
 	return task
 end
@@ -126,11 +131,13 @@ dostJob.availableAutos = {414, 456, 498, 499}
 dostJob.distancePayRatio = 1
 dostJob.bonusRatio = 0.1
 dostJob.unloadingTimer = {mins = 0, secs = 10}
+dostJob.bonusDistTimeRatio = 18
 
 dostJob.start = function(session)
 	local arendCost = dostJob.deposit * dostJob.depositCost
-	arriveMarkerTask(session,true,dostJob.statPoint,nil,taskResultCapture(session,function()
-		
+	arriveMarkerTask(session,true,dostJob.statPoint,nil,function(tB)
+		if not tB.result.succses then return end
+
 		session.avtoSpawnCoord = findClearPlaceIndex(dostJob.autoSpawnCoods)
 		if not session.avtoSpawnCoord then 
 			outputChatBox("В данный момент рабочий транспрот не может быть выдан, пожалуйста попробуйте позже"); return false 
@@ -142,7 +149,7 @@ dostJob.start = function(session)
 		else
 			return false
 		end
-	end),{"Арендовать рабочий транспрот [Сумма Залога: "..(dostJob.deposit - arendCost)..", Cтоимость аренды: "..arendCost.." ]"},51)
+	end,{"Арендовать рабочий транспрот [Сумма Залога: "..(dostJob.deposit - arendCost)..", Cтоимость аренды: "..arendCost.." ]"},51)
 end
 dostJob.spawnAvtoAndStartRoad = function(session)
 	session.avtoModel = dostJob.availableAutos[math.random(1, #dostJob.availableAutos)]
@@ -170,7 +177,7 @@ dostJob.delivery = function(session)
 		session.bonusSumm = 0
 
 		local dostTime = (deliveryEndTime - session.deliveryStartTime)
-		local bonusTime = (session.deliveryDistance/14.5 + (dostJob.unloadingTimer.mins*60 + dostJob.unloadingTimer.secs) )
+		local bonusTime = (session.deliveryDistance/dostJob.bonusDistTimeRatio + (dostJob.unloadingTimer.mins*60 + dostJob.unloadingTimer.secs) )
 		if dostTime < bonusTime then
 			session.bonusSumm = math.floor(session.reward*dostJob.bonusRatio)
 			bonusText = " + Премиальные за скорость доставки: $ "..session.bonusSumm
@@ -199,7 +206,7 @@ dostJob.endJob = function(session, error)
 
 		outputChatBox("Состояние авто: "..avtoHealth)
 		if avtoHealth ~= 1 then
-			outputChatBox("Конпесация за ущерб рабочему транспортру составила: $ "..depositReturn - realDepositReturn)
+			outputChatBox("Конпесация издержек за ущерб рабочему транспортру составила: $ "..depositReturn - realDepositReturn)
 		end
 
 		givePlayerMoney(session.leaderPlayer, session.reward + realDepositReturn + session.bonusSumm)

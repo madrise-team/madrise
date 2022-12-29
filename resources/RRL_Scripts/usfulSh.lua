@@ -47,14 +47,17 @@ function getTimeToEnd(endTime)
 end
 
 
+
+
+local createdTimersCount = 0
+local createdTimers = {}
+local needToRemoveTimers = {}
+
 function timerDebTrigger()
     local name = getResourceName(getThisResource())
     if triggerClientEvent then triggerClientEvent("tat",root,createdTimers,name) end
 end
 
-local createdTimersCount = 0
-local createdTimers = {}
-local needToRemoveTimers = {}
 setTimer(function()                                 --- кастомные таймеры    
     if createdTimersCount < 1 then return end
 
@@ -63,11 +66,17 @@ setTimer(function()                                 --- кастомные та�
     for crtIndx,v in pairs(createdTimers) do
         if not v.deleted then
             if curtime >= (v.timerEndTime) then
-                removeTimer(crtIndx)
-                if v.callback then v.callback() end
+                if v.callback then
+                    v.callback() 
+                end
+                table.insert(needToRemoveTimers,crtIndx)
             end
+        else
+            table.insert(needToRemoveTimers,crtIndx)
         end
     end
+
+    --timerDebTrigger()
 
     local helpArray = {}
     for k,indx in pairs(needToRemoveTimers) do
@@ -103,7 +112,6 @@ function createTimer(hours,mins,secs,callback)
 end
 function removeTimer(timerIndex)
     createdTimers[timerIndex].deleted = true
-    table.insert(needToRemoveTimers,timerIndex)
 end
 
 
