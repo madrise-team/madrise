@@ -115,7 +115,7 @@ workHelpers = {}
 workHelpers.edbaColor = {r = 50,g = 150,b = 255,a = 255}
 workHelpers.carArriveSize = 5
 workHelpers.carPlaceHolderSize = 10
-workHelpers.avtoCareTimer = {mins = 0,secs = 10}
+workHelpers.avtoCareTimer = {mins = 0,secs = 60}
 
 Works = {}
 ------------------------------------------------------------------------------------------------------ dostJob

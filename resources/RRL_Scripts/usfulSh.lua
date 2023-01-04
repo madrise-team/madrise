@@ -22,8 +22,11 @@ function insertInTabOrCreate(tab,value,index)
     return tab
 end
 
-function getTimeToEnd(endTime)
-    local nowTime = getRealTime().timestamp
+function getTimeToEnd(endTime, timestampCorrection)
+    if not endTime then return end
+
+    timestampCorrection = timestampCorrection or 0
+    local nowTime = getRealTime().timestamp + timestampCorrection
 
 
     local res = {

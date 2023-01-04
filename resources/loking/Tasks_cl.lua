@@ -44,6 +44,11 @@ function hadleTaskInfo(taskInfo)
 
 	--outputChatBox("task "..taskInfo.serial..": " .. taskInfo.description .. resDeb )
 
+
+	if taskInfo.timestamp then
+		taskInfo.timestampCorrection = taskInfo.timestamp - getRealTime().timestamp
+	end
+
 	if taskInfo.result then
 		
 		taskInfo.removeTimer = setTimer(function()
@@ -76,12 +81,11 @@ addEventHandler("onClientRender",root,function()
 				if v.result.succses then col = tocolor(100,255,150,255); resonCOL =  tocolor(10,100,25,150)
 				else col = tocolor(255,100,150,255) end
 				if v.result.reason then reasonAdded = true end
-				
 			end
 
 			local dopInf = " "
 			if v.timer then
-				local tm = getTimeToEnd(v.timer)
+				local tm = getTimeToEnd(v.timer, v.timestampCorrection)
 				local hours = tm.hours .. " : "
 				if tm.hours == 0 then hours = "" end
 

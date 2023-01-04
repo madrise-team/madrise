@@ -12,8 +12,11 @@ Tasks = {}
 
 --------------------------------------------
 --Helper Functions
-function triggerMembersState(taskBlock)
+function triggerMembersState(taskBlock)          -- передаёт состояние task`a всем членам группа таска
 	if not taskBlock.membersGroup then return end 
+
+	local timestamp
+	if taskBlock.timer then timestamp = getRealTime().timestamp end
 
 	for k,player in pairs(taskBlock.grpPlayers) do
 		triggerLatentClientEvent(player,"taskState",10000,false,root,{
@@ -22,6 +25,7 @@ function triggerMembersState(taskBlock)
 			description=	taskBlock.description,
 			result= 		taskBlock.result,
 			timer= 			taskBlock.timer,
+			timestamp = 	timestamp,
 			blip= 			taskBlock.blip
 		})
 	end
@@ -205,17 +209,20 @@ TasksPrefabs.markerCapture.create = function(tB)
 
 	local checkCapObjects = function()
 		for k,v in pairs(arg.objectsKey) do
-			if not arg.capObjecs[k] then
-				capHandle(false) -- не все объекты внутри маркера
-				return
-			else
-				if arg.type == 1 then
+			if arg.type == 1 then
+				if arg.capObjecs[k] == true then
+					outputChatBox(k.." is true")
 					capHandle(true)
+					return
+				end
+			else
+				if not arg.capObjecs[k] then
+					capHandle(false) -- не все объекты внутри маркера (ну или не все покинули)
 					return
 				end
 			end
 		end
-		capHandle(true) -- все объекты внутри маркера
+		if arg.type == 2 then capHandle(true) end -- все объекты внутри маркера
 	end
 	local hanleObject = function(object, enable)
 		if not object then return end
@@ -333,6 +340,7 @@ function createTask(membersGroup,tasksGroup,prefabName,args,callback)
 			taskBlock.endTask({false, "Группа расформирована"})
 		else
 			if taskBlock.groupChanged then taskBlock.groupChanged(args) end
+			triggerMembersState(taskBlock)
 		end
 	end
 	if taskBlock.membersGroup then
