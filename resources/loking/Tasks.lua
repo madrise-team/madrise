@@ -15,6 +15,8 @@ Tasks = {}
 function triggerMembersState(taskBlock)
 	if not taskBlock.membersGroup then return end 
 
+	if taskBlock.timer then taskBlock.timestamp = getRealTime().timestamp end
+
 	for k,player in pairs(taskBlock.grpPlayers) do
 		triggerLatentClientEvent(player,"taskState",10000,false,root,{
 			serial= 		taskBlock.serial,
@@ -182,7 +184,7 @@ TasksPrefabs.markerCapture.create = function(tB)
 		if arg.eventTimer then
 			if capturing then
 				if tB.timer then return end
-				local timerIndex,_,timeToEnd = createTimer(arg.eventTimer.hours,arg.eventTimer.mins,arg.eventTimer.secs,function()
+				local timerIndex,_,timeToEnd, timestamp = createTimer(arg.eventTimer.hours,arg.eventTimer.mins,arg.eventTimer.secs,function()
 					tB.endTask({arg.eventResult})
 				end)
 				arg.eventTimerIndex = timerIndex
@@ -334,6 +336,7 @@ function createTask(membersGroup,tasksGroup,prefabName,args,callback)
 		else
 			if taskBlock.groupChanged then taskBlock.groupChanged(args) end
 		end
+		triggerMembersState(taskBlock)
 	end
 	if taskBlock.membersGroup then
 		rlg:groupAddTask(taskBlock.membersGroup,taskBlock.serial)

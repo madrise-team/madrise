@@ -22,8 +22,8 @@ function insertInTabOrCreate(tab,value,index)
     return tab
 end
 
-function getTimeToEnd(endTime)
-    local nowTime = getRealTime().timestamp
+function getTimeToEnd(endTime,timestamp)
+    local nowTime = timestamp or getRealTime().timestamp
 
 
     local res = {
@@ -108,7 +108,7 @@ function createTimer(hours,mins,secs,callback)
 
     --timerDebTrigger()
 
-    return timerIndex, createdTimers[timerIndex], createdTimers[timerIndex].timerEndTime
+    return timerIndex, createdTimers[timerIndex], createdTimers[timerIndex].timerEndTime, starTime.timestamp
 end
 function removeTimer(timerIndex)
     createdTimers[timerIndex].deleted = true
@@ -173,15 +173,15 @@ function randomSort(origt)           --///// randomise index table
 end
 
 function strsplit(inputstr, sep)
-        if not inputstr then return end
-        if sep == nil then
-                sep = "%s"
-        end
-        local t={}
-        for str in string.gmatch(inputstr, "([^"..sep.."]+)") do
-                table.insert(t, str)
-        end
-        return t
+    if not inputstr then return end
+    if sep == nil then
+        sep = "%s"
+    end
+    local t={}
+    for str in string.gmatch(inputstr, "([^"..sep.."]+)") do
+        table.insert(t, str)
+    end
+    return t
 end
 
 function fadeAlpha(element, time, dir)

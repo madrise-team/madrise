@@ -81,7 +81,7 @@ addEventHandler("onClientRender",root,function()
 
 			local dopInf = " "
 			if v.timer then
-				local tm = getTimeToEnd(v.timer)
+				local tm = getTimeToEnd(v.timer, v.timestamp)
 				local hours = tm.hours .. " : "
 				if tm.hours == 0 then hours = "" end
 
