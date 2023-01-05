@@ -1,6 +1,6 @@
 function usfulAcc()
 ------------------------------------------------------------------------------------------------------------
-function getAccountInfoByNickName(nick,callback) 
+function getAccountInfoByNickName(nick,callback)
 	getDbData('accounts','nickname',nick,function(data)
 		callback(data[1])
 	end)
@@ -62,7 +62,6 @@ function removeFromAccountBizLink(nickname,bizKey)
 end
 
 
-
 function getAccountRoots(nick,callback)
 	getAccountColumn(nick,'roots',function(data)
 		callback(fromJSON(data.roots) or {})
@@ -76,6 +75,12 @@ end
 function getPlayerGroupData(player)
 	return getElementData(player,"gruop")
 end
+
+
+function addToAccountSavedOffence(nick,ofSerial)
+	addElmByValueToColumnArray('accounts','nickname',nick,'notUploadedOffenses',ofSerial)
+end
+
 
 ------------------------------------------------------------------------------------------------------------
 end

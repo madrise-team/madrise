@@ -74,14 +74,15 @@ lvGPark2 = createObject(3037, 2497.3232, 2387.3145, 16.39595, 0, 0, 0)
 spawnGosPark(159)
 ----------------------------------Внутри---------------------------------
 -------------------------------------------------------------------------
+outputDebugString("!! merii_map commented LSPD SFPD LVPD")
 -----------------------------------LSPD----------------------------------
-lsGInt1 = createObject(1533, 369.23984, 194.84677, 1007.219, 0, 0, 270)     setElementInterior(lspdInt1, 3)  setElementDimension(lspdInt1, 51)
+--lsGInt1 = createObject(1533, 369.23984, 194.84677, 1007.219, 0, 0, 270)     setElementInterior(lspdInt1, 3)  setElementDimension(lspdInt1, 51)
 -------------------------------------------------------------------------
 -----------------------------------SFPD----------------------------------
-sfGIntk1 =  createObject(1533, 369.23984, 194.84677, 1007.219, 0, 0, 270)    setElementInterior(sfpdIntk1, 3)   setElementDimension(sfpdIntk1, 52)
+--sfGIntk1 =  createObject(1533, 369.23984, 194.84677, 1007.219, 0, 0, 270)    setElementInterior(sfpdIntk1, 3)   setElementDimension(sfpdIntk1, 52)
 -------------------------------------------------------------------------
 -----------------------------------LVPD----------------------------------
-lvGIntk1 =  createObject(1533, 369.23984, 194.84677, 1007.219, 0, 0, 270)    setElementInterior(lvpdIntk1, 3)   setElementDimension(lvpdIntk1, 53)
+--lvGIntk1 =  createObject(1533, 369.23984, 194.84677, 1007.219, 0, 0, 270)    setElementInterior(lvpdIntk1, 3)   setElementDimension(lvpdIntk1, 53)
 -------------------------------------------------------------------------
 -------------------------------------------------------------------------
 

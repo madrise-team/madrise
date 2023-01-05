@@ -11,11 +11,6 @@
 
      <script src="hospital/revival.lua" type="server" />
 
-     <script src="police/police_ls_map.lua" type="server" />
-     <script src="police/police_sf_map.lua" type="server" />
-     <script src="police/police_lv_map.lua" type="server" />
-
-
      <script src="army/ARMA_s.lua" type="server" />
      <script src="army/army_ls_map.lua" type="server" />
      <script src="army/army_sf_map.lua" type="server" />
@@ -49,6 +44,17 @@
      <file src="moveLineMask.png"/>
      <file src="moveLineMask_end.png"/>
      <file src="moveLine.png"/>
+
+
+     <!-- Police -->
+     <script src="police/police_ls_map.lua" type="server" />
+     <script src="police/police_sf_map.lua" type="server" />
+     <script src="police/police_lv_map.lua" type="server" />
+     
+     <script src="police/offenses/offensesCore.lua" type="server" />
+     <script src="police/offenses/offensesList.lua" type="server" />
+     <script src="police/offenses/offensesCore_cl.lua" type="client" />
+     
 
 
      <export function="createReviveSequense" type="server"/>

@@ -117,6 +117,22 @@ function removeTimer(timerIndex)
     createdTimers[timerIndex].deleted = true
 end
 
+function getPLayersInRange(x,y,z,range)
+    local rangePowed = range*range
+    
+    local rangePlayers = {}
+
+    for k,aPlayer in pairs(getElementsByType('player')) do
+        local plX,plY,plZ = getElementPosition(aPlayer)        
+        local dist = math.pow(x + plX,2) + math.pow(y + plY,2) + math.pow(z + plZ,2)
+        if dist < rangePowed then
+            rangePlayers[tostring(aPlayer)] = aPlayer
+        end
+    end
+
+    return rangePlayers
+end
+
 
 function isInPolygon(poly,point)
     local inPol = false

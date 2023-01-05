@@ -4,9 +4,6 @@ import('RRL_Scripts/usfulC.lua')()    -- Usful Client
 import('RRL_Scripts/usfulSh.lua')()    -- Usful Shared
 ------------------------------------
 --------------------------------------------------------------------------------------------------------
---addCommandHandler("attachMode",function(thePlayer,)
-	
---end)
 
 addEvent("pedEnteredVehicle", true)
 addEventHandler("pedEnteredVehicle",root,function(thePed,theVehicle)
@@ -59,9 +56,6 @@ bindKey("l","down",function()
 	ghoster = not ghoster
 	ghostVehMode(getPedOccupiedVehicle(localPlayer),not ghoster)
 end)
-
-
-
 
 addCommandHandler("clear",function()
 	clearChatBox()
@@ -162,18 +156,18 @@ local corder = false
 bindKey("h","down",function()
 	corder = not corder
 end)
-addEventHandler( 'onClientRender', root,
-    function( )
-    	if corder then
-        	local x,y,z =  getElementPosition(localPlayer)
-        	dxDrawText(x,screenW-150,0)
-        	dxDrawText(y,screenW-150,15)
-        	dxDrawText(z,screenW-150,30)
-        	dxDrawText("corder us_c (h disable)",screenW-150,50)
-	        setTime( 20, 59 )
-    	end
-    end
-)
+
+addEventHandler( 'onClientRender', root, function( )
+	if corder then
+    	local x,y,z =  getElementPosition(localPlayer)
+    	dxDrawText(x,screenW-150,0)
+    	dxDrawText(y,screenW-150,15)
+    	dxDrawText(z,screenW-150,30)
+    	dxDrawText("corder us_c (h disable)",screenW-150,50)
+        --setTime( 20, 59 )
+
+	end
+end)
 
 
 screenWid,screenHeh = guiGetScreenSize()
