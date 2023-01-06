@@ -1,0 +1,12 @@
+<meta>
+     <min_mta_version client="1.5.9-9.20704"></min_mta_version>
+     
+     <script src="TCN.lua" type="shared" />
+     <script src="TCN_cl.lua" type="client" />
+     <script src="TCN_usful_cl.lua" type="client" />
+
+     <export function= "getTcnConnectionLevel" type="client"/>
+     <export function= "TcnWaiter" type="client"/>
+
+
+</meta>

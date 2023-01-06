@@ -366,11 +366,21 @@ function getVehicleNearestToElementAtRange(element,range)
     return nirestVeh
 end
 
-function getPlayerNickName(player)
+function getPlayerData(player)
     if not player then return end
     local data = getElementData(player,"playerData")
     if not data then return "error to take player data!! (NickName taking)" end
-    return data.nickname
+    return data
+end
+
+function getPlayerNickName(player)
+    local data = getPlayerData(player)
+    if data then return data.nickname end
+end
+
+function getPlayerLogin(player)
+   local data = getPlayerData(player)
+    if data then return data.login end
 end
 
 function tonumberIdnx(tab)
@@ -449,6 +459,10 @@ function fromColor(color)
         
         return {r = red,g = green,b = blue,a = alpha }
     end
+end
+
+function truncateNumber(num,signs)
+    return tonumber(string.format("%."..signs.."f", tostring(num) ))
 end
 ------------------------------------------------------------------------------------------------------------
 end

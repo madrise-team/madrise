@@ -51,8 +51,9 @@
      <script src="police/police_sf_map.lua" type="server" />
      <script src="police/police_lv_map.lua" type="server" />
      
-     <script src="police/offenses/offensesCore.lua" type="server" />
      <script src="police/offenses/offensesList.lua" type="server" />
+     <script src="police/offenses/offensesCore.lua" type="server" />
+     <script src="police/offenses/offensesHandlers.lua" type="server" />
      <script src="police/offenses/offensesCore_cl.lua" type="client" />
      
 

@@ -1,8 +1,5 @@
 local localOffsSerial = 0
 
-
-
-
 function handleOffs(offender, victim, witnesses, offenseID)
 	localOffsSerial = localOffsSerial + 1	
 
@@ -41,9 +38,81 @@ addEvent("off-s",true)
 addEventHandler("off-s",root,handleOffs)
 
 
+--/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+--// Выгрузка правонарушений
+--/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+insertedOffenses = {}				--- серийники, которые уже вносил сервер
+function getOffense(serial,callback)
+	get1DbData("offenses",'serial',serial,callback)
+end
+
+function isLogExist(serial,callback)
+	if insertedOffenses[serial] then callback(true); return end
+	isRowExists("offenses","serial",serial,function(rowsCount)
+		if rowsCount > 0 then callback(true); return end
+	end)
+	callback(false)
+end
+
+function insertNewOffensLog(serial, offenseId, column, value)
+	insertedOffenses[serial] = true
+	dbExec(SQLStorage,"INSERT INTO `offenses`(`serial`,`??`,`timestamp`,`offenseId`) VALUES (?,?,?,?)" ,column, serial ,value, getRealTime().timestamp, offenseId)
+end
+function insertInOffensLog(serial, column, value, witness)
+	local bdFunc = setDbColumnValueByColumnSearch 
+	if witness then bdFunc = addElmByValueToColumnArray end
+
+	bdFunc('offenses','serial',serial,  column, value)
+end
+
+
+function formStatus(status,value)
+	local statusBD = "offender"
+	local valueBD = value
+
+	local witness = false
+
+	if status == 1 then
+		statusBD = "victim"
+	elseif status == 2 then
+		statusBD = "witnesses"
+		valueBD = toJSON(value)
+		witness = true
+	end
+
+	return statusBD, valueBD, witness
+end
 
 
 addEvent("unloadOff-s",true)
-addEventHandler("unloadOff-s",root,function()
+addEventHandler("unloadOff-s",root,function(data)
+	local playerNick = getPlayerNickName(data.player)
+	local playerLogin = getPlayerLogin(data.player)
+
+	local status = statusIds[data.status]
+	local statusName = statusIds[status]
+
+--		Дебуг лол ---------------------------------------------------
+	outputChatBox("+------  [ АИС Police приняла лог OFF-s ] --+")
 	
+	outputChatBox("OFF-s: "..data.serial)
+	outputChatBox(statusName..": "..playerNick)
+	outputChatBox("Правонарушение: "..OFFsIds[data.id])
+	
+	outputChatBox("+-------------------------------------------+")
+--	----------------------------------------------------------------]]
+
+
+	------ Сохранение лога в БД
+	local statusBD, valueBD, witness = formStatus(data.status, playerLogin)
+	isLogExist(data.serial,function(exist)
+		if exist then	
+			insertInOffensLog(data.serial, statusBD, playerLogin, witness)
+		else
+			insertNewOffensLog(data.serial, data.id , statusBD, valueBD)
+		end
+	end)
+
+
 end)

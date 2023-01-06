@@ -22,6 +22,16 @@ function getLoggedPlyers()
 	return loggedPlayers
 end
 
+
+
+
+
+
+
+
+
+
+
 -----------DEBUG сбор всех акков на restarte как будт они уже залогинилсь это временно потом удалить навсякий
 for k,v in pairs(getElementsByType('player') ) do
  	loggedPlayers[getPlayerNickName(v)] = v

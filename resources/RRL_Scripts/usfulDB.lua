@@ -12,12 +12,22 @@ function stringFromArayDbFormatt(array)
     return str
 end
 
+function isRowExists(aTable,serachColumn,serachColumnValue,callback)
+	local qh
+	qh = dbQuery(function()
+		local dat = dbPoll(qh,0)
+		for k,v in pairs(dat[1]) do
+			if type(callback)=='function' then callback(v) end
+			return	
+		end
+	end,SQLStorage,"SELECT EXISTS(SELECT ?? FROM ?? WHERE ?? = ??)", serachColumn,aTable,serachColumn,serachColumnValue)
+end
+
 function getDbDataFromArray(aTable,serachColumn,valuesArray,callback)			--- Поиск по массиву совпадений (Where in array)
 	local qh
 	qh = dbQuery(function()
 		if type(callback)=='function' then callback(dbPoll(qh,0)) end
 	end,SQLStorage,"SELECT * FROM `??` WHERE `??` IN ??",aTable,serachColumn,stringFromArayDbFormatt(valuesArray))
-
 end
 
 function getDbColumnData(aTable,serachColumn,serachColumnValue,column,callback) -- 1 столбец вместо всех строки

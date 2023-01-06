@@ -312,9 +312,9 @@ end
 
 
 
-function applyToAllPlayers(bindFuc)
+function applyToAllPlayers(applyFuc)
 	for k,v in pairs(getElementsByType ("player")) do
-		bindFuc(v)
+		applyFuc(v)
 	end
 end
 

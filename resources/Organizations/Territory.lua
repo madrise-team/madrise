@@ -430,30 +430,24 @@ function processBattles()
 
 		local side1 = battleT.sides[1]
 		 local side1Players = {}
-		  local side1Count = 0
 		
 		local side2 = battleT.sides[2]
 		if not side2 then side2 = {name = "none",forces = {count = 0,elements = {}} } end
 		 local side2Players = {}
-		  local side2Count = 0
 
 		for playerKeyString,player in pairs(battleTerr.inTerrElements) do
 			local playerSide = getElementData(player,"banda")			
 
 			if playerSide == side1.name then 
 				table.insert(side1Players,player)
-				side1Count = side1Count + 1
 			end
 			if playerSide == side2.name then 
 				table.insert(side2Players,player)
-				side2Count = side2Count + 1
 			end
 		end
 
-		side1.forces = {count = side1Count, elements = side1Players}
-		side2.forces = {count = side2Count, elements = side2Players}
-
-		
+		side1.forces = {count = #side1Players, elements = side1Players}
+		side2.forces = {count = #side2Players, elements = side2Players}
 
 		local maxerSide, minerSide;
 		if side1.forces.count > side2.forces.count then maxerSide = side1; minerSide = side2 end
@@ -474,7 +468,7 @@ function processBattles()
 				battleT.domination.power = 4
 			end
 			----------------------------
-			--	I     II     III    IV -
+			--	I      II    III   IV -
 			-- 0-15, 15-30, 30-45, 50->
 			----------------------------
 
