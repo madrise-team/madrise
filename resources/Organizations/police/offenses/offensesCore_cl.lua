@@ -22,7 +22,7 @@ addEvent("off-sGenerate",true)
 addEventHandler("off-sGenerate",)
 ]]
 
-function transmitOFFSlog(offsSer, offenseID, status)
+function transmitOFFSlog(offsSer, offenseID, status, timestamp)
 	local hwoText = "Лог Правонарушителя"
 	if status == 1 then
 		hwoText = "Лог Пострадавшего"
@@ -35,7 +35,8 @@ function transmitOFFSlog(offsSer, offenseID, status)
 			player = localPlayer, 
 			status = status,
 			serial = offsSer, 
-			id = offenseID
+			id = offenseID,
+			timestamp = timestamp
 		})
 	end)
 end
@@ -43,23 +44,36 @@ end
 
 
 -------- Обработка offense signal
-addEvent("off-s_offender",true)		--+-- Нарушитель
-addEventHandler("off-s_offender",root,function(offsSer, offenseID)
-	outputChatBox("#FF0C3FЯ нарушитель с серийным номером: ".. offsSer.." , код = "..offenseID,255,255,255,true)
-	transmitOFFSlog(offsSer, offenseID, 0)
-end)
+--+-- Нарушитель
+function offsOffenderHandler(offsSer, offenseID, timestamp)
+	outputChatBox("#FF0C3FЯ нарушитель с серийным номером: ".. offsSer.." , код = "..offenseID.."  timestamp ("..timestamp..")",255,255,255,true)
+	transmitOFFSlog(offsSer, offenseID, 0, timestamp)
+end
+addEvent("off-s_offender",true)		
+addEventHandler("off-s_offender",root, offsOffenderHandler)
 
-addEvent("off-s_victim",true)		--+-- Жертва
+--+-- Жертва
+addEvent("off-s_victim",true)		
 addEventHandler("off-s_victim",root,function(offsSer, offenseID)
 	outputChatBox("#FFBB3FЯ жертва номера: ".. offsSer.." , код = "..offenseID,255,255,255,true)
 	transmitOFFSlog(offsSer, offenseID, 1)
 end)
 
-addEvent("off-s_witness",true)		--+-- Свидетель
+--+-- Свидетель
+addEvent("off-s_witness",true)
 addEventHandler("off-s_witness",root,function(offsSer, offenseID)
 	outputChatBox("#0CFFFFЯ свидетель номера: ".. offsSer.." , код = "..offenseID,255,255,255,true)
 	transmitOFFSlog(offsSer, offenseID, 2)
 	
+end)
+
+-------- Невыгруженные правонарушения
+addEvent("off-s_offender",true)		--+-- Нарушитель
+addEventHandler("off-s_offender",root,function(offences)
+	local nOffeses = fromJSON(offences)
+	for k,v in pairs(nOffeses) do
+		offsOffenderHandler(k,v.i,v.t)
+	end
 end)
 
 

@@ -22,6 +22,16 @@ function insertInTabOrCreate(tab,value,index)
     return tab
 end
 
+function convertToSecs(timeTable)
+    local days = timeTable.days or 0 
+    local hours = timeTable.hours or 0; hours = hours + days*24
+    local mins = timeTable.mins or 0; mins = mins + hours*60
+    local secs = timeTable.secs or 0; secs = secs + mins*60
+
+    return secs
+end
+
+
 function getTimeToEnd(endTime, timestampCorrection)
     if not endTime then return end
 

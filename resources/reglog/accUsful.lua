@@ -77,8 +77,12 @@ function getPlayerGroupData(player)
 end
 
 
-function addToAccountSavedOffence(nick,ofSerial)
-	addElmByValueToColumnArray('accounts','nickname',nick,'notUploadedOffenses',ofSerial)
+function addToAccountSavedOffence(nick,ofSerial,timestamp,offenseID)
+	addElmToColumnArray('accounts','nickname',nick, 'notUploadedOffenses',ofSerial,{t = timestamp, i = offenseID})
+end
+
+function removeFromAccountSavedOffence(nick,ofSerial)
+	removeElmFromColumnArray('accounts','nickname',nick,  'notUploadedOffenses',ofSerial)
 end
 
 

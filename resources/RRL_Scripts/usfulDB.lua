@@ -30,7 +30,7 @@ function getDbDataFromArray(aTable,serachColumn,valuesArray,callback)			--- По
 	end,SQLStorage,"SELECT * FROM `??` WHERE `??` IN ??",aTable,serachColumn,stringFromArayDbFormatt(valuesArray))
 end
 
-function getDbColumnData(aTable,serachColumn,serachColumnValue,column,callback) -- 1 столбец вместо всех строки
+function getDbColumnData(aTable,serachColumn,serachColumnValue,column,callback) -- только 1 столбец вместо всей строки
 	local qh
 	qh = dbQuery(function()
 		if type(callback)=='function' then callback(dbPoll(qh,0)) end
@@ -61,6 +61,9 @@ function getDbRows(aTable,callback) -- все строки таблицы
 	end,SQLStorage,"SELECT * FROM `??`",aTable)
 end
 
+function removeDbDataByColumnSearch(aTable,serachColumn,value)
+	dbExec(SQLStorage,"DELETE FROM `??` WHERE (`??` = ?)",aTable,serachColumn,value)
+end
 
 
 

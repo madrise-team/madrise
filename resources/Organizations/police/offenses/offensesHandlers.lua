@@ -26,10 +26,14 @@ function generateOFFS(offender,victim,offenseID)
 	handleOffs(offender, victim, witnesses, offenseID)
 end
 
-
+--*************************************************************************************************************************************
 --/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 --// УДАР РУКАЛИЦО
 --/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+--*************************
+--	Регистрация
+--*************************
 addEventHandler("onPlayerDamage",root,function(attacker, weapon, bodypart, loss)
 	if not attacker then return end
 	if weapon ~= 0 then return end
@@ -37,8 +41,11 @@ addEventHandler("onPlayerDamage",root,function(attacker, weapon, bodypart, loss)
 	local victimNick = getPlayerNickName(source)
 	local offenderNick = getPlayerNickName(attacker)
 
-	outputChatBox("Ох нихуя себе блять! Произошло опиздюливаие игрока [ "..victimNick.." ] игроком ["..offenderNick.." ]")
-	outputChatBox("Регистрирую правонарушение")
+	outputChatBox("Ох нихуя себе блять! Регистрирую опиздюливаие игрока [ "..victimNick.." ] игроком ["..offenderNick.." ]")
 
 	generateOFFS(attacker,source,OFFsIds["РукаЛицо"])
 end)
+
+--*************************
+--	Урегулирование
+--*************************
