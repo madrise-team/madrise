@@ -20,7 +20,10 @@
     <file src="fx/changeColor.fx" type="client" />
     
     <file src="fx/distance.fx" type="client" />
+
+    <file src="fx/wawes.fx" type="client" />
     
+    <file src="fx/soupdiv.dff" type="client" />
     
     
     <file src="win/winTest.png" type="client" />

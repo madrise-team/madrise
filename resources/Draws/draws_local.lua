@@ -33,3 +33,19 @@ drawsData = {
 function getDrawsLocalData()
 	return drawsData
 end
+
+-------------------------------------------------------------------------------------------------------------------
+local replaceSoup = 11401
+
+engineReplaceModel (engineLoadDFF("fx/soupdiv.dff") , replaceSoup, true)
+
+local wawesShader = dxCreateShader("fx/wawes.fx")
+
+bindKey("0","down",function()
+	local x,y,z = getElementPosition(localPlayer)
+	local mdel = createObject(replaceSoup,x + 2,y,z)
+	setElementCollisionsEnabled(mdel,false)
+	setObjectScale(mdel,0.08)
+
+	engineApplyShaderToWorldTexture (wawesShader, "*", mdel)
+end)
