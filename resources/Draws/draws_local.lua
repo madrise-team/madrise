@@ -40,12 +40,48 @@ local replaceSoup = 11401
 engineReplaceModel (engineLoadDFF("fx/soupdiv.dff") , replaceSoup, true)
 
 local wawesShader = dxCreateShader("fx/wawes.fx")
+local drawPatternShader = dxCreateShader("fx/drawPatternEDBA.fx") 
+dxSetShaderValue(drawPatternShader,"screenW", screenW)
+dxSetShaderValue(drawPatternShader,"screenH", screenH)
+
+--dxSetShaderTessellation ( drawPatternShader, 100, 100 )
+
 
 bindKey("0","down",function()
+
+	-- local rendere = dxCreateRenderTarget(screenW,screenH,false)
+	local rendere = dxCreateRenderTarget(500,500,false)
+	dxSetRenderTarget(rendere,true)----------------
+
+	for i=1,30 do
+		local xexe = -100 + 20*i
+		dxDrawLine(xexe,0,xexe+100,500,tocolor(255,255,255,255),4)	
+	end	
+
+
+	dxSetRenderTarget()-----------------------------
+	addEventHandler("onClientRender",root,function()
+		dxDrawImage(200,50,50,50,rendere)
+	
+		-- dxSetRenderTarget(rendere,true)
+		 dxDrawImage(0,0,screenW,screenH, drawPatternShader)
+		-- dxSetRenderTarget()
+		
+		-- dxDrawImage(0,0,screenW,screenH, rendere)
+
+
+
+	end)
+
+	do return end
+
 	local x,y,z = getElementPosition(localPlayer)
 	local mdel = createObject(replaceSoup,x + 2,y,z)
 	setElementCollisionsEnabled(mdel,false)
-	setObjectScale(mdel,0.08)
+	setObjectScale(mdel,0.25)
+
+	dxSetShaderValue(wawesShader,"patternTex", rendere)
+	
 
 	engineApplyShaderToWorldTexture (wawesShader, "*", mdel)
 end)

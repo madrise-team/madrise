@@ -14,11 +14,13 @@ float4x4 Projection;
 float4x4 WorldViewProjection;
 float Time;
 
+Texture patternTex;
+
 //---------------------------------------------------------------------
 
-sampler Sampler0 = sampler_state
+sampler TexSampler = sampler_state
 {
-    Texture = (Tex0);
+    Texture = (patternTex);
 };
 
 //---------------------------------------------------------------------
@@ -54,7 +56,7 @@ PSInput VertexShaderFunction(VSInput VS)
     PS.Position = MTACalcScreenPosition ( VS.Position );
 
     // Pass through tex coords
-    PS.TexCoord = VS.TexCoord;
+    PS.TexCoord = VS.TexCoord/10;   
 
     // Calc GTA lighting for peds
     PS.Diffuse = float4(vis,vis,vis,0.5);
@@ -64,15 +66,22 @@ PSInput VertexShaderFunction(VSInput VS)
 
 float4 PixelShaderFunction(PSInput PS) : COLOR0
 {
-    float distance = sqrt( pow(PS.Position.x + dstPos.x,2) + pow(PS.Position.y + dstPos.y,2) );
+    float incr = ((sin(Time) + 1) / 2)* 0.03 + 0.005;
+    float cordMul = 100;
+    float Ydel = 3.5;
 
-    //-- Grab the pixel from the texture
-    float4 finalColor = tex2D(Sampler0, PS.TexCoord);
+    float corder = PS.TexCoord.x - PS.TexCoord.y/Ydel;
+    int val = sin(corder  *cordMul + Time) + incr;
 
-    //-- Apply color tint
-    finalColor = finalColor * PS.Diffuse;
+    float corder2 = PS.TexCoord.x + PS.TexCoord.y/Ydel;
+    int val2 = sin(corder2  *cordMul + Time) + incr;
 
-    return float4(1,1,1,1);
+    int valS = val + val2;
+    valS = 1 - valS;
+
+    float4 finColor = float4(valS,valS,valS, valS);
+
+    return finColor;
 }
 
 
@@ -89,6 +98,6 @@ technique complercated
     {
         FillMode = 3;
         VertexShader = compile vs_2_0 VertexShaderFunction();
-       // PixelShader  = compile ps_2_0 PixelShaderFunction();
+        PixelShader  = compile ps_2_0 PixelShaderFunction();
     }
 }

@@ -10,7 +10,8 @@
     
     <export function="getDrawsLocalData" type="client" />
     
-    
+    <file src="fx/mta-helper.fx" type="client" />
+
     <file src="fx/blurSim.fx" type="client" />
     <file src="fx/blurGaus.fx" type="client" />
     
@@ -19,6 +20,7 @@
     <file src="fx/polyWriter.fx" type="client" />
     <file src="fx/changeColor.fx" type="client" />
     
+    <file src="fx/drawPatternEDBA.fx" type="client" />
     <file src="fx/distance.fx" type="client" />
 
     <file src="fx/wawes.fx" type="client" />
