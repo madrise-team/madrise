@@ -1,7 +1,7 @@
 local offenseTriggerSpeedLimit = 5000
 
 --- Срок истечения давности записи
-local offenseForgetTime = {days = 28}; local offenseForgetTimeSecs = convertToSecs(offenseForgetTime)
+local offenseForgetTime = {secs = 28}; local offenseForgetTimeSecs = convertToSecs(offenseForgetTime)
 ---								--
 
 
@@ -163,7 +163,7 @@ end)
 --/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 addEvent("playerLogin",true)
 addEventHandler("playerLogin",root,function(bdAccount)
-	triggerLatentClientEvent(source,"off-s_offender",root,bdAccount.notUploadedOffenses)
+	triggerLatentClientEvent(source,"off-s_unload",root,bdAccount.notUploadedOffenses)
 end)
 
 

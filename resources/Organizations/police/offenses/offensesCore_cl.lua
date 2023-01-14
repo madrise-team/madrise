@@ -68,8 +68,8 @@ addEventHandler("off-s_witness",root,function(offsSer, offenseID)
 end)
 
 -------- Невыгруженные правонарушения
-addEvent("off-s_offender",true)		--+-- Нарушитель
-addEventHandler("off-s_offender",root,function(offences)
+addEvent("off-s_unload",true)		--+-- Нарушитель
+addEventHandler("off-s_unload",root,function(offences)
 	local nOffeses = fromJSON(offences)
 	for k,v in pairs(nOffeses) do
 		offsOffenderHandler(k,v.i,v.t)

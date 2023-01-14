@@ -12,21 +12,20 @@ OFFsIds = {
 }
 
 ---- Методы урегулирования правонарушений *(по идентификаторам!)
-local debCol = "#FF2277"
 function sepDeb(space)
-	outputChatBox(debCol.."----------------------")
+	outputChatBox("----------------------", root ,255,100,225)
 	if space then outputChatBox(" ") end
 end
 function debOffenseInfo(offense)
 	sepDeb()
-	outputChatBox(debCol.."Уреголирование правонарушения <Номер OFF-S: "..offense.serial..">\nПравонарушитель - "
-			..offense.offender.."\nПострадавший - "..offense.victim.."\ntTimestamp правонарушения - ["..offense.timestamp.."]\n    Урегулирование:" , 255,255,255, true)
+	outputChatBox("Уреголирование правонарушения <Номер OFF-S: "..offense.serial..">\nПравонарушитель - "
+			..offense.offender.."\nПострадавший - "..offense.victim.."\nTimestamp правонарушения - ["..offense.timestamp.."]\n    Урегулирование:" , root ,255,100,225)
 end
 
 resolve = {
 	[1] = function(offense)
 		debOffenseInfo(offense)
-		outputChatBox(debCol.."ИГНОРИРОВАТЬ! РукаЛицо это не то чем хотят заниматься правоохранительные органы" , 255,255,255, true)
+		outputChatBox("ИГНОРИРОВАТЬ! РукаЛицо это не то чем хотят заниматься правоохранительные органы" , root ,255,100,225)
 		sepDeb(true)
 	end
 
