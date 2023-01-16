@@ -107,11 +107,15 @@ float4 PixelShaderFunction_Pixelz(PSInput PS) : COLOR0
 }
 
 
+float bigger(float a, float b){
+    float res = a - b;
+    res+=0.015;
 
+    return clamp( res/0.03 ,0,1);
+}
 
 float4 processTriangles(PSInput PS, int tNum, float rectSize, float tTime){
 
-    //float2 coords = PS.TexCoord + ((sin(tTime) + 1)/2)*100;
     float2 coords = PS.TexCoord;
 
     coords.x += rectSize/2*tNum;
@@ -122,45 +126,49 @@ float4 processTriangles(PSInput PS, int tNum, float rectSize, float tTime){
     int xNum = floor(coords.x / rectSize);
 
     float2 smes = (coords % rectSize) / rectSize;  //( |0...1|)
-
+    float invSmesY = abs(tNum-smes.y);
 
     float xDel = 4.0f;
     float xNumD = xNum / xDel;
     float yNumD = yNum / xDel / 5.0f;
 
     float power = (sin( xNumD - yNumD + tTime/3 )+1)/2 + 0.4;
-    float value = clamp(power,0,1);
+    float value = clamp(power,0,1); //value = 1 - 0.2;
 
-    //float value = (sin(tTime) + 1)/2;
-    //value = 1 - 0.2;
-
-    float fillSize = abs(tNum-smes.y) - (1 - value)/1.5;
+    float fillSize = invSmesY - (1 - value);
 
     float flsz_d2 = fillSize/2;
-    float fillS = 0.5 - flsz_d2 + 0.0000001;
+    float fillS = 0.5 - flsz_d2;
     float fillE = 0.5 + flsz_d2;
 
 
-    int pxlSe = clamp( (smes.x + 0.0001)   / fillS, 0,1);
-    int pxlEs = clamp(  smes.x             / fillE, 0,1);
+    float pxlSv = bigger( smes.x , fillS);
+    float pxlEv = bigger( smes.x , fillE);
 
     float fillSizeRect_d2 = value/2;
-    int yCutSe = clamp(  (smes.y + 0.0001) / (0.5 - fillSizeRect_d2)  , 0,1);
-    int yCutEs = clamp(  smes.y / (0.5 + fillSizeRect_d2)  , 0,1);
+    float yFillE =  (0.5 + fillSizeRect_d2);
+    float yCutSv = bigger( smes.y , (0.5 - fillSizeRect_d2) );
+    float yCutEv = bigger( smes.y , yFillE );
 
-    float colVal = (pxlSe.x - pxlEs.x) * (yCutSe - yCutEs) * 0.8;
+    float colVal = (pxlSv - pxlEv) * (yCutSv - yCutEv) * 0.5;
 
     float4 finColor = float4(colVal,colVal,colVal, 1);
     
+    //if(true) {return finColor;}
+
     /////////////////////////////////////
+    float overpower = (power - 1) / 7;
 
-    float overpower = clamp(power - 1,0,1);
-    float overX = (fillS - 0.001) + overpower*fillSizeRect_d2;
-    int overPxl_i = clamp( smes.x / overX ,0,1);
+    float overPxl_i = bigger( smes.x , fillS + overpower );
     float overPxl = (1 - overPxl_i) * colVal;
+    finColor += overPxl/2 - 1*tNum*overPxl;
 
-    finColor += overPxl;
+    float overPxl_i2 = bigger( smes.x , fillE - overpower );
+    finColor -= overPxl_i2/6.0*colVal;
 
+    float overY_i =  bigger( invSmesY , yFillE - overpower);
+    float overY = overY_i * colVal;
+    finColor += overY - 1.2*(1-tNum)*overY;
     /////////////////////////////////////
 
     finColor.a = 1;
@@ -171,14 +179,29 @@ float4 PixelShaderFunction(PSInput PS) : COLOR0
 {
     float tTime = Time/2.5;
 
-    float rectSize = 5;
+    float rectSize = 50;
 
-    float4 finColor1 = processTriangles(PS, 0 ,rectSize,tTime);
-    float4 finColor2 = processTriangles(PS, 1 ,rectSize,tTime); // time + 20?
+    PS.TexCoord += 1000;
+
+    float4 finColor1 = float4(0,0,0,1);
+    float4 finColor2 = finColor1;
+    finColor1 = processTriangles(PS, 0 ,rectSize,tTime); 
+    finColor2 = processTriangles(PS, 1 ,rectSize,tTime +1); // time + 20?
 
     
     return finColor1 + finColor2;
 }
+
+float4 tester(PSInput PS) : COLOR0
+{
+    float a = PS.TexCoord.x;
+    float b = 500;
+
+    float res = bigger(a,b);
+
+    return float4(res,res,res,1);
+}
+
 
 //------------------------------------------------------------------------------------------
 // Techniques
