@@ -14,6 +14,10 @@ addEventHandler("pedExitedVehicle",root,function(thePed)
 	setPedExitVehicle(thePed)	
 end)
 
+--
+addEventHandler("onClientRender",root,function()
+    dxDrawRectangle(0,0,screenW,screenW,tocolor(0,0,0,255))
+end)--]]
 
 
 addEvent("createClientElement",true)

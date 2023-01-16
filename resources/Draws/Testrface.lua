@@ -112,6 +112,7 @@ local randColRecter = function(_,obj)
 end
 
 bindKey("6","up",function()	
+	do return end
 	local scrollAreaName = "scrollыч"
 
 
@@ -171,7 +172,7 @@ end)]]
 
 
 bindKey(".","up",function()
-	
+	do return end
 	
 	
 

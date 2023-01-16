@@ -6,7 +6,6 @@ rlsc = exports.RRL_Scripts
 localPlayer = getLocalPlayer()
 ------
 
-
 ----- <Packer attach> -------------------------------------------------------------------- 
 
 addEvent("attachAvtoToPacker",true)
