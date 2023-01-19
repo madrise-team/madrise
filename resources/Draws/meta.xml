@@ -10,6 +10,9 @@
     
     <export function="getDrawsLocalData" type="client" />
     
+
+
+    <!-- FX -->
     <file src="fx/mta-helper.fx" type="client" />
 
     <file src="fx/blurSim.fx" type="client" />
@@ -27,7 +30,11 @@
     
     <file src="fx/soupdiv.dff" type="client" />
     
-    
+
+    <!-- Maps -->
+    <file src="sampleMaps/perlin0.png" type="client" />
+
+
     <file src="win/winTest.png" type="client" />
     <file src="Elements/Pattern/threeangle.png" type="client" />
     <file src="Elements/Pattern/threeangle2.png" type="client" />

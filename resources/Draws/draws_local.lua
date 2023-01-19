@@ -35,17 +35,17 @@ function getDrawsLocalData()
 end
 
 -------------------------------------------------------------------------------------------------------------------
-local replaceSoup = 11401
+perlinNoise = dxCreateTexture("sampleMaps/perlin0.png","argb")
 
+local replaceSoup = 11401
 engineReplaceModel (engineLoadDFF("fx/soupdiv.dff") , replaceSoup, true)
 
 local wawesShader = dxCreateShader("fx/wawes.fx")
 local drawPatternShader = dxCreateShader("fx/drawPatternEDBA.fx") 
-dxSetShaderValue(drawPatternShader,"screenW", screenW)
-dxSetShaderValue(drawPatternShader,"screenH", screenH)
-
---dxSetShaderTessellation ( drawPatternShader, 100, 100 )
-
+dxSetShaderValue(drawPatternShader,"noiseTex", perlinNoise)
+-- dxSetShaderValue(drawPatternShader,"screenW", screenW)
+-- dxSetShaderValue(drawPatternShader,"screenH", screenH)
+-- dxSetShaderTessellation ( drawPatternShader, 100, 100 )
 
 bindKey("0","down",function()
 
@@ -68,6 +68,7 @@ bindKey("0","down",function()
 		-- dxSetRenderTarget()
 		
 		-- dxDrawImage(0,0,screenW,screenH, rendere)
+		 -- dxDrawImage(0,0,screenW,screenH, perlinNoise)
 
 
 

@@ -5,6 +5,11 @@ float Time;
 float screenW;
 float screenH;
 
+texture noiseTex;
+sampler2D noiseSampler = sampler_state
+{
+    Texture = (noiseTex);
+};
 
 struct PSInput
 {
@@ -109,10 +114,12 @@ float4 PixelShaderFunction_Pixelz(PSInput PS) : COLOR0
 
 float bigger(float a, float b){
     float res = a - b;
-    res+=0.015;
+    res+=0.01;
 
-    return clamp( res/0.03 ,0,1);
+    return clamp( res/0.02 ,0,1);
 }
+
+float4 origColor = float4( 0.0784, 0.2274, 0.884, 1);
 
 float4 processTriangles(PSInput PS, int tNum, float rectSize, float tTime){
 
@@ -128,12 +135,9 @@ float4 processTriangles(PSInput PS, int tNum, float rectSize, float tTime){
     float2 smes = (coords % rectSize) / rectSize;  //( |0...1|)
     float invSmesY = abs(tNum-smes.y);
 
-    float xDel = 4.0f;
-    float xNumD = xNum / xDel;
-    float yNumD = yNum / xDel / 5.0f;
-
-    float power = (sin( xNumD - yNumD + tTime/3 )+1)/2 + 0.4;
-    float value = clamp(power,0,1); //value = 1 - 0.2;
+    float power = tex2D(noiseSampler, (xNum - yNum/55.0f + tTime) / (1000/rectSize) ).r * 1.5;
+    power = clamp(power , 0.35, 1.05);
+    float value = clamp(power,0.01,1);
 
     float fillSize = invSmesY - (1 - value);
 
@@ -157,49 +161,37 @@ float4 processTriangles(PSInput PS, int tNum, float rectSize, float tTime){
     //if(true) {return finColor;}
 
     /////////////////////////////////////
-    float overpower = (power - 1) / 7;
+    float overpower = clamp(power - 1 ,0,1);
 
     float overPxl_i = bigger( smes.x , fillS + overpower );
     float overPxl = (1 - overPxl_i) * colVal;
-    finColor += overPxl/2 - 1*tNum*overPxl;
+    finColor += overPxl/2 - 0.5*tNum*overPxl;
 
     float overPxl_i2 = bigger( smes.x , fillE - overpower );
-    finColor -= overPxl_i2/6.0*colVal;
+    finColor -= overPxl_i2/4.0*colVal;
 
-    float overY_i =  bigger( invSmesY , yFillE - overpower);
+    float overY_i =  bigger( invSmesY , yFillE - overpower/1.5);
     float overY = overY_i * colVal;
     finColor += overY - 1.2*(1-tNum)*overY;
     /////////////////////////////////////
 
-    finColor.a = 1;
-    return finColor;
+    return finColor*(origColor*2);
 }
 
 float4 PixelShaderFunction(PSInput PS) : COLOR0
 {
     float tTime = Time/2.5;
 
-    float rectSize = 50;
-
-    PS.TexCoord += 1000;
+    float rectSize = 35;
 
     float4 finColor1 = float4(0,0,0,1);
     float4 finColor2 = finColor1;
     finColor1 = processTriangles(PS, 0 ,rectSize,tTime); 
-    finColor2 = processTriangles(PS, 1 ,rectSize,tTime +1); // time + 20?
+    finColor2 = processTriangles(PS, 1 ,rectSize,tTime ); // time + 20?
+    finColor1.a = 1;
+    finColor2.a = 2;
 
-    
     return finColor1 + finColor2;
-}
-
-float4 tester(PSInput PS) : COLOR0
-{
-    float a = PS.TexCoord.x;
-    float b = 500;
-
-    float res = bigger(a,b);
-
-    return float4(res,res,res,1);
 }
 
 
