@@ -14,10 +14,18 @@ addEventHandler("pedExitedVehicle",root,function(thePed)
 	setPedExitVehicle(thePed)	
 end)
 
---[[
-addEventHandler("onClientRender",root,function()
-    dxDrawRectangle(0,0,screenW,screenW,tocolor(0,0,0,255))
-end)--]]
+blr_bindde = false
+function blR()
+	dxDrawRectangle(0,0,screenW,screenH,tocolor(0,0,0,255))
+end
+addCommandHandler("black",function()
+	local handFuc = addEventHandler
+	if blr_bindde then handFuc = removeEventHandler end
+
+	handFuc("onClientRender",root,blR)	
+	blr_bindde = not blr_bindde
+end)
+
 
 
 addEvent("createClientElement",true)

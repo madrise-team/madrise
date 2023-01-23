@@ -5,9 +5,9 @@ addEventHandler("afkKickMe",root,function(kickPlayer)
 	end,5000,1)
 end)
 
-function kickPlayerHandler (name, reasoner)
+function kickPlayerHandler (mtaname, reasoner)
 	-- Get player element from the name
-	local kicked = getPlayerFromName(name)
+	local kicked = getPlayerFromName(mtaname)
     local reason = reasoner
 		-- Kick the player
 		kickPlayer ( kicked, reason )

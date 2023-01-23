@@ -11,6 +11,7 @@ sampler2D noiseSampler = sampler_state
     Texture = (noiseTex);
 };
 
+
 struct PSInput
 {
   float4 TexCoord : SV_POSITION;
@@ -112,19 +113,29 @@ float4 PixelShaderFunction_Pixelz(PSInput PS) : COLOR0
 }
 
 
-float bigger(float a, float b){
+float bigger(float a, float b, float smearing){
     float res = a - b;
-    res+=0.015;
+    res+=smearing;
 
-    return clamp( res/0.03 ,0,1);
+    return clamp( res/(smearing*2) ,0,1);
 }
 
-float4 origColor = float4( 0.0784, 0.2274, 0.884, 1);
-float4 intenseColor = float4( 0.0784, 0.6274, 0.984, 1);
-float4 coreColor = float4( 0.784, 0.0274, 0.884, 1);
-float efxV = 0;
+/// [SETTINGS] ///////////////////////////////////////////////////////
+float4 origColor = float4( 0.0784, 0.10, 0.884, 1);
+float4 intenseColor = float4( 0.0784, 0.9274, 0.984, 1);
+float4 coreColor = float4( 0.254, 0.0, 0.484, 1);
+float efxPos = 0;
+float efxColType = 1;  // 1 - intense, 0 - core
 
-float4 processTriangles(PSInput PS, int tNum, float rectSize, float tTime){
+float efxSmearing = 0.1;
+float trgSmearing = 0.015;
+float ovpSmearing = 0.03;
+
+float rectSize = 40;
+/// [SETTINGS] ///////////////////////////////////////////////////////
+
+
+float4 processTriangles(PSInput PS, int tNum, float rectSize, float tTime, float4 efxColor){
 
     float2 coords = PS.TexCoord;
 
@@ -135,74 +146,88 @@ float4 processTriangles(PSInput PS, int tNum, float rectSize, float tTime){
     coords.x += rectSize/2*chet;
     int xNum = floor(coords.x / rectSize);
 
-    float2 smes = (coords % rectSize) / rectSize;  //( |0...1|)
-    float invSmesY = abs(tNum-smes.y);
+    float xNumR = xNum * rectSize / screenW;
+    float yNumR = yNum * rectSize / screenH;
 
-    float power = tex2D(noiseSampler, (xNum - yNum/5.0f + tTime ) / (35* screenW/rectSize) ).r;
-    power = clamp(power*1.5 , 0.45, 1.08);
-    float value = clamp(power,0.01,1);
+    ////////////////////////////////////////////////
+    // noise ///////////////////////////////////
+    //
+        float noiseVal = tex2D(noiseSampler, float2(xNumR,yNumR) + tTime/15 + chet*tTime/10).r;
+        float slowNoiseVal = tex2D(noiseSampler, float2(xNumR,yNumR) + tTime/35 + tTime/15*chet).r;
 
-    float fillSize = invSmesY - (1 - value);
+    ////////////////////////////////////////////////
+    // EFX ///////////////////////////////////
+    //
+        float posR = xNumR - yNumR/5 + noiseVal/5;
+        float efxPxl = bigger(posR, efxPos, efxSmearing) - clamp( (posR/2 - efxPos)/3 ,0,1);
 
-    float flsz_d2 = fillSize/2;
-    float fillS = 0.5 - flsz_d2;
-    float fillE = 0.5 + flsz_d2;
+    ////////////////////////////////////////////////
+    // Triangles /////////////////////////////
+    //
+        float2 smes = (coords % rectSize) / rectSize;  //( |0...1|)
+        float invSmesY = abs(tNum-smes.y);
 
-    float pxlSv = bigger( smes.x , fillS);
-    float pxlEv = bigger( smes.x , fillE);
+        float power = tex2D(noiseSampler, (xNumR - yNumR/5.0f + tTime)/35   ).r;
+        power = clamp(power*1.5 , 0.45, 1.06);
+        float value = clamp(power + efxPxl/4,0.01,1);
 
-    float fillSizeRect_d2 = value/2;
-    float yFillE =  (0.5 + fillSizeRect_d2);
-    float yCutSv = bigger( smes.y , (0.5 - fillSizeRect_d2) );
-    float yCutEv = bigger( smes.y , yFillE );
+        float fillSize = invSmesY - (1 - value);
 
-    float colVal = (pxlSv - pxlEv) * (yCutSv - yCutEv) * 0.5;
+        float flsz_d2 = fillSize/2;
+        float fillS = 0.5 - flsz_d2;
+        float fillE = 0.5 + flsz_d2;
 
-    float4 finColor = float4(colVal,colVal,colVal, 1);
-    
-    //if(true) {return finColor;}
+        float pxlSv = bigger( smes.x , fillS, trgSmearing);
+        float pxlEv = bigger( smes.x , fillE, trgSmearing);
 
-    /////////////////////////////////////
-    float overpower = clamp(power - 1 ,0,1);
+        float fillSizeRect_d2 = value/2;
+        float yFillE =  (0.5 + fillSizeRect_d2);
+        float yCutSv = bigger( smes.y , (0.49 - fillSizeRect_d2) , trgSmearing );
+        float yCutEv = bigger( smes.y , yFillE , trgSmearing );
 
-    float overPxl_i = bigger( smes.x , fillS + overpower );
-    float overPxl = (1 - overPxl_i) * colVal;
-    finColor += overPxl/2 - 0.4*tNum*overPxl;
+        float colVal = (pxlSv - pxlEv) * (yCutSv - yCutEv) * 0.5;
 
-    float overPxl_i2 = bigger( smes.x , fillE - overpower );
-    finColor -= overPxl_i2/4.0*colVal;
+        float4 finColor = colVal;
 
-    float overY_i =  bigger( invSmesY , yFillE - overpower/1.5);
-    float overY = overY_i * colVal;
-    finColor += overY - 1.2*(1-tNum)*overY;
-    /////////////////////////////////////
+    ////////////////////////////////////////////////
+    // overpower ///////////////////////////////////
+    //
+        float overpower = clamp(power - 1 ,0,1);
 
-    //float4 corer = coreColor * (1-value) * colVal;
-    //return (origColor*2*finColor)*value + corer/2;
-    
-    float efxPxl = 500 / (coords.x - efxV);
+        float overPxl_i = bigger( smes.x , fillS + overpower , ovpSmearing );
+        float overPxl = (1 - overPxl_i) * colVal;
+        finColor += overPxl/2 - 0.4*tNum*overPxl;
 
-    finColor = origColor*2*finColor*value * (1 - efxPxl);
-    float efxColor = intenseColor * efxPxl * colVal;
+        float overPxl_i2 = bigger( smes.x , fillE - overpower , ovpSmearing );
+        finColor -= overPxl_i2/4.0*colVal;
 
-    return efxColor;
+        float overY_i =  bigger( invSmesY , yFillE - overpower/1.5 , ovpSmearing);
+        float overY = overY_i * colVal;
+        finColor += overY - 1.2*(1-tNum)*overY;
+
+    ////////////////////////////////////////////////
+
+    float efxPower = colVal*efxPxl*(noiseVal+0.4);
+    finColor = (((origColor + slowNoiseVal/10)*2*finColor)*value ) * (1 - efxPower) + efxPower*efxColor*2;
+    return finColor;
 }
 
 float4 PixelShaderFunction(PSInput PS) : COLOR0
 {
-    float rectSize = 50;
 
     PS.TexCoord += rectSize*3;
+        
+    float4 efxColor = intenseColor*efxColType + coreColor*(1- efxColType);
 
-    
-    float tTime = Time*6.0f;
+    float tTime = Time/10;
     float4 finColor1 = float4(0,0,0,1);
     float4 finColor2 = finColor1;
-    finColor1 = processTriangles(PS, 0 ,rectSize,tTime); 
-    finColor2 = processTriangles(PS, 1 ,rectSize,tTime + 2 ); // time + 20?
+    finColor1 = processTriangles(PS, 0 ,rectSize, tTime          ,efxColor); 
+    finColor2 = processTriangles(PS, 1 ,rectSize, tTime + 0.035  ,efxColor);
     finColor1.a = 1;
     finColor2.a = 1;
 
+    //finColor2 = 0;
     return finColor1 + finColor2;
 }
 

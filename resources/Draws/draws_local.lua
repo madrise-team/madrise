@@ -2,16 +2,6 @@ screenW, screenH = guiGetScreenSize()
 _scrRT = dxCreateRenderTarget(screenW,screenH,true)
 _scrRT2 = dxCreateRenderTarget(screenW,screenH,true)
 
-addCommandHandler("clrt",function()
-	removeEventHandler("onClientRender",root,blR)	
-end)
-function blR()
-	--dxDrawRectangle(0,0,2000,1200,tocolor(0,0,0,255))
-end
-addEventHandler("onClientRender",root,blR)
-outputChatBox("risuyu back rect fullscreen in draws_local RRL_Scr, use command clrt to remove")
-
-
 
 ---------- export draws data
 drawsData = {
@@ -54,8 +44,10 @@ bindKey("-","down",function()
 end)
 
 
+statet = false
 bindKey("0","down",function()
-
+	if statet then return end
+	statet = true
 	-- local rendere = dxCreateRenderTarget(screenW,screenH,false)
 	--[[
 	local rendere = dxCreateRenderTarget(500,500,false)
@@ -66,16 +58,21 @@ bindKey("0","down",function()
 	end	
 	dxSetRenderTarget()-----------------------------]]
 
-	local eventer = -1000;
+	local eventer = -10
 	addEventHandler("onClientRender",root,function()
-		eventer = eventer - 10
-		dxSetShaderValue(drawPatternShader,"efxV",eventer)
+		eventer = eventer - 0.01
+		dxSetShaderValue(drawPatternShader,"efxPos",eventer)
 		dxDrawImage(0,0,screenW,screenH, drawPatternShader)
 	end)
 
-	setTimer(function()
-		eventer = 2500			
-	end,6000,0)
+	bindKey("0","down",function()
+		efxColType = 1
+		local colrander = math.random(0,100)
+		if colrander > 90 then efxColType = 0 end
+		dxSetShaderValue(drawPatternShader,"efxColType",efxColType)
+
+		eventer = 1.6
+	end)
 
 	do return end
 
