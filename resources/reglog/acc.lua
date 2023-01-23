@@ -38,12 +38,12 @@ end
 -- DEBUFG ficha --------- костыльный сбор всех акков на restarte как будт они уже залогинилсь это временно потом удалить навсякий 
 for k,v in pairs(getElementsByType('player') ) do
  	local vnick = getPlayerNickName(v)
- 	if not vnick then 
-	 	loggedPlayers[vnick] = v
-	 	getAccountInfoByNickName(vnick,function(bdAccount)
+ 	if vnick then
+ 		loggedPlayers[vnick] = v
+ 		getAccountInfoByNickName(vnick,function(bdAccount)
 			triggerEvent("playerLogin",v,bdAccount)
-	 		triggerClientEvent(v,"playerLogin",root,info)
-	 	end)
+ 			triggerClientEvent(v,"playerLogin",root,info)
+ 		end)
  	end
 end
 

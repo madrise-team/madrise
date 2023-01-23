@@ -10,6 +10,11 @@
 
      <script src="Groups.lua" type="server" />
      <script src="Groups_cl.lua" type="client" />
+
+     <script src="kick.lua" type="server" />
+     <script src="aafk.lua" type="client" />
+     <export function="resetAafkTracking" type="client"/>
+     
      
      <export function="createGroup" type="server"/>
      <export function="getGroup" type="server"/>
