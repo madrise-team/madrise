@@ -114,12 +114,15 @@ float4 PixelShaderFunction_Pixelz(PSInput PS) : COLOR0
 
 float bigger(float a, float b){
     float res = a - b;
-    res+=0.01;
+    res+=0.015;
 
-    return clamp( res/0.02 ,0,1);
+    return clamp( res/0.03 ,0,1);
 }
 
 float4 origColor = float4( 0.0784, 0.2274, 0.884, 1);
+float4 intenseColor = float4( 0.0784, 0.6274, 0.984, 1);
+float4 coreColor = float4( 0.784, 0.0274, 0.884, 1);
+float efxV = 0;
 
 float4 processTriangles(PSInput PS, int tNum, float rectSize, float tTime){
 
@@ -135,8 +138,8 @@ float4 processTriangles(PSInput PS, int tNum, float rectSize, float tTime){
     float2 smes = (coords % rectSize) / rectSize;  //( |0...1|)
     float invSmesY = abs(tNum-smes.y);
 
-    float power = tex2D(noiseSampler, (xNum - yNum/55.0f + tTime) / (1000/rectSize) ).r * 1.5;
-    power = clamp(power , 0.35, 1.05);
+    float power = tex2D(noiseSampler, (xNum - yNum/5.0f + tTime ) / (35* screenW/rectSize) ).r;
+    power = clamp(power*1.5 , 0.45, 1.08);
     float value = clamp(power,0.01,1);
 
     float fillSize = invSmesY - (1 - value);
@@ -144,7 +147,6 @@ float4 processTriangles(PSInput PS, int tNum, float rectSize, float tTime){
     float flsz_d2 = fillSize/2;
     float fillS = 0.5 - flsz_d2;
     float fillE = 0.5 + flsz_d2;
-
 
     float pxlSv = bigger( smes.x , fillS);
     float pxlEv = bigger( smes.x , fillE);
@@ -165,7 +167,7 @@ float4 processTriangles(PSInput PS, int tNum, float rectSize, float tTime){
 
     float overPxl_i = bigger( smes.x , fillS + overpower );
     float overPxl = (1 - overPxl_i) * colVal;
-    finColor += overPxl/2 - 0.5*tNum*overPxl;
+    finColor += overPxl/2 - 0.4*tNum*overPxl;
 
     float overPxl_i2 = bigger( smes.x , fillE - overpower );
     finColor -= overPxl_i2/4.0*colVal;
@@ -175,21 +177,31 @@ float4 processTriangles(PSInput PS, int tNum, float rectSize, float tTime){
     finColor += overY - 1.2*(1-tNum)*overY;
     /////////////////////////////////////
 
-    return finColor*(origColor*2);
+    //float4 corer = coreColor * (1-value) * colVal;
+    //return (origColor*2*finColor)*value + corer/2;
+    
+    float efxPxl = 500 / (coords.x - efxV);
+
+    finColor = origColor*2*finColor*value * (1 - efxPxl);
+    float efxColor = intenseColor * efxPxl * colVal;
+
+    return efxColor;
 }
 
 float4 PixelShaderFunction(PSInput PS) : COLOR0
 {
-    float tTime = Time/2.5;
+    float rectSize = 50;
 
-    float rectSize = 35;
+    PS.TexCoord += rectSize*3;
 
+    
+    float tTime = Time*6.0f;
     float4 finColor1 = float4(0,0,0,1);
     float4 finColor2 = finColor1;
     finColor1 = processTriangles(PS, 0 ,rectSize,tTime); 
-    finColor2 = processTriangles(PS, 1 ,rectSize,tTime ); // time + 20?
+    finColor2 = processTriangles(PS, 1 ,rectSize,tTime + 2 ); // time + 20?
     finColor1.a = 1;
-    finColor2.a = 2;
+    finColor2.a = 1;
 
     return finColor1 + finColor2;
 }
@@ -203,6 +215,7 @@ technique fucky
     pass P0
     {
         PixelShader  = compile ps_3_0 PixelShaderFunction();
+        //PixelShader  = compile ps_3_0 tAST();
     }
 }
 

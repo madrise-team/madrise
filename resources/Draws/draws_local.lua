@@ -43,36 +43,39 @@ engineReplaceModel (engineLoadDFF("fx/soupdiv.dff") , replaceSoup, true)
 local wawesShader = dxCreateShader("fx/wawes.fx")
 local drawPatternShader = dxCreateShader("fx/drawPatternEDBA.fx") 
 dxSetShaderValue(drawPatternShader,"noiseTex", perlinNoise)
--- dxSetShaderValue(drawPatternShader,"screenW", screenW)
--- dxSetShaderValue(drawPatternShader,"screenH", screenH)
+dxSetShaderValue(drawPatternShader,"screenW", screenW)
+dxSetShaderValue(drawPatternShader,"screenH", screenH)
 -- dxSetShaderTessellation ( drawPatternShader, 100, 100 )
+
+bindKey("-","down",function()
+	if drawPatternShader then
+		dxSetShaderValue(drawPatternShader,"timeKey",getRealTime().timestamp)
+	end
+end)
+
 
 bindKey("0","down",function()
 
 	-- local rendere = dxCreateRenderTarget(screenW,screenH,false)
+	--[[
 	local rendere = dxCreateRenderTarget(500,500,false)
 	dxSetRenderTarget(rendere,true)----------------
-
 	for i=1,30 do
 		local xexe = -100 + 20*i
 		dxDrawLine(xexe,0,xexe+100,500,tocolor(255,255,255,255),4)	
 	end	
+	dxSetRenderTarget()-----------------------------]]
 
-
-	dxSetRenderTarget()-----------------------------
+	local eventer = -1000;
 	addEventHandler("onClientRender",root,function()
-		dxDrawImage(200,50,50,50,rendere)
-	
-		-- dxSetRenderTarget(rendere,true)
-		 dxDrawImage(0,0,screenW,screenH, drawPatternShader)
-		-- dxSetRenderTarget()
-		
-		-- dxDrawImage(0,0,screenW,screenH, rendere)
-		 -- dxDrawImage(0,0,screenW,screenH, perlinNoise)
-
-
-
+		eventer = eventer - 10
+		dxSetShaderValue(drawPatternShader,"efxV",eventer)
+		dxDrawImage(0,0,screenW,screenH, drawPatternShader)
 	end)
+
+	setTimer(function()
+		eventer = 2500			
+	end,6000,0)
 
 	do return end
 
