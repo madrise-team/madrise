@@ -14,17 +14,14 @@ float4x4 Projection;
 float4x4 WorldViewProjection;
 float Time;
 
-Texture patternTex;
 
-//---------------------------------------------------------------------
-
-sampler TexSampler = sampler_state
+sampler Sampler0 = sampler_state
 {
-    Texture = (patternTex);
+    Texture = (Tex0);
 };
 
 //---------------------------------------------------------------------
-// Structure of data sent to the vertex shader
+// Structure of data sent to the vertex and pixel shader
 //---------------------------------------------------------------------
 struct VSInput
 {
@@ -33,55 +30,55 @@ struct VSInput
     float4 Diffuse : COLOR0;
     float2 TexCoord : TEXCOORD0;
 };
-
-//---------------------------------------------------------------------
-// Structure of data sent to the pixel shader ( from the vertex shader )
-//---------------------------------------------------------------------
 struct PSInput
 {
     float4 Position : POSITION0;
     float4 Diffuse : COLOR0;
     float2 TexCoord : TEXCOORD0;
 };
+//---------------------------------------------------------------------
+
+float2 rand2(float2 p){
+    float a = sin(p.x *656.684  + p.y *164.654);
+    float b = cos(p.x *96.6547  + p.y *468.6321);
+    return frac(float2(a,b));  
+}
+
+float voronoy(float2 uv){
+    float result;
+
+    float minD = 100;
+
+    for(int i=0; i < 10; i++){
+        float2 r = rand2(i);
+        float2 p = sin(r * Time/25);
+        float d = length(uv - p);
+        if(d < minD) { minD = d; }
+    }
+
+    return minD;
+}   
 
 PSInput VertexShaderFunction(VSInput VS)
 {
     PSInput PS = (PSInput)0;
 
-    // Do morph effect by adding surface normal to the vertex position
-    float vis = sin(VS.Position.y + Time);
-    VS.Position.z += vis;
+    float vis = voronoy(VS.Position.xy);
+    //VS.Position.z += vis;
 
-    // Calculate screen pos of vertex
-    PS.Position = MTACalcScreenPosition ( VS.Position );
-
-    // Pass through tex coords
-    PS.TexCoord = VS.TexCoord/10;   
-
-    // Calc GTA lighting for peds
-    PS.Diffuse = float4(vis,vis,vis,0.5);
+    PS.Position = mul(float4(VS.Position, 1), WorldViewProjection);
+    PS.Diffuse = float4(VS.Position.xy,0,1);
+    PS.TexCoord = VS.TexCoord;
 
     return PS;
 }
 
 float4 PixelShaderFunction(PSInput PS) : COLOR0
 {
-    float incr = ((sin(Time) + 1) / 2)* 0.03 + 0.005;
-    float cordMul = 100;
-    float Ydel = 3.5;
 
-    float corder = PS.TexCoord.x - PS.TexCoord.y/Ydel;
-    int val = sin(corder  *cordMul + Time) + incr;
-
-    float corder2 = PS.TexCoord.x + PS.TexCoord.y/Ydel;
-    int val2 = sin(corder2  *cordMul + Time) + incr;
-
-    int valS = val + val2;
-    valS = 1 - valS;
-
-    float4 finColor = float4(valS,valS,valS, valS);
-
-    return finColor;
+    float4 finalColor = tex2D(Sampler0, PS.TexCoord) * PS.Diffuse;
+    //finalColor = voronoy(PS.TexCoord);
+    return finalColor;
 }
 
 
@@ -96,8 +93,7 @@ technique complercated
 {
     pass P0
     {
-        FillMode = 3;
-        VertexShader = compile vs_2_0 VertexShaderFunction();
-        PixelShader  = compile ps_2_0 PixelShaderFunction();
+        VertexShader = compile vs_3_0 VertexShaderFunction();
+        PixelShader  = compile ps_3_0 PixelShaderFunction();
     }
 }

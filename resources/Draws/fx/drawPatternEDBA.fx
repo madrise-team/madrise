@@ -121,9 +121,9 @@ float bigger(float a, float b, float smearing){
 }
 
 /// [SETTINGS] ///////////////////////////////////////////////////////
-float4 origColor = float4( 0.0784, 0.10, 0.884, 1);
-float4 intenseColor = float4( 0.0784, 0.9274, 0.984, 1);
-float4 coreColor = float4( 0.254, 0.0, 0.484, 1);
+float4 origColor = float4( 0.0784, 0.20, 0.884, 1);
+float4 intenseColor = float4( 0.0784, 0.9274, 0.984, 1)*2;
+float4 coreColor = float4( 0.554, 0.0, 0.404, 1);
 float efxPos = 0;
 float efxColType = 1;  // 1 - intense, 0 - core
 
@@ -143,6 +143,7 @@ float4 processTriangles(PSInput PS, int tNum, float rectSize, float tTime, float
 
     int yNum = floor(coords.y / rectSize);
     int chet = yNum%2;
+    int invChet = 1 - chet;
     coords.x += rectSize/2*chet;
     int xNum = floor(coords.x / rectSize);
 
@@ -152,8 +153,8 @@ float4 processTriangles(PSInput PS, int tNum, float rectSize, float tTime, float
     ////////////////////////////////////////////////
     // noise ///////////////////////////////////
     //
-        float noiseVal = tex2D(noiseSampler, float2(xNumR,yNumR) + tTime/15 + chet*tTime/10).r;
-        float slowNoiseVal = tex2D(noiseSampler, float2(xNumR,yNumR) + tTime/35 + tTime/15*chet).r;
+        float noiseVal = tex2D(noiseSampler, float2(xNumR - yNumR/3*tNum ,yNumR) + (tTime+2*tNum)/15).r;
+        float slowNoiseVal = tex2D(noiseSampler, float2(xNumR - yNumR*tNum,yNumR + xNumR*tNum) + tTime/25 + 5*chet).r;
 
     ////////////////////////////////////////////////
     // EFX ///////////////////////////////////
@@ -168,7 +169,7 @@ float4 processTriangles(PSInput PS, int tNum, float rectSize, float tTime, float
         float invSmesY = abs(tNum-smes.y);
 
         float power = tex2D(noiseSampler, (xNumR - yNumR/5.0f + tTime)/35   ).r;
-        power = clamp(power*1.5 , 0.45, 1.06);
+        power = clamp(power*1.5 - slowNoiseVal*(1-efxColType)*efxPxl , 0.45, 1.06);
         float value = clamp(power + efxPxl/4,0.01,1);
 
         float fillSize = invSmesY - (1 - value);
@@ -208,7 +209,7 @@ float4 processTriangles(PSInput PS, int tNum, float rectSize, float tTime, float
     ////////////////////////////////////////////////
 
     float efxPower = colVal*efxPxl*(noiseVal+0.4);
-    finColor = (((origColor + slowNoiseVal/10)*2*finColor)*value ) * (1 - efxPower) + efxPower*efxColor*2;
+    finColor = (((origColor + slowNoiseVal/9)*2*finColor)*value ) * (1 - efxPower) + efxPower*efxColor;
     return finColor;
 }
 
