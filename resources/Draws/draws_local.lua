@@ -62,7 +62,7 @@ bindKey("0","down",function()
 	addEventHandler("onClientRender",root,function()
 		eventer = eventer - 0.01
 		dxSetShaderValue(drawPatternShader,"efxPos",eventer)
-		--dxDrawImage(0,0,screenW,screenH, wawesShader)
+		dxDrawImage(0,0,screenW,screenH, drawPatternShader)
 	end)
 
 	function eventGenerate()
@@ -72,7 +72,7 @@ bindKey("0","down",function()
 
 		eventer = 1.6
 	end
-
+	bindKey("0","down",eventGenerate)
 	setTimer(function()
 		if math.random(0,100) > 70 then eventGenerate() end
 	end,5000,0)

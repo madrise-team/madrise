@@ -169,7 +169,7 @@ float4 processTriangles(PSInput PS, int tNum, float rectSize, float tTime, float
         float invSmesY = abs(tNum-smes.y);
 
         float power = tex2D(noiseSampler, (xNumR - yNumR/5.0f + tTime)/35   ).r;
-        power = clamp(power*1.5 - slowNoiseVal*(1-efxColType)*efxPxl , 0.45, 1.06);
+        power = clamp(power*1.5 - slowNoiseVal/2*(1-efxColType)*efxPxl , 0.45, 1.06);
         float value = clamp(power + efxPxl/4,0.01,1);
 
         float fillSize = invSmesY - (1 - value);
