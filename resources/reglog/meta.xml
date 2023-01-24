@@ -2,6 +2,8 @@
      <min_mta_version client="1.5.9-9.20704"></min_mta_version>
      <script src="reglog.lua" type="server" />
      <script src="reglog_client.lua" type="client" />
+     <script src="AFK.lua" type="client" />
+
 
      <script src="acc.lua" type="server" />
      <script src="accUsful.lua" type="server" />
