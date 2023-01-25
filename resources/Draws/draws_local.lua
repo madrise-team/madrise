@@ -62,7 +62,7 @@ bindKey("0","down",function()
 	addEventHandler("onClientRender",root,function()
 		eventer = eventer - 0.01
 		dxSetShaderValue(drawPatternShader,"efxPos",eventer)
-		dxDrawImage(0,0,screenW,screenH, drawPatternShader)
+		--dxDrawImage(0,0,screenW,screenH, drawPatternShader)
 	end)
 
 	function eventGenerate()
@@ -77,12 +77,12 @@ bindKey("0","down",function()
 		if math.random(0,100) > 70 then eventGenerate() end
 	end,5000,0)
 
-	--do return end
+	if not wawesShader then return end
 
 	local x,y,z = getElementPosition(localPlayer)
-	local mdel = createObject(replaceSoup,x + 2,y,z)
+	local mdel = createObject(replaceSoup,x + 4,y,z + 0.5)
 	setElementCollisionsEnabled(mdel,false)
-	setObjectScale(mdel,0.05)	
+	setObjectScale(mdel,0.15)	
 
 	engineApplyShaderToWorldTexture (wawesShader, "*", mdel)
 end)
