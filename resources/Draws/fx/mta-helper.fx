@@ -62,6 +62,10 @@ float4 gLightDiffuse : LIGHTDIFFUSE;
 float4 gLightSpecular : LIGHTSPECULAR;
 float3 gLightDirection : LIGHTDIRECTION;
 
+//
+// Const
+//
+float PI = 3.14159265f;
 
 
 //####################################################################################################################
