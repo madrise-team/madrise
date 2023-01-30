@@ -1,78 +1,86 @@
-local XC,YC,ZC
-local radius = 10
-local Giga={}
+---// config /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+local checkInterval = 1000  -- как часто проверять позицию игрока 		//
+local totalChecks = 60*10 	-- кол-во проверок до появления интерфейса 	//
+local faceTime = 30000 		-- время показа интерфейса 					//
+local radius = 5 			-- радиус бездействия 						//
+---///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+local failAttmpts = 0
+local savedPos
+local checkTimer = false
+local toKickTimer = false
 
 function PlyPos1 ()
 	local x,y,z = getElementPosition(localPlayer) -- Позиция игрока до начала проверки нахождения его в радиусе афк
-	XC,YC,ZC = x,y,z
+	savedPos = {x=x,y=y,z=z}
 end
 
-function PlyPos2 ()
-	local x1,y1,z1 = getElementPosition(localPlayer) -- Позиция игрока в момент проверки
-	return x1,y1,z1
-end	
-
-function Check1 ()
-	local xc,yc,zc = XC,YC,ZC --центр окружности 
-	local xn,yn,zn = PlyPos2()
-	local dst = getDistanceBetweenPoints3D(xc,yc,zc,xn,yn,zn)
-	if dst < radius then
-		afk = true
-	else
-		afk = false
-	end	
-	return afk
+function CheckInAFKrad ()
+	local xn,yn,zn = getElementPosition(localPlayer)
+	local dst = getDistanceBetweenPoints3D(savedPos.x,savedPos.y,savedPos.z,  xn,yn,zn) -- сохраненная : Текущая позиция
+	return dst < radius
 end
 
 function Check ()
-	local afk = Check1()	
+	local afk = CheckInAFKrad()	
 	if afk then 
-		Giga.AFK.init()
-	else
-		Giga.noAFK.init()
+		failAttmpts = failAttmpts + 1
+		if failAttmpts > totalChecks then
+			initAfk()
+			failAttmpts = 0
+			recreateCheckTimer(true)
+		end
+	else 
+		failAttmpts = 0
+		resetAfk() 
 	end	
 end
 
-function DELETE() print("БАН") end -- если ты получил бан то следующее предупреждение тебе не понадобится уже
---вместе с баном можно ремувать евент но не знаю нахуя?
+function doKickTriiger() 
+	outputChatBox("Ну все кик нахуй...")
+	triggerServerEvent("AFK_KickMe",root,localPlayer) 
+end
 
-function Helper() triggerEvent("TrashDeleter",root) end
+function initAfk()
+	outputChatBox("Вы долго бездействуете, Вы тут?")
+	outputChatBox("Напишите команду 'yes' иначе кик")
+ 	toKickTimer = setTimer(doKickTriiger,faceTime,1)
+end
 
-Giga.AFK = {
-	init = function()
-		outputChatBox("Вы долго бездействуете, Вы тут?")
-		outputChatBox("Напишите 'yes' в чат иначе кик")
-		setTimer(Helper,10000,1)
+function resetAfk()
+	print("я живой (двигался)")
+	PlyPos1()
+end
 
-		addCommandHandler("yes",function()
-			removeEventHandler("TrashDeleter",root,DELETE)
-			print("сработал анти бан")
-			addEventHandler("TrashDeleter",root,DELETE)
-		end)
+function recreateCheckTimer(dontRecreate)
+ 	failAttmpts = 0
+ 	if checkTimer then 
+ 		killTimer(checkTimer)
+ 		checkTimer = false
+ 	end
+ 	if --[[not--]] dontRecreate then checkTimer = setTimer(Check,checkInterval,0) end	
+end
+
+addCommandHandler("yes",function()
+	if toKickTimer then 
+		killTimer(toKickTimer)
+		toKickTimer = false
 	end
-}
+	recreateCheckTimer()  -- пересоздание таймера проверки *(чтобы типо сбросить время до след проверки)
+	outputChatBox("хорошо, вы тут.")
+end)
 
-Giga.noAFK = {
-	init = function()
-		print("я живой")
-		PlyPos1()
-	end
-}
-
-addEvent("TrashDeleter",true)
-addEventHandler("TrashDeleter",root,DELETE)
+addCommandHandler("AFK",function(_,enabled)
+	recreateCheckTimer(not enabled)
+end)
+-- debDraw
+addEventHandler("onClientRender",root,function()
+	local debStr = failAttmpts
+	if not checkTimer then debStr = "disabled" end
+	dxDrawText("AFK: "..debStr, 400,0)
+end)
 
 PlyPos1()
-setTimer(Check,30000,0)
-
---[[
-скелет готов осталось накинуть конечный функционал и добавит фронты 
-так же отрегулировать время проверки и расстояние
---]]
---[[
-пробовал сделать переключалку чтобы не происходило проверок если плеер двигается но видимо похуй на 
-оперативку игроков
---]]
---[[Готова бан система выглядит уебански но при условии того что тебя не кикает пока что 
-все работает как надо 
---]]
+recreateCheckTimer()
+--  👍
+-- ждем систему (usful) статистики && систему уведомлений
