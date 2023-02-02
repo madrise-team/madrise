@@ -1026,4 +1026,94 @@ addEventHandler("onClientRender",root,function()
 	--dxDrawMaterialLine3D(x1,y1,z1, x2,y2,z2,false,":Draws/win/winTest.png", 1, tocolor(255,255,255,255),true)
 end)
 
+
+--------------------------------------------------------- Wawes
+perlinNoise = dxCreateTexture("sampleMaps/perlin0.png","argb")
+
+local replaceSoup = 11401
+engineReplaceModel (engineLoadDFF("fx/soupdiv.dff") , replaceSoup, true)
+
+local wawesShader = dxCreateShader("fx/wawes.fx")
+dxSetShaderValue(wawesShader,"noiseTex", perlinNoise)
+dxSetShaderValue(wawesShader,"RT", _scrRT2)
+---------------------------------------------------------
+
+--- Deb reset block ---- <<<
+showCursor(false)
+setElementFrozen(localPlayer,false)
+setCameraTarget(localPlayer)
+--- <<<<<<<<<<<<<<< ---- <<<
+
+local mdel = createObject(replaceSoup,0,0,0)
+setElementCollisionsEnabled(mdel,false)
+setObjectScale(mdel,2,3.25)
+engineApplyShaderToWorldTexture(wawesShader,"*",mdel)
+
+function createFace()
+	setElementFrozen(localPlayer,true)
+	showCursor(false)
+	local eventer = -10
+	
+	
+	local posX,posY,posZ, lookAtX,lookAtY,lookAtZ = getCameraMatrix()
+
+	local fov = 70
+
+	addEventHandler("onClientRender",root,function()
+		local camM = getMatrix(getCamera())
+		local pointer = camM.position + camM.forward*50 - camM.up*2
+		setElementPosition(mdel,pointer.x,pointer.y,pointer.z)
+		setElementRotation(mdel, camM.rotation.y,-camM.rotation.x - 15,camM.rotation.z + 90)
+
+		setCameraMatrix(posX,posY,posZ + 1050, lookAtX,lookAtY,lookAtZ + 1050, 0, fov)
+
+		eventer = eventer - 0.01
+		dxSetShaderValue(wawesShader,"efxPos",eventer)
+
+		razmit(_scrRT2,"S",1)
+		razmit(blurBuffer,"S",1)
+		razmit(blurBuffer,"G",1)
+
+		dxDrawImage(-20,-20,screenW+40,screenH+40,blurBuffer)
+		dxSetRenderTarget(_scrRT2,true)
+		dxDrawImage(0,0,screenW,screenH,":Draws/Elements/Pattern/f1Grad.png")
+		dxSetRenderTarget()
+	end)
+
+	bindKey('num_add',"down",function()
+		fov = fov + 1
+	end)
+	bindKey('num_sub',"down",function()
+		fov = fov - 1
+	end)
+
+
+	function eventGenerate()
+		local efxColType = 1
+		if math.random(0,100) > 90 then efxColType = 0 end
+		dxSetShaderValue(wawesShader,"efxColType",efxColType)
+
+		eventer = 1.6
+	end
+	bindKey("0","down",eventGenerate)
+
+end
+
+function initFace()
+	CameraFadingAnimation(100,600, nil,nil,nil, function()
+		createFace()	
+	end)
+
+end
+cretetFacer = false
+bindKey("0","down",function()
+	if not cretetFacer then
+		initFace()
+		cretetFacer = true
+	end
+end)
+
+
+
+
 --_DoWinDubugDraw()

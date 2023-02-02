@@ -25,50 +25,20 @@ function getDrawsLocalData()
 end
 
 -------------------------------------------------------------------------------------------------------------------
-perlinNoise = dxCreateTexture("sampleMaps/perlin0.png","argb")
 
-local replaceSoup = 11401
-engineReplaceModel (engineLoadDFF("fx/soupdiv.dff") , replaceSoup, true)
 
-local wawesShader = dxCreateShader("fx/wawes.fx")
-local drawPatternShader = dxCreateShader("fx/drawPatternEDBA.fx") 
-dxSetShaderValue(wawesShader,"noiseTex", perlinNoise)
-dxSetShaderValue(wawesShader,"screenW", screenW)
-dxSetShaderValue(wawesShader,"screenH", screenH)
 
-statet = false
-bindKey("0","down",function()
-	if statet then return end
-	statet = true
-	local rendere = dxCreateRenderTarget(screenW,screenH,false)
-	local eventer = -10
-	addEventHandler("onClientRender",root,function()
-		eventer = eventer - 0.01
-		dxSetShaderValue(wawesShader,"efxPos",eventer)
-	end)
 
-	function eventGenerate()
-		efxColType = 1
-		if math.random(0,100) > 90 then efxColType = 0 end
-		dxSetShaderValue(wawesShader,"efxColType",efxColType)
 
-		eventer = 1.6
-	end
-	bindKey("0","down",eventGenerate)
-	setTimer(function()
-		if math.random(0,100) > 70 then eventGenerate() end
-	end,5000,0)
 
-	if not wawesShader then return end
 
-	local x,y,z = getElementPosition(localPlayer)
-	local mdel = createObject(replaceSoup,x + 15,y,z - 2)
-	setElementCollisionsEnabled(mdel,false)
-	setObjectScale(mdel,0.5)	
 
-	engineApplyShaderToWorldTexture (wawesShader, "*", mdel)
-end)
 
+
+
+
+------------------------------------------------------------------------------------------------
+function createShaderControlPanel()
 ------------------------------------------------------------------------------------------------
 local shaderParametrs = {}
 
@@ -210,3 +180,16 @@ addWaveParam("WaveB",0.5,1,  0.4, 47.5)
 addWaveParam("WaveC",0.25,-1, 0.15, 16)
 
 applyParametrs()
+
+--------------------------------------------------------------------------------------------------------------
+end
+--createShaderControlPanel()
+
+do return end
+
+local pX,pY,pZ = getElementPosition(localPlayer)
+local testObjec = createObject(1221, pX,pY-3,pZ)
+setElementAlpha(testObjec,254)
+
+local testerShader = dxCreateShader(":Draws/fx/testerShader.fx")
+engineApplyShaderToWorldTexture(testerShader,"*",testObjec)

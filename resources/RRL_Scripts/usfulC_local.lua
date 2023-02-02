@@ -390,4 +390,12 @@ addEventHandler("onClientRender",root,function()
 end)
 --]]--
 
+addCommandHandler("bPlane",function()
+	local x,y,z = getElementPosition(localPlayer)
+	setElementAlpha(createObject(5154,x,y,z - 4.75),0)
+
+
+end)
+
+
 outputDebugString("----------------------------------------------------------------------")

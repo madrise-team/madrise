@@ -1,21 +1,10 @@
-#define GENERATE_NORMALS      // Uncomment for normals to be generated
 #include "mta-helper.fx"
-
-//-- Declare the textures. These are set using dxSetShaderValue( shader, "Tex0", texture )
-texture Tex0;
-
 
 //-- These variables are set automatically by MTA
 float4x4 World;
 float4x4 View;
 float4x4 Projection;
 float Time;
-
-
-sampler Sampler0 = sampler_state
-{
-    Texture = (Tex0);
-};
 
 //---------------------------------------------------------------------
 // Structure of data sent to the vertex and pixel shader
@@ -35,77 +24,6 @@ struct PSInput
 };
 //---------------------------------------------------------------------
 
-
-float2 random( float2 pos )
-{ 
-    return frac(
-        sin(
-            float2(
-                dot(pos, float2(12.9898,78.233))
-            ,   dot(pos, float2(-148.998,-65.233))
-            )
-        ) * 43758.5453
-    );
-}
-float value_noise( float2 pos )
-{
-    float2 p = floor( pos );
-    float2 f = frac( pos );
-
-    float v00 = random( p + float2( 0.0, 0.0 ) ).x;
-    float v10 = random( p + float2( 1.0, 0.0 ) ).x;
-    float v01 = random( p + float2( 0.0, 1.0 ) ).x;
-    float v11 = random( p + float2( 1.0, 1.0 ) ).x;
-
-    float2 u = f * f * ( 3.0 - 2.0 * f );
-
-    return smoothstep( smoothstep( v00, v10, u.x ), smoothstep( v01, v11, u.x ), u.y );
-}
-
-float voronoi( float2 v )
-{
-    float2 v_floor = floor( v );
-    float2 v_frac = frac( v );
-
-    float min_dist = 2.0;
-
-    for( int y = -1; y <= 1; y ++ ) {
-        for( int x = -1; x <= 1; x ++ ) {
-            float2 n = float2( float( x ), float( y ) );
-            float2 p = random( v_floor + n );
-            float2 diff = p + n;
-            float d = distance( v_frac, diff );
-
-            min_dist = min( min_dist, d );
-        }
-    }
-
-    return min_dist;
-}
-
-
-float2 rand2(float2 p){
-    float a = sin(p.x *656.684  + p.y *164.654);
-    float b = cos(p.x *96.6547  + p.y *468.6321);
-    return frac(float2(a,b));  
-}
-
-float voronoy_simple(float2 uv){
-    float result;
-
-    float minD = 100;
-
-    for(int i=0; i < 50; i++){
-        float2 r = rand2(i);
-        float2 p = sin(r * Time/10);
-        float d = length(uv - p);
-        if(d < minD) { minD = d; }
-    }
-
-    return minD;
-}   
-
-
 texture patTex;
 sampler patTexSample = sampler_state
 {
@@ -117,10 +35,12 @@ sampler2D noiseSampler = sampler_state
     Texture = (noiseTex);
 };
 
-float4 WaveA = float4(1, 0,   0.5, 20.0);
-float4 WaveB = float4(1, 0,   0.5, 20.0);
-float4 WaveC = float4(1, 0,   0.5, 20.0);
-float timeSpeedK = 1;
+/// [WAWES SETTINGS] ///////////////////////////////////////////////////////
+float4 WaveA = float4(1,    0.25,       0.3, 12);
+float4 WaveB = float4(0.5,  1,          0.4, 17);
+float4 WaveC = float4(0.25, -1,         0.15, 6);
+float timeSpeedK = 0.012;
+/// [WAWES SETTINGS] ///////////////////////////////////////////////////////
 
 float3 GerstnerWave(float4 wave, float3 p, float tTime){
     float steepness = wave.z;
@@ -150,9 +70,8 @@ PSInput WaweVertex(VSInput VS)
     p += GerstnerWave(WaveB, gridPoint, tTime);
     p += GerstnerWave(WaveC, gridPoint, tTime);
     VS.Position.xyz = p;
-    //VS.Position.z -= voronoy_simple(p.xy);
 
-    PS.Diffuse = ( VS.Position.z+ 1 )/4 + 0.5;
+    PS.Diffuse = ( (VS.Position.z + 1)/2 + (sin(tTime/100)+1)/2);
     PS.Position = mul(float4(VS.Position, 1), gWorldViewProjection);
     PS.TexCoord = VS.TexCoord;
     return PS;
@@ -167,32 +86,31 @@ float bigger(float a, float b, float smearing){
     return clamp( res/(smearing*2) ,0,1);
 }
 
-
-float screenW;
-float screenH;
-
-/// [SETTINGS] ///////////////////////////////////////////////////////
+/// [PATTERN SETTINGS] ///////////////////////////////////////////////////////
 float4 origColor = float4( 0.0784, 0.20, 0.884, 1);
-float4 intenseColor = float4( 0.0784, 0.9274, 0.984, 1)*2;
-float4 coreColor = float4( 0.554, 0.0, 0.404, 1);
+float4 intenseColor_o = float4( 0.0784, 0.9274, 0.984, 1)*2;
+float4 intenseColor = float4( 0.0784, 0.70, 0.884, 1)*2;
+float4 coreColor = float4( 0.654, 0.0, 0.404, 1);
 float efxPos = 0;
 float efxColType = 1;  // 1 - intense, 0 - core
 
 float efxSmearing = 0.1;
-float trgSmearing = 0.015;
-float ovpSmearing = 0.03;
+float trgSmearing = 0.015  *40;
+float ovpSmearing = 0.03   *40;
 
-float rectSize = 0.03;
-/// [SETTINGS] ///////////////////////////////////////////////////////
+float rectSize = 0.005;
+
+texture RT < string renderTarget = "yes"; >;
+/// [PATTERN SETTINGS] ///////////////////////////////////////////////////////
 
 
 float4 processTriangles(PSInput PS, int tNum, float rectSize, float tTime, float4 efxColor){
-
     float2 coords = PS.TexCoord;
 
     coords.xy = coords.yx;
 
     coords.x += rectSize/2*tNum;
+    coords.y *= 2.0f / 3.25f ;
 
     int yNum = floor(coords.y / rectSize);
     int chet = yNum%2;
@@ -206,8 +124,8 @@ float4 processTriangles(PSInput PS, int tNum, float rectSize, float tTime, float
     ////////////////////////////////////////////////
     // noise ///////////////////////////////////
     //
-        float noiseVal = tex2D(noiseSampler, float2(xNumR - yNumR/3*tNum ,yNumR) + (tTime+2*tNum)/15).r;
-        float slowNoiseVal = tex2D(noiseSampler, float2(xNumR - yNumR*tNum,yNumR + xNumR*tNum) + tTime/25 + 5*chet).r;
+        float noiseVal = tex2D(noiseSampler, float2(xNumR - yNumR*5*tNum ,yNumR)*20 + (tTime+2*tNum)/5).r;
+        float slowNoiseVal = tex2D(noiseSampler, float2(xNumR - yNumR*tNum,yNumR + xNumR*tNum)*20 + tTime/25 + 5*chet).r;
 
     ////////////////////////////////////////////////
     // EFX ///////////////////////////////////
@@ -221,8 +139,8 @@ float4 processTriangles(PSInput PS, int tNum, float rectSize, float tTime, float
         float2 smes = (coords % rectSize) / rectSize;  //( |0...1|)
         float invSmesY = abs(tNum-smes.y);
 
-        float power = tex2D(noiseSampler, (xNumR - yNumR/5.0f + tTime)/35   ).r;
-        power = clamp(power*1.5 - slowNoiseVal/2*(1-efxColType)*efxPxl , 0.45, 1.06);
+        float power = tex2D(noiseSampler, (xNumR - yNumR/5.0f + tTime)/15   ).r;
+        power = clamp(power*1.5 - slowNoiseVal/2*(1-efxColType)*efxPxl , 0.6, 1.06);
         float value = clamp(power + efxPxl/4,0.01,1);
 
         float fillSize = invSmesY - (1 - value);
@@ -266,23 +184,32 @@ float4 processTriangles(PSInput PS, int tNum, float rectSize, float tTime, float
     return finColor;
 }
 
-float4 PixelShaderFunction(PSInput PS) : COLOR0
+struct PS_OUT {
+    float4 color : COLOR0 ;  
+    float4 rtColor : COLOR1 ;
+};
+
+PS_OUT PixelShaderFunction(PSInput PS) : COLOR0
 {
 
     PS.TexCoord += rectSize*3;
         
     float4 efxColor = intenseColor*efxColType + coreColor*(1- efxColType);
 
-    float tTime = Time/10;
-    float4 finColor1 = float4(0,0,0,1);
-    float4 finColor2 = finColor1;
-    finColor1 = processTriangles(PS, 0 ,rectSize, tTime          ,efxColor); 
-    finColor2 = processTriangles(PS, 1 ,rectSize, tTime + 0.035  ,efxColor);
-    finColor1.a = 1;
-    finColor2.a = 1;
+    float tTime = Time/25;
+    float4 tr1Color = float4(0,0,0,1);
+    float4 tr2Color = tr1Color;
+    tr1Color = processTriangles(PS, 0 ,rectSize, tTime          ,efxColor); 
+    tr2Color = processTriangles(PS, 1 ,rectSize, tTime + 0.035  ,efxColor);
+    tr1Color.a = 1;
+    tr2Color.a = 1;
 
-    //finColor2 = 0;
-    return finColor1 + finColor2;
+    PS_OUT psout = (PS_OUT)0;
+
+    psout.color = 0;
+    psout.rtColor = (tr1Color + tr2Color)*(PS.Diffuse+0.5);
+
+    return psout;
 }
 //-----------------------------------------------------------------------------
 //-- Techniques

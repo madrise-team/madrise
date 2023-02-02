@@ -1,11 +1,12 @@
 function usfulC()
 ------------------------------------------------------------------------------------------------------------
-function CameraFadingAnimation(FadeTime,timeInFade,red,green,blue)
+function CameraFadingAnimation(FadeTime,timeInFade,red,green,blue, fadeCallback)
 	FadeTime = FadeTime or 1000
 	timeInFade = timeInFade or 1000
 
 	fadeCamera (false,FadeTime/1000,red,green,blue)
 	setTimer(function()
+        if fadeCallback then fadeCallback() end
 		fadeCamera(true,FadeTime/1000)
 	end,FadeTime + timeInFade,1)
 end

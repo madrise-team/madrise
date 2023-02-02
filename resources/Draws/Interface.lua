@@ -112,19 +112,21 @@ end
 blurBuffer = dxCreateRenderTarget(screenW,screenH,true)
 
 screenSource = dxCreateScreenSource(screenW,screenH)
-function razmit(texture,shaderChar)	--S = Simple ; G = Gaus
+function razmit(texture,shaderChar, textelRadius)	--S = Simple ; G = Gaus
 	dxSetRenderTarget(blurBuffer,false)							-- выставлем рендер таргет ( -> буфер)
+
+	textelRadius = textelRadius or 10
 
 	local shader = _shaderBlurSim
 	if shaderChar == "G" then
 		shader = _shaderBlurGaus
 	
-		dxSetShaderValue(shader,"texel_radius",0,1/screenH,10)	-- ставим параметр под вертикал размытие
+		dxSetShaderValue(shader,"texel_radius",0,1/screenH,textelRadius)	-- ставим параметр под вертикал размытие
 		dxSetShaderValue(shader,"screen",blurBuffer)			-- вставляем буфер во 2й проход
 		dxDrawImage(0,0,screenW,screenH,shader)					--  рендер 2го прохода в буфер
 	end
 	
-	dxSetShaderValue(shader,"texel_radius",1/screenW,0,10)  -- ставим параметр под горизонтал размытие
+	dxSetShaderValue(shader,"texel_radius",1/screenW,0,textelRadius)  -- ставим параметр под горизонтал размытие
 	dxSetShaderValue(shader,"screen",texture); 				-- вставляем текстуру в 1й проход
 	dxDrawImage(0,0,screenW,screenH,shader)					--  рендер 1го прохода в буфер
 	

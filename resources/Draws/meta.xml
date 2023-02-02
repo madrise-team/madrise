@@ -87,6 +87,7 @@
     <file src="Elements/Pattern/Pattern.png" type="client" />
     <file src="Elements/Pattern/patternEBDA.png" type="client" />
     <file src="Elements/Pattern/patternEBDA2.png" type="client" />
+    <file src="Elements/Pattern/f1Grad.png" type="client" />
     
     <file src="Elements/SeparatorHeader/SeparatorHeader.png" type="client" />
     <file src="Elements/SeparatorInteractive/SeparatorInteractive.png" type="client" />
@@ -115,5 +116,8 @@
     
 
     <export function="getScreenRTs" type="client" />    
+
+
+    <file src="fx/testerShader.fx" type="client" />
     
 </meta>
