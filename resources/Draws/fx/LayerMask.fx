@@ -19,7 +19,7 @@ struct PSInput
   float2 TexCoord : TEXCOORD0;
 };
 
-float4 PixelShaderFunction(PSInput PS) : COLOR0
+float4 texMasxPS(PSInput PS) : COLOR0
 {
     float4 texColor = tex2D(SamplerScreene, PS.TexCoord);
     float4 maskColor = tex2D(SamplerMaks, PS.TexCoord);
@@ -30,13 +30,14 @@ float4 PixelShaderFunction(PSInput PS) : COLOR0
 //------------------------------------------------------------------------------------------
 // Techniques
 //------------------------------------------------------------------------------------------
-technique blocky
+technique texMask
 {
     pass P0
     {
-        PixelShader  = compile ps_2_0 PixelShaderFunction();
+        PixelShader  = compile ps_2_0 texMasxPS();
     }
 }
+
 
 // Fallback
 technique fallback

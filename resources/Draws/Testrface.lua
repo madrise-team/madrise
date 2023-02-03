@@ -1114,6 +1114,11 @@ bindKey("0","down",function()
 end)
 
 
+local gridShader = dxCreateShader(":Draws/fx/grid.fx")
+addEventHandler("onClientRender",root,function()
+	dxDrawImage(0,0,screenW,screenH, gridShader)
+end)
+
 
 
 --_DoWinDubugDraw()

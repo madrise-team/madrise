@@ -23,13 +23,12 @@
     <file src="fx/polyWriter.fx" type="client" />
     <file src="fx/changeColor.fx" type="client" />
     
-    <file src="fx/drawPatternEDBA.fx" type="client" />
-    <file src="fx/distance.fx" type="client" />
-
     <file src="fx/wawes.fx" type="client" />
-    
+    <file src="fx/grid.fx" type="client" />
+
     <file src="fx/soupdiv.dff" type="client" />
     
+
 
     <!-- Maps -->
     <file src="sampleMaps/perlin0.png" type="client" />
