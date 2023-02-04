@@ -36,10 +36,10 @@ sampler2D noiseSampler = sampler_state
 };
 
 /// [WAWES SETTINGS] ///////////////////////////////////////////////////////
-float4 WaveA = float4(1,    0.25,       0.3, 12);
-float4 WaveB = float4(0.5,  1,          0.4, 17);
-float4 WaveC = float4(0.25, -1,         0.15, 6);
-float timeSpeedK = 0.012;
+const float4 WaveA = float4(1,    0.25,       0.3, 12);
+const float4 WaveB = float4(0.5,  1,          0.4, 17);
+const float4 WaveC = float4(0.25, -1,         0.15, 6);
+const float timeSpeedK = 0.012;
 /// [WAWES SETTINGS] ///////////////////////////////////////////////////////
 
 float3 GerstnerWave(float4 wave, float3 p, float tTime){
@@ -87,18 +87,20 @@ float bigger(float a, float b, float smearing){
 }
 
 /// [PATTERN SETTINGS] ///////////////////////////////////////////////////////
-float4 origColor = float4( 0.0784, 0.20, 0.884, 1);
-float4 intenseColor_o = float4( 0.0784, 0.9274, 0.984, 1)*2;
-float4 intenseColor = float4( 0.0784, 0.70, 0.884, 1)*2;
-float4 coreColor = float4( 0.654, 0.0, 0.404, 1);
-float efxPos = 0;
-float efxColType = 1;  // 1 - intense, 0 - core
+const float4 origColor = float4( 0.0784, 0.20, 0.884, 1);
+const float4 intenseColor_o = float4( 0.0784, 0.9274, 0.984, 1)*2;
+const float4 intenseColor = float4( 0.0784, 0.70, 0.884, 1)*2;
+const float4 coreColor = float4( 0.654, 0.0, 0.404, 1);
+const float efxPos = 0;
+const float efxColType = 1;  // 1 - intense, 0 - core
 
-float efxSmearing = 0.1;
-float trgSmearing = 0.015  *40;
-float ovpSmearing = 0.03   *40;
+const float intense = 1;
 
-float rectSize = 0.005;
+const float efxSmearing = 0.1;
+const float trgSmearing = 0.015  *1;
+const float ovpSmearing = 0.03   *1;
+
+const float rectSize = 0.01;
 
 texture RT < string renderTarget = "yes"; >;
 /// [PATTERN SETTINGS] ///////////////////////////////////////////////////////
@@ -110,7 +112,7 @@ float4 processTriangles(PSInput PS, int tNum, float rectSize, float tTime, float
     coords.xy = coords.yx;
 
     coords.x += rectSize/2*tNum;
-    coords.y *= 2.0f / 3.25f ;
+    coords.y *= 2.0f / 3.6f ;
 
     int yNum = floor(coords.y / rectSize);
     int chet = yNum%2;
@@ -208,6 +210,12 @@ PS_OUT PixelShaderFunction(PSInput PS) : COLOR0
 
     psout.color = 0;
     psout.rtColor = (tr1Color + tr2Color)*(PS.Diffuse+0.5);
+
+    if(intense < 1){
+        float posXY = PS.TexCoord.x + PS.TexCoord.y;
+        psout.rtColor *= bigger(intense*2,posXY, 0.4);
+        psout.rtColor +=  clamp(bigger(intense*2 + 0.2,posXY, 0.05) - bigger(intense*2,posXY, 0.6), 0,10);
+    }
 
     return psout;
 }

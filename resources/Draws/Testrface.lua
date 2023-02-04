@@ -1018,16 +1018,11 @@ end)
 
 
 
-addEventHandler("onClientRender",root,function()
-	local x1,y1,z1 = getWorldFromScreenPosition (screenW/2,screenH/2,1)
-	local x2,y2,z2 = getWorldFromScreenPosition (1500,200,100)
-
-	--dxDrawLine3D(x1,y1,z1, x2,y2,z2, tocolor(255,255,255,255),1,true)
-	--dxDrawMaterialLine3D(x1,y1,z1, x2,y2,z2,false,":Draws/win/winTest.png", 1, tocolor(255,255,255,255),true)
-end)
-
-
---------------------------------------------------------- Wawes
+--- Deb reset block ---- <<<
+showCursor(false)
+setCameraTarget(localPlayer)
+--- <<<<<<<<<<<<<<< ---- <<<
+------------------------------------------------------------------------------------- Wawes
 perlinNoise = dxCreateTexture("sampleMaps/perlin0.png","argb")
 
 local replaceSoup = 11401
@@ -1036,48 +1031,94 @@ engineReplaceModel (engineLoadDFF("fx/soupdiv.dff") , replaceSoup, true)
 local wawesShader = dxCreateShader("fx/wawes.fx")
 dxSetShaderValue(wawesShader,"noiseTex", perlinNoise)
 dxSetShaderValue(wawesShader,"RT", _scrRT2)
----------------------------------------------------------
+-------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------- Grid
+local gridShader = dxCreateShader(":Draws/fx/grid.fx")
 
---- Deb reset block ---- <<<
-showCursor(false)
-setElementFrozen(localPlayer,false)
-setCameraTarget(localPlayer)
---- <<<<<<<<<<<<<<< ---- <<<
+local scale = 1 
+local minScale = 0.2
+local maxScale = 1
 
+local scaleSpd = 0
+local scaleSpdInc = 10
+
+local mPosSave = false
+local offset = {0,0}
+local offsetLim = { x = {-4,4} , y ={-4,4}  }
+local savedOffset = {0,0}
+
+local grdSize = 250
+dxSetShaderValue(gridShader, "gridSize", grdSize)
+dxSetShaderValue(gridShader, "screenSize", screenW, screenH)
+-------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------- Model
 local mdel = createObject(replaceSoup,0,0,0)
 setElementCollisionsEnabled(mdel,false)
-setObjectScale(mdel,2,3.25)
+setObjectScale(mdel,2,3.6)
 engineApplyShaderToWorldTexture(wawesShader,"*",mdel)
 
+local mdl_Smes = {0,0}
+
+local frame = 0
+local totalIntense = 0
+local initFrames = 25
+-------------------------------------------------------------------------------------
+
 function createFace()
-	setElementFrozen(localPlayer,true)
-	showCursor(false)
 	local eventer = -10
 	
 	
 	local posX,posY,posZ, lookAtX,lookAtY,lookAtZ = getCameraMatrix()
 
-	local fov = 70
-
 	addEventHandler("onClientRender",root,function()
+		frame = frame + 1
+		dxDrawText("frame"..frame, 50, 50)
+		if frame < initFrames*1.1 then			
+			totalIntense = frame/initFrames
+			if totalIntense > 1 then totalIntense = 1 end
+			dxSetShaderValue(gridShader,"intense",totalIntense)
+			dxSetShaderValue(wawesShader,"intense",totalIntense)
+
+			dxDrawText("intense: "..totalIntense, 50, 75)
+		end
+
+		local scaleRl = (scale/maxScale - minScale) * maxScale/(maxScale-minScale)
+
+		local fov = 60 + 20* (1- scaleRl)
+		local offsetMod = 1/scale
+
 		local camM = getMatrix(getCamera())
-		local pointer = camM.position + camM.forward*50 - camM.up*2
+		local ofsX = offset[1]/offsetMod*7
+		local ofsY = offset[2]/offsetMod*1.5
+
+		local pointer = camM.position + camM.forward*50 - camM.up*2 - camM.up*ofsY + camM.right*ofsX
 		setElementPosition(mdel,pointer.x,pointer.y,pointer.z)
 		setElementRotation(mdel, camM.rotation.y,-camM.rotation.x - 15,camM.rotation.z + 90)
+		
 
 		setCameraMatrix(posX,posY,posZ + 1050, lookAtX,lookAtY,lookAtZ + 1050, 0, fov)
 
 		eventer = eventer - 0.01
 		dxSetShaderValue(wawesShader,"efxPos",eventer)
 
-		razmit(_scrRT2,"S",1)
-		razmit(blurBuffer,"S",1)
-		razmit(blurBuffer,"G",1)
+		razmit(_scrRT2,"S",2)
+		razmit(blurBuffer,"S",2)
+		razmit(blurBuffer,"G",2)
 
 		dxDrawImage(-20,-20,screenW+40,screenH+40,blurBuffer)
+		
 		dxSetRenderTarget(_scrRT2,true)
-		dxDrawImage(0,0,screenW,screenH,":Draws/Elements/Pattern/f1Grad.png")
+		dxDrawImage(0,0,screenW,screenH,":Draws/Elements/Pattern/f1Grad.png",0,0,0,tocolor(0,0,0,255*totalIntense))
 		dxSetRenderTarget()
+
+		gridProcess()
+		dxDrawImage(0,0,screenW,screenH, gridShader)
+
+		dxDrawText(" Scale : "..scale, 50,100)
+		dxDrawText(" scaleRl : "..scaleRl, 50,115)
+		dxDrawText("offsetX: "..offset[1], 50,135)
+		dxDrawText("offsetY: "..offset[2], 50,150)
+		dxDrawText("offsetMod: "..offsetMod, 50,170)
 	end)
 
 	bindKey('num_add',"down",function()
@@ -1100,6 +1141,7 @@ function createFace()
 end
 
 function initFace()
+	showCursor(true)
 	CameraFadingAnimation(100,600, nil,nil,nil, function()
 		createFace()	
 	end)
@@ -1114,11 +1156,84 @@ bindKey("0","down",function()
 end)
 
 
-local gridShader = dxCreateShader(":Draws/fx/grid.fx")
-addEventHandler("onClientRender",root,function()
-	dxDrawImage(0,0,screenW,screenH, gridShader)
+
+------------------------------------------------------------------------------------- Process
+function setOffset(x,y)
+	offset = {x,y}
+
+	local xLlim = offsetLim.x[2]*scale
+	local xRLim = offsetLim.x[1]*scale + 1
+	if offset[1] > xLlim then offset[1] = xLlim end
+	if offset[1] < xRLim then offset[1] = xRLim end
+
+	local yLlim = offsetLim.y[2]*scale
+	local yRLim = offsetLim.y[1]*scale + 1
+	if offset[2] > yLlim then offset[2] = yLlim end
+	if offset[2] < yRLim then offset[2] = yRLim end
+
+end
+function saveOffset()
+	savedOffset[1] = offset[1]
+	savedOffset[2] = offset[2]
+end
+
+function gridProcess()
+	local cx,cy = getCursorPosition()
+
+	if cx then
+		local offCx = (cx - offset[1])*screenW
+		local offCy = (cy - offset[2])*screenH
+
+		if math.abs(scaleSpd) > 0 then
+			
+			local gsX = offCx*scale
+			local gsY = offCy*scale
+
+			local change = scaleSpd/1000
+			scale = scale + change
+			scaleSpd = scaleSpd - getNumberSign(scaleSpd)
+			if scale < minScale then scale = minScale end
+			if scale > maxScale then scale = maxScale end
+
+			local rznX = gsX - offCx*scale
+			local rznY = gsY - offCy*scale
+			setOffset(offset[1] + rznX/scale/screenW, offset[2] + rznY/scale/screenH)
+
+			dxSetShaderValue(gridShader, "scale", scale)
+			dxSetShaderValue(gridShader,"offset",offset[1],offset[2])
+			saveOffset()
+		end 
+
+		
+		
+		if mPosSave then
+			setOffset(cx - mPosSave[1] + savedOffset[1], cy - mPosSave[2] + savedOffset[2])
+
+			dxSetShaderValue(gridShader,"offset",offset[1],offset[2])
+		end
+	end
+end
+------------------------------------------------------------------------------------- Controls	
+
+function bindOffset()
+	mPosSave = {getCursorPosition()}
+	saveOffset()
+end
+function releaseOffset()
+	mPosSave = false
+end
+
+
+
+bindKey("mouse_wheel_up","down",function()
+	scaleSpd = scaleSpd + scaleSpdInc
 end)
-
-
-
+bindKey("mouse_wheel_down","down",function()
+	scaleSpd = scaleSpd - scaleSpdInc
+end)
+bindKey("mouse1","down",bindOffset)
+bindKey("mouse2","down",bindOffset)
+bindKey("mouse1","up",releaseOffset)
+bindKey("mouse2","up",releaseOffset)
+-------------------------------------------------------------------------------------
 --_DoWinDubugDraw()

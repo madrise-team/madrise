@@ -18,20 +18,44 @@ float bigger_smooth(float a, float b, float smearing){
 
 
 /// [SETTINGS] //////////////////////////////////////////
-float gridSize = 250;
-float thickness = 5;
+const float gridSize = 500;
+const float thickness = 2;
+const float smooth = 2;
+const float2 offset;
+const float scale = 1;
 
+const float intense = 1;
+const float4 gridColor = float4(0.4,0.65,0.9,0.1);
+const float4 areaColor = float4(0.05,0.1,0.4,0.75);
+
+float2 screenSize;
 /// [SETTINGS] //////////////////////////////////////////
 
 
 float4 PixelShaderFunction(PSInput PS) : COLOR0
 {
-  //  PS.vPos += 2500;    
+    float2 cord = (PS.TexCoord - offset)* screenSize / scale;
+    if (cord.x<0){
+        cord.x -= thickness + smooth;
+    }
+    if (cord.y<0){
+        cord.y -= thickness + smooth;
+    }
 
- //   float4 grid = bigger(PS.vPos.x % gridSize, gridSize-thickness) + bigger(PS.vPos.y % gridSize, gridSize-thickness);
- //   float finColor = grid ;
 
-    return PS.TexCoord.x;
+    float2 inPos = abs(cord % (gridSize));
+
+    float2 gridPos = 1 - abs((PS.TexCoord - 0.5) * (PS.TexCoord - 0.5))*3;
+
+    float cr_thickness = thickness*(1-scale)*3 + thickness;
+
+    float grid_x = 1 - bigger_smooth(inPos.x, cr_thickness, smooth);
+    float grid_y = 1 - bigger_smooth(inPos.y, cr_thickness, smooth);
+
+    float grid = grid_x + grid_y;
+    grid = clamp(grid,0,1) * gridPos.x * gridPos.y;
+
+    return (grid * gridColor + gridPos.x*gridPos.y*areaColor)*intense;
 }
 
 //------------------------------------------------------------------------------------------
