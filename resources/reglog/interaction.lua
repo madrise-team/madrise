@@ -1,26 +1,70 @@
+---------------------Config------------------------
+local DistToPlayer = 5 --Должно быть меньше чем глубина сканирования чтоб не тупило
+local ScanDepth = 10
+local width, height = 0 ,10 -- расположение текста на курсоре
+---------------------------------------------------
+
+local bool = false
+local bool1 = false
+
+bindKey("e","down",function ()
+	bool1 = true
+end)
+
  function TypeDetector()
  	local xp,yp,zp = getCameraMatrix()
 	local w, h = getCursorPosition()
 	 w = screenW * w
 	 h = screenH * h
-	local x,y,z = getWorldFromScreenPosition(w,h,50)
-	local hit, xn,yn,zn, elementHit = processLineOfSight(xp,yp,zp,  x,y,z,false,false,true)
-	local Type = getElementType(elementHit)
-	outputChatBox(tostring(Type))
-	return(Type)
+	local x,y,z = getWorldFromScreenPosition(w,h,ScanDepth)
+	local hit, xn,yn,zn, elementHit = processLineOfSight(xp,yp,zp,  x,y,z,false,true,true)
+	return(elementHit)
  end
 
 function PlayerDetected()
 	if not isCursorShowing(localPlayer) then return end
 	local PlayerP = TypeDetector()
-	if isElement(PlayerP) == "player" then 
-		PP()
+	local Type = getElementType(PlayerP)
+	if Type == "player" then Distance(PlayerP) end
+end
+
+function Distance(elementPlayer)
+	local xp,yp,zp =getElementPosition(localPlayer)
+	local xn,yn,zn =getElementPosition(elementPlayer)
+	local distance = getDistanceBetweenPoints3D(xp,yp,zp, xn,yn,zn)
+	if distance < DistToPlayer then InteractionButton(elementPlayer) end
+end
+
+function InteractionButton(elementPlayer)
+	local w,h = getCursorPosition()
+	 w = screenW * w
+	 h = screenH * h
+	if elementPlayer ~= localPlayer then 
+		dxDrawText("<e>",w + width,h + height)
+		Key()
 	end
 end
 
-function PP()
-	createLight(0)
+function Key()
+	if bool1 and isCursorShowing(localPlayer) then
+		bool = true
+		Interaction()
+		bool1 = false
+	else 
+		bool = false
+	end 	
 end
+
+function Interaction()
+	if not bool then  return end
+		local w,h = guiGetScreenSize()
+		outputChatBox('ebala')
+		dxDrawRectangle(w/2,h/2,300,300)
+	
+
+
+end
+
 
 addEventHandler("onClientRender",root,PlayerDetected)
 
