@@ -5,13 +5,15 @@ local width, height = 0 ,10 -- расположение текста на кур
 ---------------------------------------------------
 
 local bool = false
-local bool1 = false
+local dis = true
+local ol = false
 
-bindKey("e","down",function ()
-	bool1 = true
-end)
+function Start()
+	addEventHandler("onClientRender",root, PlayerDetected)
+	bindKey("e","down",function() bool = true ol = true end)
+end
 
- function TypeDetector()
+function TypeDetector()
  	local xp,yp,zp = getCameraMatrix()
 	local w, h = getCursorPosition()
 	 w = screenW * w
@@ -45,28 +47,38 @@ function InteractionButton(elementPlayer)
 	end
 end
 
+
+function Rend()
+	local w,h = guiGetScreenSize()
+	dxDrawRectangle(w/2,h/2,300,300)
+end
+
+function Interaction(dis)
+	if dis then return end 
+	Rend()
+	bool = not bool
+	dis = not dis
+end
+
+--[[function bb()
+	if ol then return end
+	removeEventHandler("onClientRender",root,Rend)
+	print("eee")
+end--]]
+
 function Key()
-	if bool1 and isCursorShowing(localPlayer) then
-		bool = true
-		Interaction()
-		bool1 = false
-	else 
-		bool = false
-	end 	
-end
-
-function Interaction()
-	if not bool then  return end
-		local w,h = guiGetScreenSize()
-		outputChatBox('ebala')
-		dxDrawRectangle(w/2,h/2,300,300)
-	
-
-
+	if bool and isCursorShowing(localPlayer) then
+		dis = not dis
+		Interaction(dis)
+	elseif not bool then
+		 
+	--[[if bool then
+		
+	end--]]
 end
 
 
-addEventHandler("onClientRender",root,PlayerDetected)
+Start()
 
 
 
