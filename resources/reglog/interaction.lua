@@ -5,13 +5,9 @@ local width, height = 0 ,10 -- расположение текста на кур
 ---------------------------------------------------
 
 local bool = false
-local dis = true
-local ol = false
+local def = false
 
-function Start()
-	addEventHandler("onClientRender",root, PlayerDetected)
-	bindKey("e","down",function() bool = true ol = true end)
-end
+bindKey("e","down",function() bool = not bool def = not def Defer() end)
 
 function TypeDetector()
  	local xp,yp,zp = getCameraMatrix()
@@ -47,68 +43,33 @@ function InteractionButton(elementPlayer)
 	end
 end
 
+function Key()
+	if bool and isCursorShowing(localPlayer) then 
+		removeEventHandler("onClientRender",root, PlayerDetected)
+	else 
+		removeEventHandler("onClientRender",root, Interaction)
+	end 
+end
 
-function Rend()
+function Defer()
+	if def and isCursorShowing(localPlayer) then
+		addEventHandler("onClientRender",root, Interaction)
+	else
+		addEventHandler("onClientRender",root, PlayerDetected)
+	end
+end
+
+function Interaction()
 	local w,h = guiGetScreenSize()
 	dxDrawRectangle(w/2,h/2,300,300)
 end
 
-function Interaction(dis)
-	if dis then return end 
-	Rend()
-	bool = not bool
-	dis = not dis
-end
-
---[[function bb()
-	if ol then return end
-	removeEventHandler("onClientRender",root,Rend)
-	print("eee")
-end--]]
-
-function Key()
-	if bool and isCursorShowing(localPlayer) then
-		dis = not dis
-		Interaction(dis)
-	elseif not bool then
-		 
-	--[[if bool then
-		
-	end--]]
-end
-
-
-Start()
-
-
-
+addEventHandler("onClientRender",root, PlayerDetected)
 
 --[[
 ОТРУБЛЕНА АФК СИСТЕМА !!!!! НЕ ЗАБЫТЬ ВЕРНУТЬ КАК БЫДЛО!!!!
-работает получение типа объекта путем наведения на него курсора мыши
-не понимаю как получить сам объект или хотябы его точные статические корды а не
-ебаный поток циферек или хоть что нибудь блять информативное а не просто тупо тип 
-объекта как ему подсветку пилить тогда??? а про остальное вщ молчу
- но работает корректно проверил на реальном человеке
+--]]
+--[[
+Забаганное дерьмо надо фиксить с начала думал что я бог оказалось не так
 --]]
 
-
-
-
-
-
-
-
- 
---[[
-создать GetCursorPosition который будет передавать координаты в 
-getWorldFromSkreenPosition где будет указаана глубина взаимодействия ориентировочно 3-4 метра
-и через processLineOfSight получаться елемент на который наведен курсор и если этот элемент 
-плеером то начинается рендер 
-(processLineOfSight пускает луч до объекта в поле взаимодействия персонажа соответственно нужно чтобы 
-этот луч шел от курсора на выбранного плеера при этом нужно чтобы плеер как то выделялся для понимания работает 
-ли это вообще)
-предлагается сделать каркас типа api в который будут подключаться функции
-При клике пкм должено открываться меню взаимодействия 
-
- --]]
