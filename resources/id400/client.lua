@@ -1,3 +1,9 @@
+----- import Interface
+loadstring(exports.importer:load())()
+import('RRL_Scripts/usfulSh.lua')()
+------------------------------------
+
+
 txd = engineLoadTXD ('id400.txd')
 engineImportTXD (txd, 400)
 dff = engineLoadDFF ('id400.dff', 400)
@@ -365,26 +371,61 @@ end)
     ]]
 ------------------------------------------------------
 
+nomeraTemplates = {}
+nomeraTemplates.ru = {
+        img = "images/number_ru.png", 
+        font = dxCreateFont('fonts/number_ru.ttf',50),
+        zone1 = {w = 402, h = 124},
+        zone2 = {x = 398, y = 19, w = 98, h = 43},
+        drawSymbols = function(nomT)
+            templ = nomeraTemplates.ru
 
-nomeraT = {
-    ru = {img = "images/number_ru.png", font = dxCreateFont('fonts/number_ru.ttf',36)}
+            local symb = string.sub(nomT.symbols,1,6)
+            local reg = string.sub(nomT.symbols,7,9)
+            
+            dxDrawText ( symb, 0, 0, templ.zone1.w, templ.zone1.h, tocolor(0,0,0,255), 1, 1,
+                templ.font,  "center", "center")
+            dxDrawText ( reg, 
+                templ.zone2.x, templ.zone2.y, 
+                templ.zone2.x+templ.zone2.w, templ.zone2.y+templ.zone2.h,
+                tocolor(0,0,0,255), 0.6, 0.6, templ.font,  "center", "top")
+        end
+}
+nomeraTemplates.ru_nf = {
+        img = "images/number_ru_noFlag.png", 
+        font = nomeraTemplates.ru.font,
+        zone1 = nomeraTemplates.ru.zone1,
+        zone2 = nomeraTemplates.ru.zone2,
+        drawSymbols = nomeraTemplates.ru.drawSymbols
+}
+nomeraTemplates.ru_federal = {
+        img = "images/number_ru_federal.png", 
+        font = nomeraTemplates.ru.font,
+        zone1 = nomeraTemplates.ru.zone1,
+        zone2 = nomeraTemplates.ru.zone2,
+        drawSymbols = nomeraTemplates.ru.drawSymbols
 }
 
 
 local avto_number_pairs = {}
 
 local nomerW = 520
-local nomerH = 122
+local nomerH = 122 
+
 
 function bakeNomer(numberT)
-    local n = numberT 
-    dxSetRenderTarget(n.nomerRT)
-    dxDrawImage(0,0,nomerW,nomerH,nomeraT[n.type].img)
-    dxDrawText ( n.symbols, 0, 0, nomerW, nomerH, tocolor(0,0,0,255), 1, 1,
-                  nomeraT[n.type].font,  "center", "center")
+    local nomT = numberT           -- табилца номера
+    local templ = nomeraTemplates[nomT.type]  -- табилца шаблона
+    
+    --- ///////////////
+    dxSetRenderTarget(nomT.nomerRT)
+    dxDrawImage(0,0,nomerW,nomerH,templ.img)
+    templ.drawSymbols(nomT)
     dxSetRenderTarget()
-    dxSetShaderValue(n.shader,"nomerTex",n.nomerRT)
-    engineApplyShaderToWorldTexture(n.shader,'nomer',n.avto)
+    --- ///////////////
+
+    dxSetShaderValue(nomT.shader,"nomerTex",nomT.nomerRT)
+    engineApplyShaderToWorldTexture(nomT.shader,'nomer',nomT.avto)
 end
 
 -->> Перерисовка RT после сворачивания
@@ -421,10 +462,20 @@ function applyNomer(avto,type, symbols)
     lastNomerdRT = nomerRT
 end
 ------------------------------------------------------ 
-addCommandHandler("nomer",function()
+
+function addNomer(typ,symbols)
     local avto = getPedOccupiedVehicle(localPlayer)
     if not avto then return end
 
-    applyNomer(avto,"ru","o001oo")
+    setVehicleEngineState(avto, false)
 
+    applyNomer(avto,typ,symbols)
+end
+
+addCommandHandler("nomer",function()
+    addNomer("ru","b888bb88")
+end)
+
+bindKey("0","down",function()
+    addNomer("ru","b888bb88")
 end)
