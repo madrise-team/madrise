@@ -62,11 +62,11 @@ local per = - math.pi / 2
 
 addEventHandler("onClientRender",root,function()    
     if per >= 3 * math.pi / 2 then per = - math.pi / 2 end
-<<<<<<< Updated upstream
-    per = per + 0.008
-=======
+--<<<<<<< Updated upstream
+    --per = per + 0.008
+--=======
     per = per + 0.004
->>>>>>> Stashed changes
+-->>>>>>> Stashed changes
 
 -- (sin x + 1.1) * 0.45
     
@@ -339,3 +339,92 @@ bindKey("num_2","down",function()
 end)
 
 ]]--
+
+
+
+
+--------------------------------------------------------   Nomera
+--- Shader --------------------
+    nomeraShaderData = [[
+        texture nomerTex;
+
+        technique setTex
+        {
+            pass P0
+            {
+                Texture[0] = nomerTex;
+                ColorArg1[0] = Texture;
+                ColorArg2[0] = Diffuse;
+                ColorOp[0] = Modulate;
+                AlphaOp[0] = SelectArg1;
+
+                ColorOp[1] = Disable;
+                AlphaOp[1] = Disable;
+            }
+        }
+    ]]
+------------------------------------------------------
+
+
+nomeraT = {
+    ru = {img = "images/number_ru.png", font = dxCreateFont('fonts/number_ru.ttf',36)}
+}
+
+
+local avto_number_pairs = {}
+
+local nomerW = 520
+local nomerH = 122
+
+function bakeNomer(numberT)
+    local n = numberT 
+    dxSetRenderTarget(n.nomerRT)
+    dxDrawImage(0,0,nomerW,nomerH,nomeraT[n.type].img)
+    dxDrawText ( n.symbols, 0, 0, nomerW, nomerH, tocolor(0,0,0,255), 1, 1,
+                  nomeraT[n.type].font,  "center", "center")
+    dxSetRenderTarget()
+    dxSetShaderValue(n.shader,"nomerTex",n.nomerRT)
+    engineApplyShaderToWorldTexture(n.shader,'nomer',n.avto)
+end
+
+-->> Перерисовка RT после сворачивания
+addEventHandler("onClientRestore",root,function( didClearRenderTargets )
+    if not didClearRenderTargets then return end
+    for k,v in pairs(avto_number_pairs) do
+    --    outputChatBox("paqapa pepe get ma body")
+        bakeNomer(v)
+    end
+end)
+
+function applyNomer(avto,type, symbols)
+    local shader = dxCreateShader(nomeraShaderData)
+    local nomerRT = dxCreateRenderTarget(nomerW,nomerH)
+    
+    if not shader or not nomerRT then
+        outputChatBox("nomer shader or RT creating error (out of Memory?)")
+        destroyElement(shader)  -- cancel
+        destroyElement(nomerRT) 
+        return 
+    end
+
+    local numberT = {
+        avto = avto,
+        type = type, symbols = symbols,
+        shader = shader, nomerRT = nomerRT
+    }
+
+    bakeNomer(numberT)
+
+    
+    table.insert(avto_number_pairs,numberT)
+    setElementData(avto,"nomer", numberT)
+    lastNomerdRT = nomerRT
+end
+------------------------------------------------------ 
+addCommandHandler("nomer",function()
+    local avto = getPedOccupiedVehicle(localPlayer)
+    if not avto then return end
+
+    applyNomer(avto,"ru","o001oo")
+
+end)

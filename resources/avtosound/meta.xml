@@ -1,0 +1,11 @@
+<meta>
+<file src="sound_001.wav" type="client"/>
+<file src="sound_002.wav" type="client"/>
+<file src="sound_002.mp3" type="client"/>
+
+
+<script src="client.lua" type="client"/>
+<script src="server.lua" type="server"/>
+
+
+</meta> 

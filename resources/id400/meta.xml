@@ -8,4 +8,15 @@
 
 <file src="coloder.fx" type="client"/>
 
+
+	<!-- Fonts -->
+<file src="fonts/number_ru.ttf" type="client"/>
+
+
+	<!-- Images -->
+<file src="images/number_ru.png" type="client"/>
+
+
+	
+
 </meta>
