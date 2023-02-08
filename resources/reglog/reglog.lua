@@ -66,6 +66,7 @@ addEventHandler("onPlayerJoin", root, onJoin)
 function playerLogined(player,bdAccount,localBdAccount)
 	setElementData(player,"playerData",{nickname = bdAccount.nickname})
 	setPlayerMoney(player,bdAccount.money,true)
+	
 	triggerEvent("playerLogin",player,bdAccount,localBdAccount)
 	triggerClientEvent(player,"playerLogin",root)
 end
