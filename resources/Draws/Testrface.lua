@@ -1236,4 +1236,52 @@ bindKey("mouse2","down",bindOffset)
 bindKey("mouse1","up",releaseOffset)
 bindKey("mouse2","up",releaseOffset)
 -------------------------------------------------------------------------------------
+
+
+
+
+
+
+------------------------------------------------------------------------------------------
+	--  zone writer  --
+------------------------------------------------------------------------------------------
+
+function zoneWrite(layout,smbls)
+	
+	local font = "default"
+	local inx = 1
+
+	for i,zone in ipairs(layout) do
+
+		local x = zone.x
+		local dst = (zone.dst or 1) + zone.w
+		zone.smbCount = zone.smbCount or 1
+		font = zone.font or font
+
+
+		for i=1,zone.count do
+			dxDrawRectangle(x, zone.y,zone.w,zone.h, tocolor(150,150,150,255))
+			dxDrawText(string.sub(smbls,inx,inx + (zone.smbCount - 1) ),
+				x, zone.y,x+zone.w,zone.y+zone.h, 
+				tocolor(0,0,0,255), 
+				zone.scale or 1, zone.scaleY or zone.scale or 1, 
+				font, "center", "center")	
+
+			x = x + dst
+			inx = inx + zone.smbCount
+		end
+	end
+end
+local layout_ru = {  
+	{x=33,y=33,w=54,h=64, 	count = 1},
+	{x=92,y=17,w=47,h=80, 	count = 3, dst = 9},
+	{x=256,y=33,w=54,h=64, 	count = 2, dst = 5},
+	{x=396,y=17,w=97,h=47, 	count = 1, smbCount = 3, scale = 1}
+}
+
+addEventHandler("onClientRender",root,function()
+	zoneWrite(layout_ru, "m976mm134")
+end)
+
+------------------------------------------------------------------------------------------
 --_DoWinDubugDraw()
