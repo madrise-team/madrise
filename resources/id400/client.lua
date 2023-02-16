@@ -370,95 +370,104 @@ end)
         }
     ]]
 ------------------------------------------------------
+debZonesColors = {
+    tocolor(200,100,100,150),
+    tocolor(100,200,100,150),
+    tocolor(100,100,200,150),
+    tocolor(100,200,200,150),
+    tocolor(200,100,200,150),
+    tocolor(200,200,100,150),
+    tocolor(50,50,50,150),
+    tocolor(200,200,200,150)
+}
 
-nomeraTemplates = {}
-nomeraTemplates.ru = {
-        img = "images/number_ru.png", 
-        font = dxCreateFont('fonts/number_ru.ttf',55),
-        zone1 = {w = 402, h = 124},
-        zone2 = {x = 398, y = 12, w = 98, h = 43},
-        drawSymbols = function(nomT)
-            templ = nomeraTemplates.ru
+------------------------------------------------------------------------------------------
+    --  zone writer  --
+------------------------------------------------------------------------------------------
+function nomerWriter(layout,nomerT)
+    
+    local font = "default"
+    local inx = 1
 
-            local symb = string.sub(nomT.symbols,1,6)
-            local reg = string.sub(nomT.symbols,7,9)
-            
-            dxDrawText ( symb, 0, 0, templ.zone1.w, templ.zone1.h, tocolor(0,0,0,255), 0.93, 1,
-                templ.font,  "center", "center")
-            dxDrawText ( reg, 
-                templ.zone2.x, templ.zone2.y, 
-                templ.zone2.x+templ.zone2.w, templ.zone2.y+templ.zone2.h,
-                tocolor(0,0,0,255), 0.6, 0.65, templ.font,  "center", "top")
+    dxDrawImage(0,0,_nomerW,_nomerH,layout.img)
+
+    for zoneI,zone in ipairs(layout) do
+
+        local x = zone.x
+        local dst = (zone.dst or 1) + zone.w
+        zone.smbCount = zone.smbCount or 1
+        font = zone.font or font
+
+
+        for i=1,zone.count do
+            if layout.debNomer then
+                dxDrawRectangle(x, zone.y,zone.w,zone.h, debZonesColors[zoneI])
+            end
+
+            dxDrawText(string.sub(nomerT.symbols,inx,inx + (zone.smbCount - 1) ),
+                x, zone.y + zone.oy ,x+zone.w,zone.y+zone.h, 
+                tocolor(0,0,0,255), 
+                zone.scale or 1, zone.scaleY or zone.scale or 1, 
+                font, "center", "center")   
+
+            x = x + dst
+            inx = inx + zone.smbCount
         end
-}
-nomeraTemplates.ru_nf = {
-        img = "images/number_ru_noFlag.png", 
-        font = nomeraTemplates.ru.font,
-        zone1 = nomeraTemplates.ru.zone1,
-        zone2 = nomeraTemplates.ru.zone2,
-        drawSymbols = nomeraTemplates.ru.drawSymbols
-}
-nomeraTemplates.ru_federal = {
-        img = "images/number_ru_federal.png", 
-        font = nomeraTemplates.ru.font,
-        zone1 = nomeraTemplates.ru.zone1,
-        zone2 = nomeraTemplates.ru.zone2,
-        drawSymbols = nomeraTemplates.ru.drawSymbols
-}
--------------------
-nomeraTemplates.ua = {
-        img = "images/number_ua.png", 
-        font = dxCreateFont('fonts/number_ru.ttf',55),
-        zone1 = {x = 70, y = 15, w = 114, h = 70},
-        zone2 = {x = 180, y = 20, w = 192, h = 70},
-        zone3 = {x = 370, y = 15, w = 114, h = 70},
-        drawSymbols = function(nomT)
-            templ = nomeraTemplates.ua
+    end
+end
 
-            local reg = string.sub(nomT.symbols,1,2)
-            local num = string.sub(nomT.symbols,3,6)
-            local buk = string.sub(nomT.symbols,7,8)
-            
-            dxDrawText ( reg, 
-                templ.zone1.x, templ.zone1.y, 
-                templ.zone1.x+templ.zone1.w, templ.zone1.y+templ.zone1.h, 
-                tocolor(0,0,0,255), 0.9, 1.1,
-                templ.font,  "center", "center")
-
-            dxDrawText ( num, 
-                templ.zone2.x, templ.zone2.y, 
-                templ.zone2.x+templ.zone2.w, templ.zone2.y+templ.zone2.h,
-                tocolor(0,0,0,255), 0.75, 0.85, 
-                templ.font,  "center", "top")
-
-            dxDrawText ( buk, 
-                templ.zone3.x, templ.zone3.y, 
-                templ.zone3.x+templ.zone3.w, templ.zone3.y+templ.zone3.h,
-                tocolor(0,0,0,255), 0.9, 1.1, 
-                templ.font,  "center", "center")
-        end
+----------------------------------------------------------------------------------------
+nomeraLayouts = {}
+---------------------------------------------------------
+nomeraLayouts.ru = {
+    img = "images/number_ru.png", 
+    ---- zones -- 
+    {x=39,y=34,w=51,h=64,   oy = -15,   count = 1, font = dxCreateFont('fonts/number_ru.ttf',48)},
+    {x=94,y=15,w=50,h=83,   oy = 0,   count = 3, dst = 4},
+    {x=256,y=35,w=51,h=64,  oy = -15,  count = 2, dst = 4},
+    {x=396,y=12,w=101,h=54,  oy = 0,  count = 1, smbCount = 3, scale = 0.68},
+    ---- -- 
+    -- debNomer = true
 }
----------------------
+
+nomeraLayouts.ru_nf = copyTable(nomeraLayouts.ru)
+nomeraLayouts.ru_nf.img = "images/number_ru_noFlag.png"
+
+nomeraLayouts.ru_federal = copyTable(nomeraLayouts.ru)
+nomeraLayouts.ru_federal.img = "images/number_ru_federal.png"
+nomeraLayouts[4] = nil -- без региона
+---------------------------------------------------------
+nomeraLayouts.ua = {
+    img = "images/number_ua.png", 
+    ---- zones -- 
+    {x=75,y=21,w=49,h=70,   oy = -20,   count = 2, dst = 4, font = dxCreateFont('fonts/number_ru.ttf',45), scaleY = 1.25},
+    {x=192,y=19,w=39,h=72,   oy = 0,   count = 4, dst = 4, scale = 0.9, scaleY = 1},
+    {x=375,y=21,w=49,h=70,  oy = -20,  count = 2, dst = 4, scaleY = 1.25},
+    ---- -- 
+    -- debNomer = true
+}
+
+---------------------------------------------------------
+----------------------------------------------------------------------------------------
 local avto_number_pairs = {}
 
-local nomerW = 520
-local nomerH = 122 
-
+_nomerW = 520
+_nomerH = 112 
 
 function bakeNomer(numberT)
     local nomT = numberT           -- табилца номера
-    local templ = nomeraTemplates[nomT.type]  -- табилца шаблона
+    local layout = nomeraLayouts[nomT.type]  -- табилца шаблона
     
     --- ///////////////
     dxSetRenderTarget(nomT.nomerRT)
-    dxDrawImage(0,0,nomerW,nomerH,templ.img)
-    templ.drawSymbols(nomT)
+    nomerWriter(layout,numberT)
     dxSetRenderTarget()
     --- ///////////////
 
     dxSetShaderValue(nomT.shader,"nomerTex",nomT.nomerRT)
     engineApplyShaderToWorldTexture(nomT.shader,'nomer',nomT.avto)
 end
+
 
 -->> Перерисовка RT после сворачивания
 addEventHandler("onClientRestore",root,function( didClearRenderTargets )
@@ -471,7 +480,7 @@ end)
 
 function applyNomer(avto,type, symbols)
     local shader = dxCreateShader(nomeraShaderData)
-    local nomerRT = dxCreateRenderTarget(nomerW,nomerH)
+    local nomerRT = dxCreateRenderTarget(_nomerW,_nomerH)
     
     if not shader or not nomerRT then
         outputChatBox("nomer shader or RT creating error (out of Memory?)")
@@ -504,10 +513,6 @@ function addNomer(typ,symbols)
     applyNomer(avto,typ,symbols)
 end
 
-addCommandHandler("nomer",function()
-    addNomer("ua","aa1111aa")
-end)
-
 bindKey("0","down",function()
-    addNomer("ua","aa1111aa")
+    addNomer("ua","oo1111pp")
 end)
