@@ -374,21 +374,21 @@ end)
 nomeraTemplates = {}
 nomeraTemplates.ru = {
         img = "images/number_ru.png", 
-        font = dxCreateFont('fonts/number_ru.ttf',50),
+        font = dxCreateFont('fonts/number_ru.ttf',55),
         zone1 = {w = 402, h = 124},
-        zone2 = {x = 398, y = 19, w = 98, h = 43},
+        zone2 = {x = 398, y = 12, w = 98, h = 43},
         drawSymbols = function(nomT)
             templ = nomeraTemplates.ru
 
             local symb = string.sub(nomT.symbols,1,6)
             local reg = string.sub(nomT.symbols,7,9)
             
-            dxDrawText ( symb, 0, 0, templ.zone1.w, templ.zone1.h, tocolor(0,0,0,255), 1, 1,
+            dxDrawText ( symb, 0, 0, templ.zone1.w, templ.zone1.h, tocolor(0,0,0,255), 0.93, 1,
                 templ.font,  "center", "center")
             dxDrawText ( reg, 
                 templ.zone2.x, templ.zone2.y, 
                 templ.zone2.x+templ.zone2.w, templ.zone2.y+templ.zone2.h,
-                tocolor(0,0,0,255), 0.6, 0.6, templ.font,  "center", "top")
+                tocolor(0,0,0,255), 0.6, 0.65, templ.font,  "center", "top")
         end
 }
 nomeraTemplates.ru_nf = {
@@ -405,8 +405,40 @@ nomeraTemplates.ru_federal = {
         zone2 = nomeraTemplates.ru.zone2,
         drawSymbols = nomeraTemplates.ru.drawSymbols
 }
+-------------------
+nomeraTemplates.ua = {
+        img = "images/number_ua.png", 
+        font = dxCreateFont('fonts/number_ru.ttf',55),
+        zone1 = {x = 70, y = 15, w = 114, h = 70},
+        zone2 = {x = 180, y = 20, w = 192, h = 70},
+        zone3 = {x = 370, y = 15, w = 114, h = 70},
+        drawSymbols = function(nomT)
+            templ = nomeraTemplates.ua
 
+            local reg = string.sub(nomT.symbols,1,2)
+            local num = string.sub(nomT.symbols,3,6)
+            local buk = string.sub(nomT.symbols,7,8)
+            
+            dxDrawText ( reg, 
+                templ.zone1.x, templ.zone1.y, 
+                templ.zone1.x+templ.zone1.w, templ.zone1.y+templ.zone1.h, 
+                tocolor(0,0,0,255), 0.9, 1.1,
+                templ.font,  "center", "center")
 
+            dxDrawText ( num, 
+                templ.zone2.x, templ.zone2.y, 
+                templ.zone2.x+templ.zone2.w, templ.zone2.y+templ.zone2.h,
+                tocolor(0,0,0,255), 0.75, 0.85, 
+                templ.font,  "center", "top")
+
+            dxDrawText ( buk, 
+                templ.zone3.x, templ.zone3.y, 
+                templ.zone3.x+templ.zone3.w, templ.zone3.y+templ.zone3.h,
+                tocolor(0,0,0,255), 0.9, 1.1, 
+                templ.font,  "center", "center")
+        end
+}
+---------------------
 local avto_number_pairs = {}
 
 local nomerW = 520
@@ -473,9 +505,9 @@ function addNomer(typ,symbols)
 end
 
 addCommandHandler("nomer",function()
-    addNomer("ru","b888bb88")
+    addNomer("ua","aa1111aa")
 end)
 
 bindKey("0","down",function()
-    addNomer("ru","b888bb88")
+    addNomer("ua","aa1111aa")
 end)
