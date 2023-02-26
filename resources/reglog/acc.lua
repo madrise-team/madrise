@@ -1,9 +1,3 @@
------ imports
-loadstring(exports.importer:load())()
-import('RRL_Scripts/usfulS.lua')()    -- Usful Server
-------------------------------------
-SQLStorage = exports.DB:MSC()
-
 -------------------- players on server ---------------------------------------------
 loggedPlayers = {}
 addEvent("playerLogin",true)
@@ -22,19 +16,22 @@ function getLoggedPlyers()
 	return loggedPlayers
 end
 
------------DEBUG сбор всех акков на restarte как будт они уже залогинилсь это временно потом удалить навсякий
+
+
+
+
+
+
+-----------DEBUG сбор всех акков на restarte как будт они уже залогинилсь это временно потом удалить навсякий ----
 for k,v in pairs(getElementsByType('player') ) do
  	loggedPlayers[getPlayerNickName(v)] = v
  	triggerClientEvent(v,"playerLogin",root)
 end
 
-outputDebugString("/////////////////")
-outputDebugString("Игроки на сервере:")
-outputDebugString("		 -")
+outputDebugString("/////////////////\nИгроки на сервере:\n		 -")
 for k,v in pairs(loggedPlayers) do
 	outputDebugString(k)
 end
-outputDebugString("		-")
-outputDebugString("//////////////////")
-----------------------------------------------------------------------------------------------------------------
+outputDebugString("		-\n//////////////////")
+------------------------------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------

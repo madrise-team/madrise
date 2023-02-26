@@ -5,6 +5,10 @@ function getAccountInfoByNickName(nick,callback)
 		callback(data[1])
 	end)
 end
+
+function setAccountColumnByID(id,clumn,value)
+	setDbColumnValueByColumnSearch('accounts','id',id,  clumn,value)
+end
 function setAccountColumn(nick,clumn,value)
 	setDbColumnValueByColumnSearch('accounts','nickname',nick,  clumn,value)
 end

@@ -1,12 +1,8 @@
 ----- imports
-loadstring(exports.importer:load())()
-import('RRL_Scripts/usfulS.lua')()    -- Usful Server
-
 usfulAcc()
 
 rlg = exports.reglog
 rlsc = exports.RRL_Scripts
-------------------------------------
 ------------------------------------
 
 Groups = {}

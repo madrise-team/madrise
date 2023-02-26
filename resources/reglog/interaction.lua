@@ -1,15 +1,24 @@
----------------------Config------------------------
-local ScanDepth = 5 --Должно быть меньше чем глубина сканирования чтоб не тупило
+----- imports
+loadstring(exports.importer:load())()
+import('RRL_Scripts/usfulSh.lua')()    -- Usful Shared
+------------------------------------
+--/////////////////////////////////////////////////
+--    config
+--//
+
+local ScanDepth = 15 --Должно быть меньше чем глубина сканирования чтоб не тупило
 local _ScanDepth_powed = ScanDepth*ScanDepth
 local crs_offsetX, crs_offsetY = 15 ,15 -- смещение текста отн. курсора
 local win_offsetX, win_offsetY = 50 ,-150 -- смещение окна отн. плеера
 
 local alfa = 150
----------------------------------------------------
 
-local bool = false
-local def = false
 
+
+
+--/////////////////////////////////////////////////
+--    interaction
+--//
 
 function detectPlayer()
 	cx, cy = getCursorPosition()
@@ -31,28 +40,62 @@ function detectPlayer()
 		end
 	end
 	return false
- end
+end
 
---------------------------------------------------------------------------------
+
+
+--/////////////////////////////////////////////////
+--    functional
+--//
+
+function addContactRequest(contactType)
+	if not interactPlayer then return end
+	if not iteractPlnick then return end
+	if (contactType ~= 1) and (contactType ~= 2) then return end
+	if (contactType == 1) and knowPeople[iteractPlnick] then return end
+	if (contactType == 2) and friends[iteractPlnick] then return end
+
+ 	triggerLatentServerEvent("addContactRequest", 2000, false,  localPlayer, interactPlayer, contactType)
+ 	swapInteraction()
+ 	showCursor(false)
+end
+
+
+
+--/////////////////////////////////////////////////
+--    face
+--// 
 
 interaction = false
-bindKey("e","down",function()
+
+local mouse1Up = false
+
+function swapInteraction()
 	interaction = not interaction
 	if not interaction then
-		interactPlayer = nil	
+		interactPlayer = nil
 	end
-end)
+end
+bindKey("e","down",swapInteraction)
 
+
+iteractPlnick = false
 addEventHandler("onClientRender",root,function()
 	local detected = detectPlayer()
-	if not interaction then interactPlayer = detected end
-	if not interactPlayer then return end
-
 	if not cx then 
 		interactPlayer = nil	
 		interaction = false		
 		return
 	end
+
+	if not interaction then interactPlayer = detected end
+	if not interactPlayer then 
+		iteractPlnick = false
+		return 
+	end
+
+	iteractPlnick = iteractPlnick or getPlayerNickName(interactPlayer)
+
 	if not interaction then
 		local textX = cx + crs_offsetX
 		local textY = cy + crs_offsetY
@@ -71,73 +114,63 @@ addEventHandler("onClientRender",root,function()
 		local winH = 300
 		local col = tocolor(40,40,40,200)
 		
+
+		--** Окно **************************************
 		dxDrawRectangle(sx,sy, winW,winH, col)	
 
 		dxDrawLine(sx,sy,sx,sy+winH, tocolor(100,100,100,100),2)
 		dxDrawLine(sx+ winW,sy,sx + winW,sy+winH, tocolor(100,100,100,100),2)
 		
 		dxDrawLine(sx,sy,sx + winW,sy, tocolor(255,255,255,75),2)
-		dxDrawLine(sx,sy+winH,sx + winW,sy+winH, tocolor(0,0,0,100),2)
+		dxDrawLine(sx,sy+winH,sx + winW,sy+winH, tocolor(90,90,90,100),2)
+		--********************************************
+
+		local know = false
+		local friend = false
+
+		--** Ник и статус *******************
+		
+
+		local statusStr = ""
+		local statusCol = tocolor(255,255,255,255)
+		if friends[iteractPlnick] then
+			statusStr = "Ваш кореш"
+			statusCol = tocolor(150,255,150,255)
+
+			friend = true
+			know = true
+		elseif knowPeople[iteractPlnick] then
+			statusStr = "Ваш кент"
+			statusCol = tocolor(150,150,255,255)
+
+			know = true
+		end
+
+		dxDrawText(iteractPlnick, sx + 10,sy + 5, sx+winW,sy+winH, statusCol, 1.5, 1.5, "default","left","top")
+		dxDrawLine(sx,sy+30,sx + winW,sy+30, tocolor(200,200,200,100),1)
+
+		dxDrawText(statusStr, sx + 12,sy + 36, sx+winW,sy+winH, statusCol, 1, 1, "default","left","top")
+		--*********************************
+
+		--** Функционал *********************************
+		local ofsY = 56
+
+		if contactsLoaded and (not comm_recRequests[iteractPlnick]) then
+			if not know then
+				renderButton(mouse1Up,"Добавить в кенты" ,sx+1,sy+1 + ofsY, winW-2, 30-2, addContactRequest, 1)
+				ofsY = ofsY+ 32
+			end
+			if not friend then
+				renderButton(mouse1Up,"Добавить в кореша",sx+1,sy+1 + ofsY, winW-2, 30-2, addContactRequest, 2)
+				ofsY = ofsY+ 32
+			end
+		end
+		mouse1Up = false
+		--*********************************
 
 	end
 end)
 
---------------------------------------------------------------------------------
-do return end 
-
-
-bindKey("e","down",function() bool = not bool def = not def Defer() end)
-function PlayerDetected()
-	if not isCursorShowing(localPlayer) then return end
-	local PlayerP = detectPlayer()
-	local Type = getElementType(PlayerP)
-	if Type == "player" then Distance(PlayerP) end
-end
-
-function Distance(elementPlayer)
-	local xp,yp,zp = getElementPosition(localPlayer)
-	local xn,yn,zn = getElementPosition(elementPlayer)
-	local distance = getDistanceBetweenPoints3D(xp,yp,zp, xn,yn,zn)
-	if distance < DistToPlayer then InteractionButton(elementPlayer) end
-end
-
-function InteractionButton(elementPlayer)
-	local w,h = getCursorPosition()
-	 w = screenW * w
-	 h = screenH * h
-	if elementPlayer ~= localPlayer then 
-		dxDrawText("<e>",w + width,h + height)
-		Key()
-	end
-end
-
-function Key()
-	if bool and isCursorShowing(localPlayer) then 
-		removeEventHandler("onClientRender",root, PlayerDetected)
-	else 
-		removeEventHandler("onClientRender",root, Interaction)
-	end 
-end
-
-function Defer()
-	if def and isCursorShowing(localPlayer) then
-		addEventHandler("onClientRender",root, Interaction)
-	else
-		addEventHandler("onClientRender",root, PlayerDetected)
-	end
-end
-
-function Interaction()
-	local w,h = guiGetScreenSize()
-	dxDrawRectangle(w/2,h/2,300,300)
-end
-
-addEventHandler("onClientRender",root, PlayerDetected)
-
---[[
-ОТРУБЛЕНА АФК СИСТЕМА !!!!! НЕ ЗАБЫТЬ ВЕРНУТЬ КАК БЫДЛО!!!!
---]]
---[[
-Забаганное дерьмо надо фиксить с начала думал что я бог оказалось не так
---]]
-
+bindKey("mouse1","up",function()
+	mouse1Up = true
+end)

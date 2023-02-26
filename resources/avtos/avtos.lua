@@ -1,8 +1,6 @@
 ----- imports
 loadstring(exports.importer:load())()
 import('RRL_Scripts/usfulS.lua')()    -- Usful Server
-
-SQLStorage = exports.DB:MSC()
 ------------------------------------
 
 actualId = 0

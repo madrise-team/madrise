@@ -350,6 +350,13 @@ function getVehicleNearestToElementAtRange(element,range)
     return nirestVeh
 end
 
+function getPlayerID(player)
+    if not player then return end
+    local data = getElementData(player,"playerData")
+    if not data then return "error to take player data!! (NickName taking)" end
+    return data.id
+end
+
 function getPlayerNickName(player)
     if not player then return end
     local data = getElementData(player,"playerData")

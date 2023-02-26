@@ -1,7 +1,3 @@
------ imports
-loadstring(exports.importer:load())()
-import('RRL_Scripts/usfulS.lua')()    -- Usful Server
-------------------------------------------------------------
 function wastedPlayer()
 	local player = source
 	local x,y,z = 1177.6767578125,-1320.2841796875,14.082455635071

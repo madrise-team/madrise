@@ -1,5 +1,7 @@
 function usfulDB()
 -------------------------------------------------------------------------------------------------------------------------------------
+SQLStorage = exports.DB:MSC()
+
 
 function stringFromArayDbFormatt(array)
     local str = "("	
@@ -16,6 +18,16 @@ end
 --  classic data 
 --////////////////////////////////////////////////////////////////////////////////////////////////////
 
+
+function getCustomSqlQuery(query, callback, ...)
+
+	local qh
+	qh = dbQuery(function()
+		if type(callback)=='function' then callback(dbPoll(qh,0)) end
+	end,SQLStorage,query, unpack({...}) )
+end
+
+
 -- return {1:{row}, 2:{row}}
 function getDbDataFromArray(aTable,serachColumn,valuesArray,callback)			--- Поиск по массиву совпадений (Where in array)
 	local qh
@@ -24,6 +36,12 @@ function getDbDataFromArray(aTable,serachColumn,valuesArray,callback)			--- По
 	end,SQLStorage,"SELECT * FROM `??` WHERE `??` IN ??",aTable,serachColumn,stringFromArayDbFormatt(valuesArray))
 
 end
+
+
+function setDbData(aTable,serachColumn,serachColumnValue,column,value)
+	dbExec(SQLStorage,"UPDATE `??` SET `??` = ?  WHERE (`??` = ?)",aTable,column,value,serachColumn,serachColumnValue)
+end
+
 
 -- return {1:{column}, 2:{column}}
 function getDbColumnData(aTable,serachColumn,serachColumnValue,column,callback) -- 1 столбец вместо всех строки
@@ -119,8 +137,8 @@ end
 
 
 --////////////////////////////////////////////////////////////////////////////////////////////////////
---  Array clumns 
---////////////////////////////////////////////////////////////////////////////////////////////////////
+--    Array clumns 
+--//
 
 function elmColumnArrayOperation(aTable,serachColumn,serachColumnValue,updateColumn,operation)
 	get1DbColumnData(aTable,serachColumn,serachColumnValue,updateColumn,function(data)
@@ -163,6 +181,27 @@ function removeElmByValueFromColumnArray(aTable,serachColumn,serachColumnValue,u
 	end)
 end
 ------------------------------------------------------------------------------------------------------------------
+
+
+--////////////////////////////////////////////////////////////////////////////////////////////////////
+--    Join Data 
+--//
+
+function getDbJoinedData(aTable, columns, jonTable,joinCondition,whereCondition, callback)
+	local qh
+	qh = dbQuery(function()
+		if type(callback)=='function' then callback(dbPoll(qh,0)) end
+	end,SQLStorage,[[
+		SELECT 
+    		??
+    	FROM
+    		??
+		INNER JOIN 
+			??
+		ON ]]..joinCondition
+		.." WHERE "..whereCondition
+		,column,aTable,jonTable)
+end
 
 -------------------------------------------------------------------------------------------------------------------------------------
 end

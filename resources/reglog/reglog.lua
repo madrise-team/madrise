@@ -1,7 +1,6 @@
 ----- imports
 loadstring(exports.importer:load())()
 import('RRL_Scripts/usfulS.lua')()    -- Usful Server
-SQLStorage = exports.DB:MSC()
 ------------------------------------
 
 function onJoin()
@@ -64,7 +63,7 @@ addEventHandler("onPlayerJoin", root, onJoin)
 
 
 function playerLogined(player,bdAccount,localBdAccount)
-	setElementData(player,"playerData",{nickname = bdAccount.nickname})
+	setElementData(player,"playerData",{nickname = bdAccount.nickname, id = bdAccount.id})
 	setPlayerMoney(player,bdAccount.money,true)
 	
 	triggerEvent("playerLogin",player,bdAccount,localBdAccount)
