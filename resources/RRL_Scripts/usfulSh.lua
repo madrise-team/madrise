@@ -2,6 +2,23 @@ function usfulSh()
 ------------------------------------------------------------------------------------------------------------
 
 
+function separateItable(tab)
+    local str = ""
+    for i,v in ipairs(tab) do
+        str = str..v..","
+    end
+    return string.sub(str,#str-1)
+end
+
+function separatePack( ... )
+    return separateItable({...})
+end
+
+function timestampToSqlFormatt(timestamp)
+    local tm = getRealTime(timestamp)
+    return ( (1900 + tm.year)..'-'..(tm.month+1)..'-'..tm.monthday.." "..tm.hour..':'..tm.minute..':'..tm.second)
+end
+
 function tocolorT(colT,r,g,b,a)
     return tocolor(maxer(r or colT.r,255),maxer(g or colT.g,255),maxer(b or colT.b,255),maxer(a or colT.a,255))
 end

@@ -8,133 +8,82 @@ function stringFromArayDbFormatt(array)
     for k,v in pairs(array) do
         str = str..v..","
     end
-    str = str:sub(1,#str - 1)
-    str = str..")"
+    return str:sub(1,#str - 1) .. ")"
+end
 
-    return str
+function getLim(lmtFrom,lmtTo)
+	local lmt = ""
+	if lmtFrom then lmt = "LIMIT "..lmtFrom..","..lmtTo end
+	return lmt 
 end
 
 --////////////////////////////////////////////////////////////////////////////////////////////////////
---  classic data 
+--  helper functs 
 --////////////////////////////////////////////////////////////////////////////////////////////////////
 
+-- Установить значение updateColumn у строк где serachColumn == serachColumnValue 
+function setDbColumnValueByColumnSearch(aTable,serachColumn,serachColumnValue,updateColumn,...)
+	dbExec(SQLStorage,"UPDATE `??` SET `??` = ? WHERE `??` = ?",
+		aTable,updateColumn,updateColumnValue,serachColumn,serachColumnValue)
+end
 
-function getCustomSqlQuery(query, callback, ...)
+-- return rowsCount
+function getTableRowsCount(aTable,callback)
+	getCustomSqlQuery("SELECT COUNT(*) FROM `??`", function(data)
+		return data[1]["COUNT(*)"]
+	end, aTable)
+end
 
+function dropRow(aTable,serachColumn,serachColumnValue)
+	dbExec(SQLStorage,"DROP FROM ?? WHERE ?? = ?",aTable,serachColumn,serachColumnValue)
+end
+function insertRow(aTable,clmns, ...)
+	dbExec(SQLStorage,"INSERT INTO ?? SET clmns ",aTable,serachColumn,serachColumnValue)
+end
+
+--////////////////////////////////////////////////////////////////////////////////////////////////////
+--  classic data get 
+--////////////////////////////////////////////////////////////////////////////////////////////////////
+
+function getCustomSqlQuery(query, callback, ...) --  ... список столбцов выбоки 
 	local qh
 	qh = dbQuery(function()
 		if type(callback)=='function' then callback(dbPoll(qh,0)) end
 	end,SQLStorage,query, unpack({...}) )
 end
 
-
--- return {1:{row}, 2:{row}}
-function getDbDataFromArray(aTable,serachColumn,valuesArray,callback)			--- Поиск по массиву совпадений (Where in array)
-	local qh
-	qh = dbQuery(function()
-		if type(callback)=='function' then callback(dbPoll(qh,0)) end
-	end,SQLStorage,"SELECT * FROM `??` WHERE `??` IN ??",aTable,serachColumn,stringFromArayDbFormatt(valuesArray))
-
+-- return {1:{columns}, 2:{columns}}
+function getDbColumnData(aTable,serachColumn,serachColumnValue,column,callback, lmtFrom,lmtTo)
+	getCustomSqlQuery("SELECT ?? FROM `??` WHERE `??` = ? "..getLim(lmtFrom,lmtTo),
+		callback, column, aTable, serachColumn, serachColumnValue)
 end
-
-
-function setDbData(aTable,serachColumn,serachColumnValue,column,value)
-	dbExec(SQLStorage,"UPDATE `??` SET `??` = ?  WHERE (`??` = ?)",aTable,column,value,serachColumn,serachColumnValue)
-end
-
-
--- return {1:{column}, 2:{column}}
-function getDbColumnData(aTable,serachColumn,serachColumnValue,column,callback) -- 1 столбец вместо всех строки
-	local qh
-	qh = dbQuery(function()
-		if type(callback)=='function' then callback(dbPoll(qh,0)) end
-	end,SQLStorage,"SELECT `??` FROM `??` WHERE (`??` = ?)",column,aTable,serachColumn,serachColumnValue)
-end
-
--- return {column}
+-- return {columns}
 function get1DbColumnData(aTable,serachColumn,serachColumnValue,column,callback)
 	getDbColumnData(aTable,serachColumn,serachColumnValue,column,function(data)
-		data = data or {}
-		callback(data[1])
+		callback(data[1]) 
 	end)
 end
 
 -- return {1:{row}, 2:{row}}
-function getDbData(aTable,serachColumn,value,callback) -- вся строка всех встрок
-	local qh
-	qh = dbQuery(function()
-		if type(callback)=='function' then callback(dbPoll(qh,0)) end
-	end,SQLStorage,"SELECT * FROM `??` WHERE (`??` = ?)",aTable,serachColumn,value)
+function getDbData(aTable,serachColumn,serachColumnValue,callback)
+	getDbColumnData(aTable,serachColumn,serachColumnValue,"*",callback, lmtFrom,lmtTo)
 end
-
 -- return {row}
-function get1DbData(aTable,serachColumn,value,callback)
-	getDbData(aTable,serachColumn,value,function(data)
-		data = data or {}
-		callback(data[1])
-	end)
+function get1DbData(aTable,serachColumn,serachColumnValue,callback)
+	get1DbColumnData(aTable,serachColumn,serachColumnValue,"*",callback)
 end
 
--- return {row1,row2,row3}
-function getDbRows(aTable,callback) -- все строки таблицы
-	local qh
-	qh = dbQuery(function()
-		if type(callback)=='function' then callback(dbPoll(qh,0)) end
-	end,SQLStorage,"SELECT * FROM `??`",aTable)
+-- return {table rows}
+function getDbRows(aTable,callback, lmtFrom, lmtTo) -- все строки таблицы
+	getCustomSqlQuery("SELECT * FROM ?? "..getLim(lmtFrom, lmtTo), callback, aTable)
 end
 
-
---////////////////////////////////////////////////////////////////////////////////////////////////////
---  Limited data 
---////////////////////////////////////////////////////////////////////////////////////////////////////
-
--- return { rowFrom:{column} -- (rowFrom+rowCount):{column} }
-function getLimitedDbColumnRows(aTable,column,rowFrom,rowCount,callback) 
-	local qh
-	qh = dbQuery(function()
-		if type(callback)=='function' then callback(dbPoll(qh,0)) end
-	end,SQLStorage,"SELECT `??` FROM `??` LIMIT ?, ?",column,aTable,rowFrom,rowCount)
+--- Поиск по массиву совпадений (Where in array)
+-- return {1:{row}, 2:{row}}
+function getDbDataFromArray(aTable,serachColumn,valuesArray,callback) 
+	getCustomSqlQuery("SELECT * FROM `??` WHERE `??` IN ??", callback,
+	 	aTable, serachColumn, stringFromArayDbFormatt(valuesArray))
 end
-
--- return { rowFrom:{row} -- (rowFrom+rowCount):{row} }
-function getLimitedDbRows(aTable,rowFrom,rowCount,callback) -- все строки от до
-	local qh
-	qh = dbQuery(function()
-		if type(callback)=='function' then callback(dbPoll(qh,0)) end
-	end,SQLStorage,"SELECT * FROM `??` LIMIT ?, ?",aTable,rowFrom,rowCount)
-end
-
--- return { rowFrom:{column} -- (rowFrom+rowCount):{column} }
-function getLimitedDbColumnData(aTable,column,serachColumn,value,rowFrom,rowCount,callback) -- столбцы строк от до с условием
-	local qh
-	qh = dbQuery(function()
-		if type(callback)=='function' then callback(dbPoll(qh,0)) end
-	end,SQLStorage,"SELECT `??` FROM `??` WHERE (`??` = ?) LIMIT ?, ?",column,aTable,serachColumn,value,rowFrom,rowCount)
-end
-
--- return { rowFrom:{row} -- (rowFrom+rowCount):{row} }
-function getLimitedDbData(aTable,serachColumn,value,rowFrom,rowCount,callback) -- строки от до
-	local qh
-	qh = dbQuery(function()
-		if type(callback)=='function' then callback(dbPoll(qh,0)) end
-	end,SQLStorage,"SELECT * FROM `??` WHERE (`??` = ?) LIMIT ?, ?",aTable,serachColumn,value,rowFrom,rowCount)
-end
-
-
-function setDbColumnValueByColumnSearch(aTable,serachColumn,serachColumnValue,updateColumn,updateColumnValue)
-	dbExec(SQLStorage,"UPDATE `??` SET `??` = ? WHERE `??` = ?",aTable,updateColumn,updateColumnValue,serachColumn,serachColumnValue)
-end
-
-
--- return rowsCount
-function getTableRowsCount(aTable,callback)
-	local qh
-	qh = dbQuery(function()
-		if type(callback)=='function' then callback(dbPoll(qh,0)[1]["COUNT(*)"]) end
-	end,SQLStorage,"SELECT COUNT(*) FROM `??`",aTable)
-end
-
-
 
 --////////////////////////////////////////////////////////////////////////////////////////////////////
 --    Array clumns 
@@ -179,28 +128,6 @@ function removeElmByValueFromColumnArray(aTable,serachColumn,serachColumnValue,u
 			end
 		end
 	end)
-end
-------------------------------------------------------------------------------------------------------------------
-
-
---////////////////////////////////////////////////////////////////////////////////////////////////////
---    Join Data 
---//
-
-function getDbJoinedData(aTable, columns, jonTable,joinCondition,whereCondition, callback)
-	local qh
-	qh = dbQuery(function()
-		if type(callback)=='function' then callback(dbPoll(qh,0)) end
-	end,SQLStorage,[[
-		SELECT 
-    		??
-    	FROM
-    		??
-		INNER JOIN 
-			??
-		ON ]]..joinCondition
-		.." WHERE "..whereCondition
-		,column,aTable,jonTable)
 end
 
 -------------------------------------------------------------------------------------------------------------------------------------

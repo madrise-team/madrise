@@ -30,7 +30,7 @@ function detectPlayer()
 	local x1,y1,z1 = getWorldFromScreenPosition(cx,cy,0.01)
 	local x2,y2,z2 = getWorldFromScreenPosition(cx,cy,ScanDepth)
 	local hit, hitX,hitY,hitZ, elementHit = processLineOfSight(x1,y1,z1,  x2,y2,z2,false,true,true)
-	if hit then
+	if elementHit then
 		if getElementType(elementHit) ~= "player" then return false end
 		if elementHit == localPlayer then return end
 

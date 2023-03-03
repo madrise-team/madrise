@@ -1,5 +1,12 @@
 <meta>
      <min_mta_version client="1.5.9-9.20704"></min_mta_version>
+     
+     <script src="monys.lua" type="server" />
+
      <script src="bank_C.lua" type="client" />
      <script src="bank_S.lua" type="server" />
+
+
+     <export function="payPlayerMoney" type="server"/>
+     <export function="takePlayerMoney" type="server"/>
 </meta>

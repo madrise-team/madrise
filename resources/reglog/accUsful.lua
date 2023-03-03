@@ -9,15 +9,16 @@ end
 function setAccountColumnByID(id,clumn,value)
 	setDbColumnValueByColumnSearch('accounts','id',id,  clumn,value)
 end
-function setAccountColumn(nick,clumn,value)
-	setDbColumnValueByColumnSearch('accounts','nickname',nick,  clumn,value)
+function setAccountColumn(id,clumn, ...)  -- ... - values 
+	setDbColumnValueByColumnSearch('accounts','id',id,  clumn, ...)
 end
-function getAccountColumn(nick,clumn,callback)
-	get1DbColumnData('accounts','nickname',nick, clumn, callback)
+
+function getAccountColumn(id,column,callback)
+	get1DbColumnData('accounts','id',id,column, callback)
 end
 
 function setAccountMoney(nickname,mony,type)
-	type = type or 'money'  -- Если не указано то просто валюта а не вклад
+	type = type or 'money'  -- Если не указано то просто налик а не вклад
 	if not checkArgs({nickname,mony,type},"setAccountMoney") then return end
 	
 	setAccountColumn(nickname, type,mony)
@@ -52,23 +53,8 @@ function swapAccountMoney(nickname,count,fromType1,toType2)
 end
 
 
-function addToAccountAvtoLink(nickname,avtoID)
-	addElmByValueToColumnArray('accounts','nickname',nickname,'vehicles',avtoID)
-end
-function removeFromAccountAvtoLink(nickname,avtoID)
-	removeElmByValueFromColumnArray('accounts','nickname',nickname,'vehicles',avtoID)
-end
-function addToAccountBizLink(nickname,bizKey)
-	addElmByValueToColumnArray('accounts','nickname',nickname,'buzy',bizKey)
-end
-function removeFromAccountBizLink(nickname,bizKey)
-	removeElmByValueFromColumnArray('accounts','nickname',nickname,'buzy',bizKey)
-end
-
-
-
-function getAccountRoots(nick,callback)
-	getAccountColumn(nick,'roots',function(data)
+function getAccountRoots(id,callback)
+	getAccountColumn(id,'roots',function(data)
 		callback(fromJSON(data.roots) or {})
 	end)
 end

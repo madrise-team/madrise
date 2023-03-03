@@ -1,10 +1,3 @@
------ imports
-loadstring(exports.importer:load())()
-import('RRL_Scripts/usfulS.lua')()    -- Usful Server
-
-SQLStorage = exports.DB:MSC()
-------------------------------------
-
 addCommandHandler("convertMoneyToBeznal",function(player,_,count)
 	if not tonumber(count) then return end
 	local nickname = getPlayerNickName(player)
