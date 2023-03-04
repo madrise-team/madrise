@@ -23,8 +23,16 @@ end
 
 -- Установить значение updateColumn у строк где serachColumn == serachColumnValue 
 function setDbColumnValueByColumnSearch(aTable,serachColumn,serachColumnValue,updateColumn,...)
-	dbExec(SQLStorage,"UPDATE `??` SET `??` = ? WHERE `??` = ?",
-		aTable,updateColumn,updateColumnValue,serachColumn,serachColumnValue)
+	local clms = strsplit(updateColumn,",")
+	local values = {...}
+	local updateStr = ""
+	for i,v in ipairs(clms) do
+		updateStr = updateStr.."`"..v.. "`='"..tostring(values[i]).."',"
+	end
+	updateStr = string.sub(updateStr,0,#updateStr-1)
+
+	dbExec(SQLStorage,"UPDATE ?? SET "..updateStr.." WHERE `??` = ?",
+		aTable, serachColumn,serachColumnValue)
 end
 
 -- return rowsCount
@@ -60,7 +68,7 @@ end
 -- return {columns}
 function get1DbColumnData(aTable,serachColumn,serachColumnValue,column,callback)
 	getDbColumnData(aTable,serachColumn,serachColumnValue,column,function(data)
-		callback(data[1]) 
+		callback(data[1])
 	end)
 end
 

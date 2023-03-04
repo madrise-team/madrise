@@ -15,21 +15,24 @@ dbStats = {
 }
 dbStatsColumns = separateItable(dbStats) -- 1й строкой через ,
 
-
-
 -- ////////////////////////////////////////////////////////////////////////////////////////////////
--- // Сброс аккуунта  ⚠⚠⚠
+-- // Сброс аккуунта  ⚠⚠⚠ Выполнением процедуры 
 -- ////////////////////////////////////////////////////////////////////////////////////////////////
 statsToSave = [[
-id, login, password, nickname, gender, creationDate, timeAtServer, achievements, promos
+	id, login, password, nickname, gender, creationDate, timeAtServer, achievements, promos
 ]]
-	
 function resetAccountInfo(id)
-	dropRow('accounts','accounts',serachColumnValue)
-	
-	dbExec(SQLStorage,"DROP ")
+	getCustomSqlQuery("CALL `resertPLayerAccount`(?);",function(result)
+		if result then
+			addAchievment(id,"accReset")
+			outputDebugString(">>> Аккаунт "..id.." сброшен")
+		end
+	end,id)
 end
-
+addCommandHandler("resetAcc",function(player,comdName, id)
+	if tonumber(id) then resetAccountInfo(tonumber(id))
+	else outputChatBox(player," Некорректный id") end
+end)
 
 -- ////////////////////////////////////////////////////////////////////////////////////////////////
 -- // Кэширование статистики игроков
@@ -106,26 +109,17 @@ end,60000,0)
 function addAchievment(id, achivment)
 	getPlayerStats(id,function(stats)
 		local playerAchievments = fromJSON(stats.achievements)
+
 		for i,v in ipairs(playerAchievments) do
 			if v == achivment then
 				return  -- Очивка уже есть
 			end
 		end
-
 		table.insert(playerAchievments, achivment)
-		setAccountColumn(id,'achievements', value, toJSON(playerAchievments) )
+
+		setAccountColumn(id,'achievements', toJSON(playerAchievments))
 	end, 'achievements')
 end
-
-
-
-
-
-
-
-
-
-
 
 ------------ Deb stats
 addCommandHandler('stats',function(player)
