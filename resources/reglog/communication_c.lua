@@ -39,7 +39,13 @@ addEventHandler("contactUpdate",root,function(contactNick, contactType)
 	elseif contactType == 2 then
 		tabler = friends
 	end
-		tabler[contactNick] = true
+	
+	if not tabler then 
+		outputDebugString("ERR>> contactType: "..tostring(contactNick).." in "..tostring(contactNick))
+		return 
+	end
+
+	tabler[contactNick] = true
 end)
 
 --/////////////////////////////////////////////////
