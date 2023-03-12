@@ -18,8 +18,8 @@ dbStatsColumns = separateItable(dbStats) -- 1й строкой через ,
 -- ////////////////////////////////////////////////////////////////////////////////////////////////
 -- // Сброс аккуунта  ⚠⚠⚠ Выполнением процедуры 
 -- ////////////////////////////////////////////////////////////////////////////////////////////////
-statsToSave = [[
-	id, login, password, nickname, gender, creationDate, timeAtServer, achievements, promos
+--[[statsToSave
+		id, login, password, nickname, gender, creationDate, timeAtServer, achievements, promos
 ]]
 function resetAccountInfo(id)
 	getCustomSqlQuery("CALL `resertPLayerAccount`(?);",function(result)
@@ -40,13 +40,12 @@ end)
 
 addEvent('playerLogin',true)
 addEventHandler('playerLogin',root,function(bdAccount)
-	local pS = playersStats[bdAccount.id]
-	pS = {
+	playersStats[bdAccount.id] = {
 		sessionTime = 0,
 		enterTime = getRealTime().timestamp -- для отсчета времени на сервере
 	}
 	for k,v in pairs(dbStats) do
-		pS[v] = bdAccount[v]
+		playersStats[bdAccount.id][v] = bdAccount[v]
 	end
 end)
 
@@ -66,7 +65,7 @@ function getQuickPlayerStats(id)
 end
 function getPlayerStats(id,callback, stat)
 	local stats = getQuickPlayerStats(id)
-	if stats then callback(stats) 
+	if stats then callback(stats)
 	else
 		getAccountColumn(id,stat or dbStatsColumns,callback)
 	end
@@ -117,7 +116,7 @@ function addAchievment(id, achivment)
 		end
 		table.insert(playerAchievments, achivment)
 
-		setAccountColumn(id,'achievements', toJSON(playerAchievments))
+		setAccountColumn(id,'achievements', toJSON(playerAchievments, true))
 	end, 'achievements')
 end
 
@@ -131,7 +130,7 @@ addCommandHandler('stats',function(player)
 
 	local stats = playersStats[id]
 	if not stats then
-		outputDebugString("ERR >> player with stats. [stats get commnd]")
+		outputDebugString("ERR >> player with no stats. [stats get commnd]")
 		return
 	end
 

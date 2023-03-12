@@ -94,7 +94,7 @@ function takePlayerMoney(id, type, money)
 	dbExec(SQLStorage,[[
 		UPDATE accounts SET 
 			?? = ?? - ?,
-			totalMoneySpent = totalMoneyEarned + ?
+			totalMoneySpent = totalMoneySpent + ?
 		WHERE id = ?]],
 		monyType,monyType, money,
 		money,

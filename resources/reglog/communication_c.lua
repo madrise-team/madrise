@@ -9,6 +9,7 @@ addEvent("communications_data",true)
 addEventHandler("communications_data",root,function(cData)
 	local localNick = getPlayerNickName(localPlayer)
 	outputChatBox(" >> Client recived contacts data")
+	do return end
 
 	for k,v in pairs(cData) do
 		local tabler = knowPeople
@@ -16,10 +17,14 @@ addEventHandler("communications_data",root,function(cData)
 			tabler = friends
 		end
 
-		local contactNick = v.ac1
-		if contactNick == localNick then contactNick = v.ac2 end
+		local contactNick = v.ac1_Nick
+		local contactId = v.ac1_Id
+		if contactNick == localNick then
+			contactNick = v.ac2_Nick
+			contactId = v.ac2_Id
+		end
 
-		tabler[contactNick] = true
+		tabler[contactNick] = contactId
 	end
 
 	contactsLoaded = true
@@ -110,8 +115,8 @@ end
 local mouse1Up = false
 
 
-function addContact(player1, contactType)
- 	triggerLatentServerEvent("addContact", 2000, false,  localPlayer, player1, contactType)
+function addContactAnswer(player1, contactTypeOrCancel)
+ 	triggerLatentServerEvent("addContactAnswer", 2000, false,  localPlayer, player1, contactTypeOrCancel)
 end
 
 addEvent("addContactRequest",true)
@@ -132,14 +137,15 @@ addEventHandler("addContactRequest",root,function(contactType)
 		frame = frame + 1
 
 		dxDrawRectangle(300, 200, 300,120, tocolor(40,40,45,200))
-		dxDrawText(nick .. " запрашивает ваш конакт", 300 ,200, 600, 270, tocolor(255,255,255,255), 1.4, 1.4, "default","center","center")
+		dxDrawText(text, 300 ,200, 600, 270, tocolor(255,255,255,255), 1.4, 1.4, "default","center","center")
 
 		renderButton(mouse1Up,"Принять", 315,275, 120,35, function()
-			addContact(pl1, contactType)
+			addContactAnswer(pl1, contactType)
 			removeRequest()
+			triggerEvent('contactUpdate',root,pl1,contactType)
 		end)
 		renderButton(mouse1Up,"Отклонить", 465,275, 120,35, function()
-			triggerLatentServerEvent("addContactAnswer", 2000, false,  localPlayer, pl1, false)
+			addContactAnswer(pl1, false)
 			removeRequest()
 		end)
 

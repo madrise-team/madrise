@@ -38,15 +38,15 @@ end
 -- return rowsCount
 function getTableRowsCount(aTable,callback)
 	getCustomSqlQuery("SELECT COUNT(*) FROM `??`", function(data)
-		return data[1]["COUNT(*)"]
+		callback(data[1]["COUNT(*)"])
 	end, aTable)
 end
 
 function dropRow(aTable,serachColumn,serachColumnValue)
 	dbExec(SQLStorage,"DROP FROM ?? WHERE ?? = ?",aTable,serachColumn,serachColumnValue)
 end
-function insertRow(aTable,clmns, ...)
-	dbExec(SQLStorage,"INSERT INTO ?? SET clmns ",aTable,serachColumn,serachColumnValue)
+function insertRow(aTable, clmns, values)
+	dbExec(SQLStorage,"INSERT INTO ?? (??) VALUES (??) ",aTable, clmns, values)
 end
 
 --////////////////////////////////////////////////////////////////////////////////////////////////////

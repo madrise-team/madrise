@@ -56,6 +56,7 @@ function addContactRequest(contactType)
 	if (contactType == 2) and friends[iteractPlnick] then return end
 
  	triggerLatentServerEvent("addContactRequest", 2000, false,  localPlayer, interactPlayer, contactType)
+ 	
  	swapInteraction()
  	showCursor(false)
 end
@@ -129,8 +130,6 @@ addEventHandler("onClientRender",root,function()
 		local friend = false
 
 		--** Ник и статус *******************
-		
-
 		local statusStr = ""
 		local statusCol = tocolor(255,255,255,255)
 		if friends[iteractPlnick] then
@@ -155,6 +154,7 @@ addEventHandler("onClientRender",root,function()
 		--** Функционал *********************************
 		local ofsY = 56
 
+		--- Контакты
 		if contactsLoaded and (not comm_recRequests[iteractPlnick]) then
 			if not know then
 				renderButton(mouse1Up,"Добавить в кенты" ,sx+1,sy+1 + ofsY, winW-2, 30-2, addContactRequest, 1)
@@ -165,6 +165,8 @@ addEventHandler("onClientRender",root,function()
 				ofsY = ofsY+ 32
 			end
 		end
+
+
 		mouse1Up = false
 		--*********************************
 
